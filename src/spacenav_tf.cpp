@@ -17,25 +17,28 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
   ros::Time t2 = ros::Time::now();
   ros::Duration d = t2 - t;
   t = t2;
-  double dt = d.toSec();
-  dt = 1;
+  double dt = 1 + d.toSec();
 
-  x = ox + (msg->linear.x / 500 / dt);
-  y = oy + (msg->linear.y / 500 / dt);
-  z = oz + (msg->linear.z / 500 / dt);
+  x = transform.getOrigin().getX();
+  y = transform.getOrigin().getY();
+  z = transform.getOrigin().getZ();
+
+  x = x + (msg->linear.x / 100000 / dt);
+  y = y + (msg->linear.y / 100000 / dt);
+  z = z + (msg->linear.z / 100000 / dt);
 
   transform.setOrigin( tf::Vector3(x, y, z) );
   tf::Quaternion q;
   double r = 0, p = 0, yaw = 0;
-  //tf::Matrix3x3(transform.getRotation()).getRPY(r, p, y);
+  tf::Matrix3x3(transform.getRotation()).getRPY(r, p, y);
 
   if(isnan(r)) r = 0;
   if(isnan(p)) p = 0;
   if(isnan(yaw)) yaw = 0;
 
-  r = r + (msg->angular.x / 500 / dt);
-  p = p + (msg->angular.y / 500 / dt);
-  yaw = yaw + (msg->angular.z / 500 / dt);
+  r = r + (msg->angular.x / 100000 / dt);
+  p = p + (msg->angular.y / 100000 / dt);
+  yaw = yaw + (msg->angular.z / 100000 / dt);
 
   q.setRPY(r, p, yaw);
   transform.setRotation(q);
@@ -54,7 +57,7 @@ int main(int argc, char** argv){
   oy = 0.46;
   oz = 1;
 
-  transform.setOrigin( tf::Vector3(0, 0, 0));
+  transform.setOrigin( tf::Vector3(ox, oy, oz));
   transform.setRotation( tf::Quaternion(0, 0, 0, 0));
 
   ros::spin();
