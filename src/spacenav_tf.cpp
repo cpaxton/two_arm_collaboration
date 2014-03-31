@@ -2,6 +2,7 @@
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/Twist.h>
 
+ros::Subscriber sub;
 
 ros::Time t;
 tf::Transform transform;
@@ -10,8 +11,12 @@ double ox;
 double oy;
 double oz;
 
+std::string topic_name;
+
 void poseCallback(const geometry_msgs::TwistConstPtr& msg){
   static tf::TransformBroadcaster br;
+
+  ROS_INFO("callback received command");
 
   double x = 0, y = 0, z = 0;
   ros::Time t2 = ros::Time::now();
@@ -42,14 +47,23 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
 
   q.setRPY(r, p, yaw);
   transform.setRotation(q);
-  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "wam/cmd"));
+  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", topic_name.c_str()));
+  ROS_INFO("sending message from world to %s", topic_name.c_str());
 }
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "spacenav_tf_broadcaster");
 
+  ROS_INFO("starting...");
+
+  topic_name = "/wam/cmd";
+
   ros::NodeHandle node;
-  ros::Subscriber sub = node.subscribe("spacenav/twist", 10, &poseCallback);
+  sub = node.subscribe("spacenav/twist", 10, &poseCallback);
+  ros::NodeHandle nh("~");
+  nh.param("cmd_topic", topic_name, std::string("wam/cmd"));
+
+  ROS_INFO("initialized.");
 
   t = ros::Time::now();
 

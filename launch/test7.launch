@@ -2,19 +2,24 @@
 
   <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
   <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
+  <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
 
   <!-- start the spacenav 3d mouse -->
   <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
 
   <node pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" />
-
   <!--
     This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator from the lcsr_barrett package.
     -->
-  <include file="$(find lcsr_barrett)/sim/wam7_sim_ik.launch" >
+  <include unless="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
   </include>
+  <include if="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7x2_sim_ik.launch" >
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="hand" value="$(arg hand)" />
+  </include>
+
 
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_spacenav)/config/tf.rviz" />
 
