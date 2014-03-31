@@ -58,7 +58,9 @@ int main(int argc, char** argv){
   oz = 1;
 
   transform.setOrigin( tf::Vector3(ox, oy, oz));
-  transform.setRotation( tf::Quaternion(0, 0, 0, 0));
+  tf::Quaternion q;
+  q.setRPY(M_PI, -1.*M_PI/2.,0);
+  transform.setRotation( q );
 
   ros::spin();
   return 0;
