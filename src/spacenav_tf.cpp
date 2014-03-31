@@ -4,14 +4,19 @@
 
 ros::Subscriber sub;
 
+int use_both;
+int current_arm;
+
 ros::Time t;
-tf::Transform transform;
+tf::Transform transform1;
+tf::Transform transform2;
 
 double ox;
 double oy;
 double oz;
 
 std::string topic_name;
+std::string other_topic_name;
 
 void poseCallback(const geometry_msgs::TwistConstPtr& msg){
   static tf::TransformBroadcaster br;
@@ -23,6 +28,14 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
   ros::Duration d = t2 - t;
   t = t2;
   double dt = 1 + d.toSec();
+
+  tf::Transform transform;
+
+  if(current_arm==0 || !use_both) {
+    transform = transform1;
+  } else {
+    transform = transform2;
+  }
 
   x = transform.getOrigin().getX();
   y = transform.getOrigin().getY();
@@ -47,7 +60,17 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
 
   q.setRPY(r, p, yaw);
   transform.setRotation(q);
-  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", topic_name.c_str()));
+
+  if(current_arm==0 || !use_both) {
+    transform1 = transform;
+  } else {
+    transform2 = transform;
+  }
+
+  br.sendTransform(tf::StampedTransform(transform1, ros::Time::now(), "world", topic_name.c_str()));
+  if(use_both) {
+    br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "world", other_topic_name.c_str()));
+  }
   ROS_INFO("sending message from world to %s", topic_name.c_str());
 }
 
@@ -57,11 +80,14 @@ int main(int argc, char** argv){
   ROS_INFO("starting...");
 
   topic_name = "/wam/cmd";
+  current_arm = 0;
 
   ros::NodeHandle node;
   sub = node.subscribe("spacenav/twist", 10, &poseCallback);
   ros::NodeHandle nh("~");
   nh.param("cmd_topic", topic_name, std::string("wam/cmd"));
+  nh.param("cmd_topic2", other_topic_name, std::string("wam2/cmd"));
+  nh.param("use_two_arms", use_both, int(0));
 
   ROS_INFO("initialized.");
 
@@ -71,10 +97,13 @@ int main(int argc, char** argv){
   oy = 0.46;
   oz = 1;
 
-  transform.setOrigin( tf::Vector3(ox, oy, oz));
+  transform1.setOrigin( tf::Vector3(ox, oy, oz));
+  transform2.setOrigin( tf::Vector3(ox, -1*oy, oz));
+
   tf::Quaternion q;
   q.setRPY(M_PI, -1.*M_PI/2.,0);
-  transform.setRotation( q );
+  transform1.setRotation( q );
+  transform2.setRotation( q );
 
   ros::spin();
   return 0;
