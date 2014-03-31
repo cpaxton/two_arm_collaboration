@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot name="peg">
+  <link name="peg_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.4" radius="0.05"/>
+      </geometry>
+      <material name="whitish">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.6 0.1"/>
+      </geometry>
+      <material name="whitish">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+   </link>
+  <joint name="base_to_peg" type="fixed">
+    <parent link="base_link"/>
+    <child link="peg_link"/>
+    <origin xyz="0.0 0.0 0.25"/>
+  </joint>
+
+  <!--<joint name="$(arg prefix)/base_to_world" type="fixed">
+    <parent link="world"/>
+    <child link="$(arg prefix)/base_link"/>
+    <origin xyz="$(arg xx) $(arg yy) 0.05"/>
+  </joint>
+
+</robot>
