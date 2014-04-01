@@ -3,6 +3,8 @@
   <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
   <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
   <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
 
   <!-- start the spacenav 3d mouse -->
   <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
@@ -23,10 +25,14 @@
   <include unless="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
   </include>
   <include if="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7x2_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
   </include>
 
 
