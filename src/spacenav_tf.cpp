@@ -48,15 +48,15 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
   transform.setOrigin( tf::Vector3(x, y, z) );
   tf::Quaternion q;
   double r = 0, p = 0, yaw = 0;
-  tf::Matrix3x3(transform.getRotation()).getRPY(r, p, y);
+  tf::Matrix3x3(transform.getRotation()).getRPY(r, p, yaw);
 
   if(isnan(r)) r = 0;
   if(isnan(p)) p = 0;
   if(isnan(yaw)) yaw = 0;
 
-  r = r + (msg->angular.x / 100000 / dt);
-  p = p + (msg->angular.y / 100000 / dt);
-  yaw = yaw + (msg->angular.z / 100000 / dt);
+  r = r + (msg->angular.x / 10000 / dt);
+  p = p + (msg->angular.y / 10000 / dt);
+  yaw = yaw + (msg->angular.z / 10000 / dt);
 
   q.setRPY(r, p, yaw);
   transform.setRotation(q);
@@ -72,6 +72,8 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
     br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "world", other_topic_name.c_str()));
   }
   ROS_INFO("sending message from world to %s", topic_name.c_str());
+  ROS_INFO("pos = (%f %f %f)", x, y, z);
+  ROS_INFO("rot = (%f %f %f)", r, p, yaw);
 }
 
 int main(int argc, char** argv){
