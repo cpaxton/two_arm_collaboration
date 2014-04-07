@@ -1,8 +1,14 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Joy.h>
+#include <oro_barrett_msgs/BHandCmd.h>
 
 ros::Subscriber sub;
+ros::Subscriber joy_sub;
+
+ros::Publisher arm1_pub; // publish position messages to arm1's gripper
+ros::Publisher arm2_pub; // publish position messages to arm2's gripper
 
 int use_both;
 int current_arm;
@@ -18,6 +24,19 @@ double oz;
 std::string topic_name;
 std::string other_topic_name;
 
+void joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+  if(joy->buttons[0]) {
+    current_arm = !current_arm;
+  }
+}
+
+double t1r;
+double t2r;
+double t1p;
+double t2p;
+double t1yaw;
+double t2yaw;
+
 void poseCallback(const geometry_msgs::TwistConstPtr& msg){
   static tf::TransformBroadcaster br;
 
@@ -31,52 +50,68 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
 
   tf::Transform transform;
 
+  double r = 0, p = 0, yaw = 0;
   if(current_arm==0 || !use_both) {
     transform = transform1;
+    r = t1r;
+    p = t1p;
+    yaw = t1yaw;
   } else {
     transform = transform2;
+    r = t2r;
+    p = t2p;
+    yaw = t2yaw;
   }
 
   x = transform.getOrigin().getX();
   y = transform.getOrigin().getY();
   z = transform.getOrigin().getZ();
 
-  x = x + (msg->linear.x / 100000 / dt);
-  y = y + (msg->linear.y / 100000 / dt);
-  z = z + (msg->linear.z / 100000 / dt);
 
-  transform.setOrigin( tf::Vector3(x, y, z) );
+  if(fabs(msg->linear.x) > 100) x = x + (msg->linear.x / 100000 / dt);
+  if(fabs(msg->linear.y) > 100) y = y + (msg->linear.y / 100000 / dt);
+  if(fabs(msg->linear.z) > 100) z = z + (msg->linear.z / 100000 / dt);
+
   tf::Quaternion q;
-  double r = 0, p = 0, yaw = 0;
-  tf::Matrix3x3(transform.getRotation()).getRPY(r, p, yaw);
+  //tf::Matrix3x3(transform.getRotation()).getRPY(r, p, yaw);
 
   if(isnan(r)) r = 0;
   if(isnan(p)) p = 0;
   if(isnan(yaw)) yaw = 0;
 
-  r = r + (msg->angular.x / 10000 / dt);
-  p = p + (msg->angular.y / 10000 / dt);
-  yaw = yaw + (msg->angular.z / 10000 / dt);
+  if(fabs(msg->angular.x) > 100) r = r + (msg->angular.x / 30000 / dt);
+  if(fabs(msg->angular.y) > 100) p = p + (msg->angular.y / 30000 / dt);
+  if(fabs(msg->angular.z) > 100) yaw = yaw + (msg->angular.z / 30000 / dt);
 
   q.setRPY(r, p, yaw);
   transform.setRotation(q);
+  transform.setOrigin( tf::Vector3(x, y, z) );
 
   if(current_arm==0 || !use_both) {
     transform1 = transform;
+    t1r = r;
+    t1p = p;
+    t1yaw = yaw;
   } else {
     transform2 = transform;
+    t2r = r;
+    t2p = p;
+    t2yaw = yaw;
   }
 
   br.sendTransform(tf::StampedTransform(transform1, ros::Time::now(), "world", topic_name.c_str()));
   if(use_both) {
     br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "world", other_topic_name.c_str()));
   }
-  ROS_INFO("sending message from world to %s", topic_name.c_str());
+  //ROS_INFO("sending message from world to %s", topic_name.c_str());
   ROS_INFO("pos = (%f %f %f)", x, y, z);
   ROS_INFO("rot = (%f %f %f)", r, p, yaw);
 }
 
 int main(int argc, char** argv){
+
+  std::string arm_topic_name, arm2_topic_name; // names of the topics to publish messages on to close/open grippers
+
   ros::init(argc, argv, "spacenav_tf_broadcaster");
 
   ROS_INFO("starting...");
@@ -85,10 +120,13 @@ int main(int argc, char** argv){
   current_arm = 0;
 
   ros::NodeHandle node;
+  joy_sub = node.subscribe("spacenav/joy", 10, &joyCallback);
   sub = node.subscribe("spacenav/twist", 10, &poseCallback);
   ros::NodeHandle nh("~");
   nh.param("cmd_topic", topic_name, std::string("wam/cmd"));
   nh.param("cmd_topic2", other_topic_name, std::string("wam2/cmd"));
+  nh.param("arm_topic", arm_topic_name, std::string("gazebo/barrett_manager/hand/cmd"));
+  nh.param("arm2_topic", arm2_topic_name, std::string("gazebo/w2barrett_manager/hand/cmd"));
   nh.param("use_two_arms", use_both, int(0));
 
   ROS_INFO("initialized.");
@@ -98,6 +136,13 @@ int main(int argc, char** argv){
   ox = 0.8;
   oy = 0.46;
   oz = 1;
+
+  t1r = ox;
+  t2r = ox;
+  t1p = oy;
+  t2p = -1*oy;
+  t1yaw = oz;
+  t2yaw = oz;
 
   transform1.setOrigin( tf::Vector3(ox, oy, oz));
   transform2.setOrigin( tf::Vector3(ox, -1*oy, oz));
