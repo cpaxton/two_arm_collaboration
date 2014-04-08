@@ -3,17 +3,53 @@
   <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
   <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
   <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
 
-  <param name="peg_description" command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/peg.urdf.xacro' xx:=1 yy:=1" />
+  <!-- start the spacenav 3d mouse -->
+  <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
+
+  <node unless="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" >
+    <param name="cmd_topic" value="wam/cmd"/>
+    <param name="use_both" value="0"/>
+  </node>
+  <node if="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" >
+    <param name="cmd_topic" value="wam/cmd"/>
+    <param name="use_two_arms" value="1"/>
+    <param name="cmd_topic2" value="wam2/cmd"/>
+  </node>
+
   <!--
     This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator from the lcsr_barrett package.
     -->
-  <include file="$(find lcsr_spacenav)/launch/test7.launch" >
+  <include unless="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
-    <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
+  </include>
+  <include if="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7x2_sim_ik.launch" >
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="hand" value="$(arg hand)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
   </include>
 
+  <!-- spawn peg 1 -->
+  <param name="peg1_description"
+    command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/peg.urdf.xacro' name:=peg1 xx:=0.75 yy:=0.75"
+  />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-    args="-urdf -model peg1 -param peg_description"/>
+    args=" -urdf -model peg1 -param peg1_description"/>
+
+  <!-- spawn peg 2 -->
+  <param name="peg2_description"
+    command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/peg.urdf.xacro' name:=peg2 xx:=0.75 yy:=-0.75"
+  />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args=" -urdf -model peg2 -param peg2_description"/>
+
+
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_spacenav)/config/tf_peg1.rviz" />
+
 </launch>
