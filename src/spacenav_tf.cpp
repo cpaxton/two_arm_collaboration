@@ -24,10 +24,60 @@ double oz;
 std::string topic_name;
 std::string other_topic_name;
 
+bool arm1_closed;
+bool arm2_closed;
+bool reset;
+
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-  if(joy->buttons[0]) {
-    current_arm = !current_arm;
+  if(reset) {
+    if(joy->buttons[0]) {
+      current_arm = !current_arm;
+      reset = false;
+    }
+    if(!current_arm && joy->buttons[1]) {
+      arm1_closed = !arm1_closed;
+      reset = false;
+    } else if (current_arm && joy->buttons[1]) {
+      arm2_closed = !arm2_closed;
+      reset = false;
+    }
   }
+  if(!joy->buttons[0] && !joy->buttons[1]) {
+    reset = true;
+  }
+
+  oro_barrett_msgs::BHandCmd cmd1;
+  oro_barrett_msgs::BHandCmd cmd2;
+  for(int i = 0; i < 4; ++i) {
+    cmd1.mode[i] = 3;
+    cmd2.mode[i] = 3;
+  }
+  if(arm1_closed) {
+    cmd1.cmd[0] = 2;
+    cmd1.cmd[1] = 2;
+    cmd1.cmd[2] = 2;
+    cmd1.cmd[3] = 0;
+  } else {
+    cmd1.cmd[0] = 0.5;
+    cmd1.cmd[1] = 0.5;
+    cmd1.cmd[2] = 0.5;
+    cmd1.cmd[3] = 0;
+  }
+
+  if(arm2_closed) {
+    cmd2.cmd[0] = 2;
+    cmd2.cmd[1] = 2;
+    cmd2.cmd[2] = 2;
+    cmd2.cmd[3] = 0;
+  } else {
+    cmd2.cmd[0] = 0.5;
+    cmd2.cmd[1] = 0.5;
+    cmd2.cmd[2] = 0.5;
+    cmd2.cmd[3] = 0;
+  }
+
+  arm1_pub.publish(cmd1);
+  arm2_pub.publish(cmd2);
 }
 
 double t1r;
@@ -110,6 +160,9 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
 
 int main(int argc, char** argv){
 
+  reset = false;
+  arm1_closed = arm2_closed = false;
+
   std::string arm_topic_name, arm2_topic_name; // names of the topics to publish messages on to close/open grippers
 
   ros::init(argc, argv, "spacenav_tf_broadcaster");
@@ -128,6 +181,9 @@ int main(int argc, char** argv){
   nh.param("arm_topic", arm_topic_name, std::string("gazebo/barrett_manager/hand/cmd"));
   nh.param("arm2_topic", arm2_topic_name, std::string("gazebo/w2barrett_manager/hand/cmd"));
   nh.param("use_two_arms", use_both, int(0));
+
+  arm1_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm_topic_name, 10); 
+  arm2_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm2_topic_name, 10); 
 
   ROS_INFO("initialized.");
 
