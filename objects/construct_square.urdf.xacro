@@ -1,6 +1,14 @@
 <robot name="$(arg name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:include filename="$(find lcsr_spacenav)/objects/construct_common.urdf.xacro"/>
 
+  <!-- root link to the world frame -->
+  <link name="world" />
+  <joint name="world_to_$(arg name)" type="floating">
+    <origin xyz="$(arg xyz)" rpy="$(arg rpy)"/>
+    <parent link="world"/>
+    <child link="$(arg name)/corner1"/>
+  </joint>
+
   <xacro:cs_corner_1child prefix="$(arg name)"
     id="corner1"
     child1_id="edge1"
