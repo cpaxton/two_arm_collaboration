@@ -193,12 +193,16 @@ int main(int argc, char** argv){
   oy = 0.46;
   oz = 1;
 
-  t1r = ox;
-  t2r = ox;
-  t1p = oy;
-  t2p = -1*oy;
-  t1yaw = oz;
-  t2yaw = oz;
+  double roll = M_PI;
+  double pitch = -1.*M_PI/2.;
+  double yaw = 0;
+
+  t1r = roll;
+  t2r = roll;
+  t1p = pitch;
+  t2p = pitch;
+  t1yaw = yaw;
+  t2yaw = yaw;
 
   transform1.setOrigin( tf::Vector3(ox, oy, oz));
   transform2.setOrigin( tf::Vector3(ox, -1*oy, oz));

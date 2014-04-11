@@ -41,6 +41,9 @@
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model peg1 -param peg1_description"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="peg1_st_pub" >
+    <remap from="robot_description" to="peg1_description" />
+  </node>
 
   <!-- spawn peg 2 -->
   <param name="peg2_description"
@@ -48,7 +51,16 @@
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model peg2 -param peg2_description"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="peg2_st_pub" >
+    <remap from="robot_description" to="peg2_description" />
+  </node>
 
+
+  <!-- spawn ring 1 -->
+  <param name="ring1_description"
+    command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/ring.urdf.xacro' name:=ring1"/>
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args=" -urdf -model ring1 -param ring1_description -x 0.75 -y 0.75 -z 0.25"/>
 
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_spacenav)/config/tf_peg1.rviz" />
 
