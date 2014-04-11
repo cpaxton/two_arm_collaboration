@@ -12,6 +12,20 @@
   <xacro:property name="edge_joint_offset" value="0.04" />
   <xacro:property name="edge_joint_y_offset" value="0.15" />
 
+  <xacro:property name="corner_mass" value="0.25"/>
+  <xacro:property name="edge_mass" value="0.28"/>
+
+  <xacro:macro name="cs_gz_ref" params="prefix id">
+    <gazebo reference="${prefix}/${id}">
+      <material>Gazebo/WoodPallet</material>
+      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <mu1>0.80</mu1>
+      <mu2>0.80</mu2>
+    </gazebo>
+  </xacro:macro>
+  
+
   <!--
     Macro for definition of a construction object corner cube.
     NOTE: parent to world links must be defined outside of these macros! all other links here are child links.
@@ -22,11 +36,11 @@
     <!-- create the definition for the block -->
     <link name="${prefix}/${id}">
       <inertial>
-        <mass value="0.2" />
+        <mass value="${corner_mass}" />
         <inertia
-          ixx="1" ixy="0"   ixz="0"
-                  iyy="1"   iyz="0"
-                  izz="1" />
+          ixx="0.0012" ixy="0"   ixz="0"
+                  iyy="0.0012"   iyz="0"
+                  izz="0.0012" />
       </inertial>
       <visual>
         <geometry>
@@ -42,6 +56,8 @@
         </geometry>
       </collision>
     </link>
+
+    <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
       <joint name="${prefix}/cs_${id}_${child1_id}" type="floating">
@@ -67,11 +83,11 @@
     <!-- create the definition for the block -->
     <link name="${prefix}/${id}">
       <inertial>
-        <mass value="0.2" />
+        <mass value="${corner_mass}" />
         <inertia
-          ixx="1" ixy="0"   ixz="0"
-                  iyy="1"   iyz="0"
-                  izz="1" />
+          ixx="0.0012" ixy="0"   ixz="0"
+                  iyy="0.0012"   iyz="0"
+                  izz="0.0012" />
       </inertial>
       <visual>
         <geometry>
@@ -87,6 +103,8 @@
         </geometry>
       </collision>
     </link>
+
+    <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
       <joint name="${prefix}/cs_${id}_${child1_id}" type="floating">
@@ -103,11 +121,11 @@
     <!-- create the definition for the block -->
     <link name="${prefix}/${id}">
       <inertial>
-        <mass value="0.2" />
+        <mass value="${corner_mass}" />
         <inertia
-          ixx="1" ixy="0"   ixz="0"
-                  iyy="1"   iyz="0"
-                  izz="1" />
+          ixx="0.0012" ixy="0"   ixz="0"
+                  iyy="0.0012"   iyz="0"
+                  izz="0.0012" />
       </inertial>
       <visual>
         <geometry>
@@ -123,6 +141,9 @@
         </geometry>
       </collision>
     </link>
+
+    <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
+
   </xacro:macro>
 
   <!--
@@ -135,11 +156,11 @@
     <!-- create the definition for the edge bar -->
     <link name="${prefix}/${id}">
       <inertial>
-        <mass value="0.22" />
+        <mass value="${edge_mass}" />
         <inertia
-          ixx="1" ixy="0"   ixz="0"
-                  iyy="1"   iyz="0"
-                  izz="1" />
+          ixx="0.0012" ixy="0"   ixz="0"
+                  iyy="0.0012"   iyz="0"
+                  izz="0.0012" />
       </inertial>
       <visual>
         <geometry>
@@ -155,6 +176,8 @@
         </geometry>
       </collision>
     </link>
+
+    <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
       <joint name="${prefix}/cs_${id}_${child_id}" type="floating">
@@ -176,11 +199,11 @@
     <!-- create the definition for the edge bar -->
     <link name="${prefix}/${id}">
       <inertial>
-        <mass value="0.22" />
+        <mass value="${edge_mass}" />
         <inertia
-          ixx="1" ixy="0"   ixz="0"
-                  iyy="1"   iyz="0"
-                  izz="1" />
+          ixx="0.0012" ixy="0"   ixz="0"
+                  iyy="0.0012"   iyz="0"
+                  izz="0.0012" />
       </inertial>
       <visual>
         <geometry>
@@ -196,6 +219,9 @@
         </geometry>
       </collision>
     </link>
+
+    <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
+
   </xacro:macro>
 
 </robot>

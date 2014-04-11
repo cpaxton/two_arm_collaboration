@@ -6,7 +6,7 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="$(find lcsr_spacenav)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rviz_config" default="$(find lcsr_spacenav)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find lcsr_spacenav)/launch/test7.launch">
@@ -24,7 +24,7 @@
     command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/construct_square.urdf.xacro' name:=square"
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-    args=" -urdf -model construct_square -param square_description -x 0.75 -y -0.50 -z 0.25"/>
+    args=" -urdf -model square -param square_description -x 0.50 -y -0.50 -z 0.05"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="square_st_pub" >
     <remap from="robot_description" to="square_description" />
   </node>
