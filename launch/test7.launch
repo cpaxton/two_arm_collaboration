@@ -6,22 +6,15 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
+  <arg name="rviz_config" default="(find lcsr_spacenav)/config/tf.rviz" doc="(string) rviz config file for user interface" />
 
-  <!-- start the spacenav 3d mouse -->
-  <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
-
-  <node unless="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" >
-    <param name="cmd_topic" value="wam/cmd"/>
-    <param name="use_both" value="0"/>
-  </node>
-  <node if="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" >
-    <param name="cmd_topic" value="wam/cmd"/>
-    <param name="use_two_arms" value="1"/>
-    <param name="cmd_topic2" value="wam2/cmd"/>
-  </node>
+  <!-- start the space nav components -->
+  <include file="$(find lcsr_spacenav)/launch/spacenav.launch" >
+    <arg name="usetwo" value="$(arg usetwo)" />
+  </include>
 
   <!--
-    This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator from the lcsr_barrett package.
+    This launchfile brings up one-two 7-DOF WAM robots in the gazebo simulator from the lcsr_barrett package.
     -->
   <include unless="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
@@ -36,7 +29,7 @@
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
-
-  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_spacenav)/config/tf.rviz" />
+  <!-- start rviz and load the appropriate rviz configuration if desired -->
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config)" />
 
 </launch>

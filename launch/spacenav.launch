@@ -1,10 +1,6 @@
 <launch>
 
-  <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
-  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
   <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
-  <arg name="log_level" default="1" doc="(int) orocos log level"/>
-  <arg name="debug" default="false" doc="(bool) in debug mode"/>
 
   <!-- start the spacenav 3d mouse -->
   <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
