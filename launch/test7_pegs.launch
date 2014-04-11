@@ -16,6 +16,7 @@
     <arg name="debug" value="$(arg debug)"/>
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
+    <arg name="usetwo" value="$(arg usetwo)" />
   </include>
 
   <!-- spawn peg 1 -->
