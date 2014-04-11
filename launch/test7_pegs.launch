@@ -5,6 +5,7 @@
   <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
+  <arg name="rviz" default="true" doc="(bool) run rviz"/>
 
   <!-- start the spacenav 3d mouse -->
   <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
@@ -62,6 +63,6 @@
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args=" -urdf -model ring1 -param ring1_description -x 0.75 -y 0.75 -z 0.25"/>
 
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_spacenav)/config/tf_peg1.rviz" />
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_spacenav)/config/tf_peg1.rviz" />
 
 </launch>
