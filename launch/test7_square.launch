@@ -9,7 +9,7 @@
   <arg name="rviz_config" default="$(find lcsr_collab)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_spacenav)/launch/test7.launch">
+  <include file="$(find lcsr_collab)/launch/test7.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
@@ -21,7 +21,7 @@
 
   <!-- spawn construction square -->
   <param name="square_description"
-    command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
+    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model square -param square_description"/>
