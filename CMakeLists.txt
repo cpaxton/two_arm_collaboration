@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lcsr_spacenav)
+project(lcsr_collab)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   lcsr_barrett
-  spacenav_node
   geometry_msgs tf roscpp
 )
 
@@ -55,7 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES lcsr_spacenav
-  CATKIN_DEPENDS lcsr_barrett spacenav_node geometry_msgs tf roscpp
+  CATKIN_DEPENDS lcsr_barrett geometry_msgs tf roscpp
   DEPENDS system_lib
 )
 
@@ -75,10 +74,10 @@ link_directories(
 )
 
 ## Declare a cpp executable
-add_executable(spacenav_tf_node src/spacenav_tf.cpp)
+#add_executable(spacenav_tf_node src/spacenav_tf.cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(spacenav_tf_node
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(spacenav_tf_node
+#  ${catkin_LIBRARIES}
+#)
 

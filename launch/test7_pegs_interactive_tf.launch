@@ -9,7 +9,7 @@
   <arg name="rviz_config" default="$(find lcsr_spacenav)/config/tf_peg1_interactive.rviz" doc="(string) rviz config file for user interface"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_spacenav)/launch/test7.launch">
+  <include file="$(find lcsr_collab)/launch/test7.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
@@ -17,7 +17,6 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
-    <arg name="spacenav" value="false" />
   </include>
 
   <!-- spawn peg 1 -->
@@ -51,14 +50,14 @@
   <node name="wam1_cmd"
     pkg="lcsr_tf_tools"
     type="interactive_transform_publisher"
-    args="0.75 0.75 0.75 0 0 0 /world /wam/cmd 10"
+    args="0.75 0.75 0.75 3.14159 -1.57079 0 /world /wam/cmd 10"
     />
 
   <!-- wam2 cmd frame -->
   <node name="wam2_cmd"
     pkg="lcsr_tf_tools"
     type="interactive_transform_publisher"
-    args="0.75 -0.75 0.75 0 0 0 /world /wam2/cmd 10"
+    args="0.75 -0.75 0.75 3.14159 -1.57079 0 /world /wam2/cmd 10"
     />
 
 </launch>

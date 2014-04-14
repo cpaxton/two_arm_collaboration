@@ -6,13 +6,7 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="(find lcsr_spacenav)/config/tf.rviz" doc="(string) rviz config file for user interface" />
-  <arg name="spacenav" default="true" doc="(bool) launch spacenav node and controller"/>
-
-  <!-- start the space nav components -->
-  <include if="$(arg spacenav)" file="$(find lcsr_spacenav)/launch/spacenav.launch" >
-    <arg name="usetwo" value="$(arg usetwo)" />
-  </include>
+  <arg name="rviz_config" default="(find lcsr_collab)/config/tf.rviz" doc="(string) rviz config file for user interface" />
 
   <!--
     This launchfile brings up one-two 7-DOF WAM robots in the gazebo simulator from the lcsr_barrett package.
