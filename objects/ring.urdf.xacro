@@ -23,13 +23,13 @@
     <visual>
       <origin rpy="0 0 0 " xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://lcsr_spacenav/objects/ring.dae"/>
+        <mesh filename="package://lcsr_collab/objects/ring.dae"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0 " xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://lcsr_spacenav/objects/ring.stl"/>
+        <mesh filename="package://lcsr_collab/objects/ring.stl"/>
       </geometry>
     </collision>
   </link>
