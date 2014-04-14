@@ -19,7 +19,7 @@ Panels:
         - /InteractiveMarkers1
         - /InteractiveMarkers2
       Splitter Ratio: 0.5
-    Tree Height: 427
+    Tree Height: 348
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -788,7 +788,8 @@ Visualization Manager:
       Collision Enabled: false
       Enabled: true
       Links:
-        All Links Enabled: true
+        All Links Enabled:
+          {}
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
@@ -797,7 +798,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: ring1_description
       TF Prefix: ""
@@ -846,7 +846,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.54599
+      Distance: 3.74764
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -858,10 +858,10 @@ Visualization Manager:
         Z: 0.951339
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.356588
+      Pitch: 0.411588
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.90077
+      Yaw: 5.81577
     Saved: ~
 Window Geometry:
   Displays:
