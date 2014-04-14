@@ -6,11 +6,11 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="$(find lcsr_spacenav)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
-  <arg name="spacenav" default="true" doc="(bool) launch spacenav node and controller"/>
+  <arg name="rviz_config" default="$(find lcsr_collab)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_spacenav)/launch/test7.launch">
+  <include file="(find lcsr_spacenav)/launch/spacenav.launch">
+  <include file="$(find lcsr_collab)/launch/test7_square.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
@@ -18,17 +18,5 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
-    <arg name="spacenav" value="$(arg spacenav)" />
   </include>
-
-  <!-- spawn construction square -->
-  <param name="square_description"
-    command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
-  />
-  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-    args=" -urdf -model square -param square_description"/>
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="square_st_pub" >
-    <remap from="robot_description" to="square_description" />
-  </node>
-
 </launch>
