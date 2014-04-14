@@ -54,4 +54,11 @@
     args="0.75 0.75 0.75 0 0 0 /world /wam/cmd 10"
     />
 
+  <!-- wam2 cmd frame -->
+  <node name="wam2_cmd"
+    pkg="lcsr_tf_tools"
+    type="interactive_transform_publisher"
+    args="0.75 -0.75 0.75 0 0 0 /world /wam2/cmd 10"
+    />
+
 </launch>
