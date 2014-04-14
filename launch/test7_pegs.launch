@@ -7,6 +7,7 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find lcsr_spacenav)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="spacenav" default="true" doc="(bool) launch spacenav node and controller"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find lcsr_spacenav)/launch/test7.launch">
@@ -17,6 +18,7 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="spacenav" value="$(arg spacenav)" />
   </include>
 
   <!-- spawn peg 1 -->
@@ -45,5 +47,6 @@
     command="$(find xacro)/xacro.py '$(find lcsr_spacenav)/objects/ring.urdf.xacro' name:=ring1"/>
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args=" -urdf -model ring1 -param ring1_description -x 0.75 -y 0.75 -z 0.25"/>
+
 
 </launch>

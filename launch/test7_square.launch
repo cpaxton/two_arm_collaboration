@@ -7,6 +7,7 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find lcsr_spacenav)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="spacenav" default="true" doc="(bool) launch spacenav node and controller"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find lcsr_spacenav)/launch/test7.launch">
@@ -17,6 +18,7 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="spacenav" value="$(arg spacenav)" />
   </include>
 
   <!-- spawn construction square -->
