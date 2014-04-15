@@ -1,5 +1,5 @@
 <robot name="$(arg name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:include filename="$(find lcsr_spacenav)/objects/construct_common.urdf.xacro"/>
+  <xacro:include filename="$(find lcsr_collab)/objects/construct_common.urdf.xacro"/>
 
   <!-- root link to the world frame -->
   <link name="world" />
@@ -61,5 +61,14 @@
   <xacro:cs_edge prefix="$(arg name)"
     id="edge4"
   />
+
+<!-- replace this with the correct plugin -->
+<gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>/square</robotNamespace>
+    <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+  </plugin>
+</gazebo>
+
 
 </robot>

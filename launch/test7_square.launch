@@ -27,6 +27,13 @@
     args=" -urdf -model square -param square_description"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="square_st_pub" >
     <remap from="robot_description" to="square_description" />
+    <remap from="/joint_states" to="/square/joint_states" />
+  </node>
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="square_js_pub" >
+    <remap from="robot_description" to="square_description" />
+    <rosparam param="source_list" subst_value="true">
+      ["square/joint_states"]
+    </rosparam>
   </node>
 
 </launch>
