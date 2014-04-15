@@ -3,6 +3,7 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
+#include <sensor_msgs/JointState.h>
 #include <stdio.h>
 
 namespace gazebo
@@ -13,8 +14,15 @@ namespace gazebo
     ros::NodeHandle nh_; // ros node handle
     ros::Publisher pub_; // ros joint state publisher
 
+    public: ModelJointStatePublisher() : ModelPlugin(), nh_("") {
+      pub_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 50, true);
+    }
+
     public: void Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/) 
     {
+
+      // Create the ROS topic publisher
+
       // Store the pointer to the model
       this->model = _parent;
 
@@ -28,7 +36,12 @@ namespace gazebo
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
 
+      physics::Joint_V joints = this->model->GetJoints();
 
+      // iterate over list of joints
+      for(typename physics::Joint_V::const_iterator it = joints.begin(); it != joints.end(); ++it) {
+
+      }
     }
 
     // Pointer to the model
