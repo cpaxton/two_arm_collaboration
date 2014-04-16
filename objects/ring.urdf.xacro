@@ -41,7 +41,7 @@
       <verbosity>1</verbosity>
       <enable_latch>0</enable_latch>
       <latch_strength>30.0</latch_strength>
-      <updates_per_second>30.0</updates_per_second>
+      <updates_per_second>180.0</updates_per_second>
     </plugin>
   </gazebo>
 
