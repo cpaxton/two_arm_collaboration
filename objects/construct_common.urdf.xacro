@@ -60,7 +60,7 @@
     <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child1_id}" type="floating">
+      <joint name="${prefix}/cs_${id}_${child1_id}" type="continuous">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child1_id}"/>
         <origin xyz="${corner_joint_offset} ${corner_joint_offset} ${corner_joint_offset}"
@@ -68,7 +68,7 @@
       </joint>
     </xacro:if>
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child2_id}" type="floating">
+      <joint name="${prefix}/cs_${id}_${child2_id}" type="continuous">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child2_id}"/>
         <origin xyz="${corner_joint_offset} ${-1*corner_joint_offset} ${corner_joint_offset}"
@@ -107,7 +107,7 @@
     <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child1_id}" type="floating">
+      <joint name="${prefix}/cs_${id}_${child1_id}" type="continuous">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child1_id}"/>
         <origin xyz="${xyz}" rpy="${rpy}"/>
@@ -180,7 +180,7 @@
     <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child_id}" type="floating">
+      <joint name="${prefix}/cs_${id}_${child_id}" type="continuous">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child_id}"/>
         <origin xyz="${xyz}" rpy="${rpy}"/>

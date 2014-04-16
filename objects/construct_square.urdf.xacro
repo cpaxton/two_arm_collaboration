@@ -73,7 +73,7 @@
   <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
     <namespace>observed</namespace>
     <reference_frame>/world</reference_frame>
-    <verbosity>3</verbosity>
+    <verbosity>1</verbosity>
   </plugin>
   <!--<plugin name="gazebo_tutorials" filename="libgazebo_tutorials.so"/>-->
 </gazebo>
