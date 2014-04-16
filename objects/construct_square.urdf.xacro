@@ -2,12 +2,12 @@
   <xacro:include filename="$(find lcsr_collab)/objects/construct_common.urdf.xacro"/>
 
   <!-- root link to the world frame -->
-  <link name="world" />
+  <!--<link name="world" />
   <joint name="world_to_$(arg name)" type="floating">
     <origin xyz="$(arg xyz)" rpy="$(arg rpy)"/>
     <parent link="world"/>
     <child link="$(arg name)/corner1"/>
-  </joint>
+  </joint>-->
 
   <xacro:cs_corner_1child prefix="$(arg name)"
     id="corner1"
@@ -69,6 +69,7 @@
       <verbosity>1</verbosity>
       <enable_latch>1</enable_latch>
       <latch_strength>30.0</latch_strength>
+      <updates_per_second>30.0</updates_per_second>
     </plugin>
   </gazebo>
 

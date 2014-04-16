@@ -50,9 +50,12 @@
     command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/ring.urdf.xacro' name:=ring1"/>
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args=" -urdf -model ring1 -param ring1_description -x 0.75 -y 0.75 -z 0.25"/>
-  <node pkg="joint_state_publisher" type="joint_state_publisher" name="ring1_js_pub" >
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="ring1_st_pub" >
+    <remap from="robot_description" to="ring1_description" />
+  </node>
+  <!--<node pkg="joint_state_publisher" type="joint_state_publisher" name="ring1_js_pub" >
     <remap from="robot_description" to="ring1_description" />
     <remap from="/joint_states" to="/ring/joint_states" />
-  </node>
+  </node>-->
 
 </launch>

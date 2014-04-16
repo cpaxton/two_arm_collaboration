@@ -98,27 +98,41 @@ Visualization Manager:
           Value: true
         ik/wam2/base_link:
           Value: true
+        ik/wam2/forearm_link:
+          Value: true
         ik/wam2/hand/bhand_palm_link:
+          Value: true
+        ik/wam2/shoulder_pitch_link:
+          Value: true
+        ik/wam2/shoulder_yaw_link:
+          Value: true
+        ik/wam2/upper_arm_link:
           Value: true
         ik/wam2/wrist_palm_link:
           Value: true
+        ik/wam2/wrist_pitch_link:
+          Value: true
+        ik/wam2/wrist_yaw_link:
+          Value: true
         ik/world:
           Value: true
-        square/corner1:
+        observed/square:
           Value: true
-        square/corner2:
+        observed/square/corner1:
           Value: true
-        square/corner3:
+        observed/square/corner2:
           Value: true
-        square/corner4:
+        observed/square/corner3:
           Value: true
-        square/edge1:
+        observed/square/corner4:
           Value: true
-        square/edge2:
+        observed/square/edge1:
           Value: true
-        square/edge3:
+        observed/square/edge2:
           Value: true
-        square/edge4:
+        observed/square/edge3:
+          Value: true
+        observed/square/edge4:
           Value: true
         stage_link:
           Value: true
@@ -207,16 +221,32 @@ Visualization Manager:
             ik/wam/base_link:
               {}
             ik/wam2/base_link:
+              ik/wam2/shoulder_yaw_link:
+                ik/wam2/shoulder_pitch_link:
+                  ik/wam2/upper_arm_link:
+                    ik/wam2/forearm_link:
+                      ik/wam2/wrist_yaw_link:
+                        ik/wam2/wrist_pitch_link:
+                          ik/wam2/wrist_palm_link:
+                            ik/wam2/hand/bhand_palm_link:
+                              {}
+          observed/square:
+            observed/square/corner1:
               {}
-          square/corner1:
-            square/edge1:
-              square/corner2:
-                square/edge2:
-                  square/corner3:
-                    square/edge3:
-                      square/corner4:
-                        square/edge4:
-                          {}
+            observed/square/corner2:
+              {}
+            observed/square/corner3:
+              {}
+            observed/square/corner4:
+              {}
+            observed/square/edge1:
+              {}
+            observed/square/edge2:
+              {}
+            observed/square/edge3:
+              {}
+            observed/square/edge4:
+              {}
           stage_link:
             {}
           wam/base_link:
@@ -760,13 +790,9 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        world:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
       Name: RobotModel
       Robot Description: square_description
-      TF Prefix: ""
+      TF Prefix: observed
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -794,7 +820,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.95256
+      Distance: 3.65036
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -806,10 +832,10 @@ Visualization Manager:
         Z: 0.169129
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.616587
+      Pitch: 0.611587
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.03577
+      Yaw: 6.12077
     Saved: ~
 Window Geometry:
   Displays:

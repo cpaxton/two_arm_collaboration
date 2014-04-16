@@ -21,10 +21,10 @@
 
   <!-- spawn construction square -->
   <param name="square_description"
-    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
+    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square"
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-    args=" -urdf -model square -param square_description"/>
+    args=" -urdf -model square -param square_description -x 0.50 -y 0.50 -z 0.05"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="square_st_pub" >
     <remap from="robot_description" to="square_description" />
     <!--<remap from="/joint_states" to="/square/joint_states" />-->
