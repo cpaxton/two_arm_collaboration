@@ -62,21 +62,15 @@
     id="edge4"
   />
 
-<!-- replace this with the correct plugin -->
-<!--<gazebo>
-  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <robotNamespace>/square</robotNamespace>
-    <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-  </plugin>
-</gazebo>-->
-<gazebo>
-  <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
-    <namespace>observed</namespace>
-    <reference_frame>/world</reference_frame>
-    <verbosity>1</verbosity>
-  </plugin>
-  <!--<plugin name="gazebo_tutorials" filename="libgazebo_tutorials.so"/>-->
-</gazebo>
+  <gazebo>
+    <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
+      <namespace>/observed</namespace>
+      <reference_frame>/world</reference_frame>
+      <verbosity>1</verbosity>
+      <enable_latch>1</enable_latch>
+      <latch_strength>30.0</latch_strength>
+    </plugin>
+  </gazebo>
 
 
 </robot>
