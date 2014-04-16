@@ -40,6 +40,13 @@ namespace gazebo
       }
     }
 
+    /* helper function to create names for TF */
+    static inline std::string getNameTF(std::string ns, std::string joint) {
+      std::stringstream ss;
+      ss << ns << "/" << joint;
+      return ss.str();
+    }
+
     public: void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf) 
     {
 
@@ -70,14 +77,27 @@ namespace gazebo
         ROS_INFO("TF reference frame: %s", ref.c_str());
         ROS_INFO("Verbosity level: %d", verbosity);
       }
+
+      const sdf::ElementPtr sdf_ = model->GetSDF();
+
+      /* loop over sdf elements and look at floating joints */
+      sdf::ElementPtr ptr = sdf_->GetElement("joint");
+      while (ptr) {
+
+        std::string joint_name_ = ptr->Get<std::string>("name");
+
+        if(verbosity > 0) {
+          ROS_INFO("%s: %s", joint_name_.c_str(), ptr->GetDescription().c_str());
+        }
+
+
+        model->GetJoint(joint_name_)->Detach();
+
+        ptr = ptr->GetNextElement("joint");
+      }
+
     }
 
-    /* helper function to create names for TF */
-    static inline std::string getNameTF(std::string ns, std::string joint) {
-      std::stringstream ss;
-      ss << ns << "/" << joint;
-      return ss.str();
-    }
 
     // Called by the world update start event
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
@@ -88,11 +108,11 @@ namespace gazebo
       physics::Link_V links = this->model->GetLinks();
 
       if(verbosity > 2) {
-        ROS_INFO("Reading %u joints and %u links", joints.size(), links.size());
+        ROS_INFO("Reading %u joints and %u links", (unsigned int) joints.size(), (unsigned int) links.size());
       }
 
       // iterate over list of joints
-      for(typename physics::Joint_V::const_iterator it = joints.begin(); it != joints.end(); ++it) {
+      /*for(typename physics::Joint_V::const_iterator it = joints.begin(); it != joints.end(); ++it) {
         tf::Transform t;
         physics::JointPtr ptr = (*it);
 
@@ -113,13 +133,19 @@ namespace gazebo
         t.setRotation(q);
 
         br.sendTransform(tf::StampedTransform(t, ros::Time::now(), pname.c_str(), cname.c_str()));
-      }
+      }*/
+
       for(typename physics::Link_V::const_iterator it = links.begin(); it != links.end(); ++it) {
         tf::Transform t;
         physics::LinkPtr ptr = *it;
 
-        ROS_INFO("%s", getNameTF(ns, (*it)->GetName()).c_str());
+        if(verbosity > 2) {
+          ROS_INFO("%s %u %s", getNameTF(ns, (*it)->GetName()).c_str(),
+                 (unsigned int)ptr->GetChildCount(),
+                 ptr->GetParent()->GetName().c_str());
+        }
       }
+
 
       ros::spinOnce();
     }
