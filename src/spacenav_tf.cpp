@@ -21,6 +21,8 @@ double ox;
 double oy;
 double oz;
 
+double closed_position;
+
 std::string topic_name;
 std::string other_topic_name;
 
@@ -53,9 +55,9 @@ void joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     cmd2.mode[i] = 3;
   }
   if(arm1_closed) {
-    cmd1.cmd[0] = 2;
-    cmd1.cmd[1] = 2;
-    cmd1.cmd[2] = 2;
+    cmd1.cmd[0] = closed_position;
+    cmd1.cmd[1] = closed_position;
+    cmd1.cmd[2] = closed_position;
     cmd1.cmd[3] = 0;
   } else {
     cmd1.cmd[0] = 0.5;
@@ -65,9 +67,9 @@ void joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
   }
 
   if(arm2_closed) {
-    cmd2.cmd[0] = 2;
-    cmd2.cmd[1] = 2;
-    cmd2.cmd[2] = 2;
+    cmd2.cmd[0] = closed_position;
+    cmd2.cmd[1] = closed_position;
+    cmd2.cmd[2] = closed_position;
     cmd2.cmd[3] = 0;
   } else {
     cmd2.cmd[0] = 0.5;
@@ -181,6 +183,7 @@ int main(int argc, char** argv){
   nh.param("arm_topic", arm_topic_name, std::string("gazebo/barrett_manager/hand/cmd"));
   nh.param("arm2_topic", arm2_topic_name, std::string("gazebo/w2barrett_manager/hand/cmd"));
   nh.param("use_two_arms", use_both, int(0));
+  nh.param("closed_position", closed_position, double(2));
 
   arm1_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm_topic_name, 10); 
   arm2_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm2_topic_name, 10); 

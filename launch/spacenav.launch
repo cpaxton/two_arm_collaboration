@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
+  <arg name="gripper_closed_position" default="2" doc="(float) closed position for Barret WAM grippers" />
 
   <!-- start the spacenav 3d mouse -->
   <node pkg="spacenav_node" type="spacenav_node" name="spacenav_node" />
@@ -8,10 +9,12 @@
   <node unless="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" >
     <param name="cmd_topic" value="wam/cmd"/>
     <param name="use_both" value="0"/>
+    <param name="closed_position" value="$(arg gripper_closed_position)"/>
   </node>
   <node if="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_tf_node" name="spacenav_tf_node" >
     <param name="cmd_topic" value="wam/cmd"/>
     <param name="use_two_arms" value="1"/>
     <param name="cmd_topic2" value="wam2/cmd"/>
+    <param name="closed_position" value="$(arg gripper_closed_position)"/>
   </node>
 </launch>
