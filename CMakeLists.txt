@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   gazebo_ros
   sensor_msgs
+  tf
 )
 
 # Depend on system install of Gazebo
@@ -14,13 +15,13 @@ find_package(gazebo REQUIRED)
 link_directories(${GAZEBO_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
-add_library(ModelJointStatePublisher src/plugin.cpp)
-target_link_libraries(ModelJointStatePublisher ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_library(${PROJECT_NAME} src/plugin.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 catkin_package(
-  LIBRARIES ModelJointStatePublisher
   DEPENDS
     roscpp
     gazebo_ros
     sensor_msgs
+    tf
 )
