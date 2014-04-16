@@ -93,7 +93,12 @@ namespace gazebo
           boost::bind(&ModelJointStatePublisher::OnUpdate, this, _1));
 
       enable_latch = _sdf->GetElement("enable_latch")->Get<int>();
-      latch_strength = _sdf->GetElement("latch_strength")->Get<double>();
+
+      if(enable_latch) {
+        latch_strength = _sdf->GetElement("latch_strength")->Get<double>();
+      } else {
+        latch_strength = 0.0;
+      }
       verbosity = _sdf->GetElement("verbosity")->Get<int>();
       ns = _sdf->GetElement("namespace")->Get<std::string>();
       ref = _sdf->GetElement("reference_frame")->Get<std::string>();
