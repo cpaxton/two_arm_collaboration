@@ -7,9 +7,12 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find lcsr_collab)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="closed_position" default="1.42" doc="(float) closed position to send to the grippers"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_spacenav)/launch/spacenav.launch" />
+  <include file="$(find lcsr_spacenav)/launch/spacenav.launch">
+    <arg name="gripper_closed_position" value="$(arg closed_position)"/>
+  </include>
   <include file="$(find lcsr_collab)/launch/test7_square.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
