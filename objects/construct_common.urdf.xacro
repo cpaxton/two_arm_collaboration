@@ -60,19 +60,21 @@
     <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child1_id}" type="continuous">
+      <joint name="${prefix}/cs_${id}_${child1_id}" type="revolute">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child1_id}"/>
         <origin xyz="${corner_joint_offset} ${corner_joint_offset} ${corner_joint_offset}"
           rpy="0 0 0"/>
+        <limit effort="30" velocity="0.0" lower="-0.01" upper="0.01" />
       </joint>
     </xacro:if>
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child2_id}" type="continuous">
+      <joint name="${prefix}/cs_${id}_${child2_id}" type="revolute">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child2_id}"/>
         <origin xyz="${corner_joint_offset} ${-1*corner_joint_offset} ${corner_joint_offset}"
           rpy="0 0 ${PI}"/>
+        <limit effort="30" velocity="0.0" lower="-0.01" upper="0.01" />
       </joint>
     </xacro:if>
   </xacro:macro>
@@ -107,10 +109,11 @@
     <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child1_id}" type="continuous">
+      <joint name="${prefix}/cs_${id}_${child1_id}" type="revolute">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child1_id}"/>
         <origin xyz="${xyz}" rpy="${rpy}"/>
+        <limit effort="30" velocity="0.0" lower="-0.01" upper="0.01" />
       </joint>
     </xacro:if>
   </xacro:macro>
@@ -180,10 +183,11 @@
     <xacro:cs_gz_ref prefix="${prefix}" id="${id}" />
 
     <xacro:if value="true">
-      <joint name="${prefix}/cs_${id}_${child_id}" type="continuous">
+      <joint name="${prefix}/cs_${id}_${child_id}" type="revolute">
         <parent link="${prefix}/${id}"/>
         <child link="${prefix}/${child_id}"/>
         <origin xyz="${xyz}" rpy="${rpy}"/>
+        <limit effort="30" velocity="0.0" lower="-0.01" upper="0.01" />
       </joint>
     </xacro:if>
   </xacro:macro>

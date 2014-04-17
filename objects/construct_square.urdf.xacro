@@ -69,6 +69,8 @@
       <verbosity>2</verbosity>
       <enable_latch>1</enable_latch>
       <latch_strength>30.0</latch_strength>
+      <latch_distance>0.05</latch_distance>
+      <latch_rotation>1.05</latch_rotation>
       <updates_per_second>180.0</updates_per_second>
     </plugin>
   </gazebo>
