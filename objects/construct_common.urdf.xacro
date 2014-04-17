@@ -21,7 +21,7 @@
       <selfCollide>true</selfCollide>
       <gravity>true</gravity>
       <mu1>0.80</mu1>
-      <mu2>0.90</mu2>
+      <mu2>1.90</mu2>
     </gazebo>
   </xacro:macro>
   

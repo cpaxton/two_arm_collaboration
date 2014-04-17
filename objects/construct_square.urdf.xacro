@@ -66,7 +66,7 @@
     <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
       <namespace>/observed</namespace>
       <reference_frame>/world</reference_frame>
-      <verbosity>1</verbosity>
+      <verbosity>2</verbosity>
       <enable_latch>1</enable_latch>
       <latch_strength>30.0</latch_strength>
       <updates_per_second>180.0</updates_per_second>
