@@ -45,8 +45,10 @@ namespace gazebo
     std::string ref; // tf reference frame name (world frame)
     int verbosity; // amount of output to print
 
-    int enable_latch;
-    double latch_strength;
+    int enable_latch; // is latching enabled for this model?
+    double latch_strength; // how much force can joints withstand?
+    double latch_distance; // how close before joints latch together?
+    double latch_rotation; // rotation difference between joints
 
     ros::Time last_update; // last time it was updated
     ros::Duration rate; // number of updates per second
@@ -99,6 +101,8 @@ namespace gazebo
 
       if(enable_latch) {
         latch_strength = _sdf->GetElement("latch_strength")->Get<double>();
+        latch_distance = _sdf->GetElement("latch_distance")->Get<double>();
+        latch_rotation = _sdf->GetElement("latch_rotation")->Get<double>();
       } else {
         latch_strength = 0.0;
       }
@@ -205,6 +209,22 @@ namespace gazebo
       //}
     }
 
+    static inline double vector3_norm(const double x, const double y, const double z) {
+      return sqrt((x*x) + (y*y) + (z*z));
+    }
+
+
+    static inline double vector3_norm(const math::Vector3 vec) {
+      double x = vec.x;
+      double y = vec.y;
+      double z = vec.z;
+      return sqrt((x*x) + (y*y) + (z*z));
+    }
+
+
+    static inline double quaternion_norm(const double x, const double y, const double z, const double w) {
+      return sqrt((x*x) + (y*y) + (z*z) + (w*w));
+    }
 
     // Called by the world update start event
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
@@ -242,17 +262,54 @@ namespace gazebo
           // if latched:
           // check to see if force > threshold
           // if so, disable latch
-          if(!it->latched) {
-            physics::LinkPtr parent = model->GetLink(it->from);
-            physics::LinkPtr child = model->GetLink(it->to);
+          
+          physics::LinkPtr parent = model->GetLink(it->from);
+          physics::LinkPtr child = model->GetLink(it->to);
+          
+          math::Pose diff = child->GetWorldCoGPose() - parent->GetWorldCoGPose() - it->pose;
 
-            it->ptr->Attach(parent, child);
+          // check relative position
+          double tdist = vector3_norm(diff.pos.x, diff.pos.y, diff.pos.z);
+          double rdist = quaternion_norm(diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
+
+          if(!it->latched) {
+
+            if(verbosity > 2) {
+              ROS_INFO("Joint from %s to %s: (%f %f %f) (%f %f %f %f)", it->from.c_str(), it->to.c_str(),
+                       diff.pos.x, diff.pos.y, diff.pos.z,
+                       diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
+            }
+
+
+            if(tdist <= latch_distance && rdist <= latch_rotation) {
+              if(verbosity > 1) {
+                ROS_INFO("Latching joint between \"%s\" and \"%s\" now!", it->from.c_str(), it->to.c_str());
+              }
+              it->ptr->Attach(parent, child);
+              it->latched = true;
+            }
 
             // if they are touching, attach the joint again
           } else {
+            math::Vector3 rf = child->GetWorldForce();
+            math::Vector3 rt = child->GetWorldTorque();
 
+            double force = vector3_norm(rf.x, rf.y, rf.z);
+            double torque = vector3_norm(rt.x, rt.y, rt.z);
+
+            if(verbosity > 3) {
+              ROS_INFO("%f %f / %f %f", vector3_norm(child->GetWorldLinearAccel()),
+                     vector3_norm(child->GetWorldCoGLinearVel()),
+                     vector3_norm(parent->GetWorldLinearAccel()),
+                     vector3_norm(parent->GetWorldCoGLinearVel()));
+            }
+
+            if(tdist > 2*latch_distance) {
+              ROS_INFO("Detaching joint between \"%s\" and \"%s\" now!", it->from.c_str(), it->to.c_str());
+            }
           }
           
+          // anything we need to do?
           if (it->latched) {
             
           }
