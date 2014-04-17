@@ -32,8 +32,11 @@ namespace gazebo
       std::string from;
       std::string to;
       bool latched;
+      math::Pose pose; // where should these be relative to one another?
+      physics::JointPtr ptr; // simulated joint for attachment
     };
 
+    std::vector<magnetic_joint> mjoints; // list of points that latch together
 
     ros::NodeHandle nh_; // ros node handle
     ros::Publisher pub_; // ros joint state publisher
@@ -128,10 +131,15 @@ namespace gazebo
       if(enable_latch) {
         const sdf::ElementPtr sdf_ = model->GetSDF();
 
+        if(verbosity > 0) {
+          ROS_INFO("Loading joints...");
+        }
+
         /* loop over sdf elements and look at floating joints */
         sdf::ElementPtr ptr = sdf_->GetElement("joint");
         while (ptr) {
 
+          std::string pose_str;
           std::string joint_name_ = ptr->Get<std::string>("name");
 
           if(verbosity > 0) {
@@ -139,13 +147,62 @@ namespace gazebo
           }
 
 
-          model->GetJoint(joint_name_)->Detach();
+          //model->GetJoint(joint_name_)->Detach();
+
+          /* NOTE: we are reading an SDF, not an URDF! The format is different! */
+          magnetic_joint jnt;
+          jnt.from = ptr->GetElement("parent")->Get<std::string>();
+          jnt.to = ptr->GetElement("child")->Get<std::string>();
+          jnt.ptr= model->GetJoint(joint_name_);
+          jnt.ptr->Detach();
+          //jnt.ptr->Attach(model->GetLink(jnt.from), model->GetLink(jnt.to));
+
+          pose_str = ptr->GetElement("pose")->Get<std::string>();
+
+          if(verbosity > 1) {
+            ROS_INFO("from=%s to=%s pose=(%s)",
+                     jnt.from.c_str(),
+                     jnt.to.c_str(),
+                     pose_str.c_str());
+          }
 
           ptr = ptr->GetNextElement("joint");
+          mjoints.push_back(jnt);
+        }
+
+
+        //std::map<std::string, math::Pose> poses;
+
+        /* Loop through links, find the offsets */
+        //physics::Link_V links = this->model->GetLinks();
+        //for(typename physics::Link_V::const_iterator it = links.begin(); it != links.end(); ++it) {
+        //  physics::LinkPtr ptr = *it;
+        //  poses[ptr->GetName()] = ptr->GetWorldCoGPose();
+        //}
+
+        /* loop through the joints, compute position differences from parent to child */
+        for(std::vector<magnetic_joint>::iterator it = mjoints.begin(); it != mjoints.end(); ++it) {
+          math::Pose parent = model->GetLink(it->from)->GetWorldCoGPose();
+          math::Pose child = model->GetLink(it->to)->GetWorldCoGPose();
+
+          it->pose = child - parent;
+          it->latched = false; // start off without any joints latched
+
+          if(verbosity > 1) {
+            ROS_INFO("%s --> %s: (%f %f %f) (%f %f %f %f)", it->from.c_str(), it->to.c_str(),
+                     it->pose.pos.x, it->pose.pos.y, it->pose.pos.z,
+                     it->pose.rot.x, it->pose.rot.y, it->pose.rot.z, it->pose.rot.w);
+          }
         }
       }
 
       last_update = ros::Time::now();
+    }
+
+    public: ~ModelJointStatePublisher() {
+      //for(std::vector<magnetic_joint>::iterator it = mjoints.begin(); it != mjoints.end(); ++it) {
+      //  delete &(*it->ptr);
+      //}
     }
 
 
@@ -175,6 +232,33 @@ namespace gazebo
                                             ros::Time::now(),
                                             ref,
                                             getNameTF(ns, model->GetName())));
+
+      /* should joints latch together? */
+      if(enable_latch) {
+        for(std::vector<magnetic_joint>::iterator it = mjoints.begin(); it != mjoints.end(); ++it) {
+          // if not latched:
+          // check to see if the distances are low
+          // if they are: set world position = parent->pose + joint->pose
+          // if latched:
+          // check to see if force > threshold
+          // if so, disable latch
+          if(!it->latched) {
+            physics::LinkPtr parent = model->GetLink(it->from);
+            physics::LinkPtr child = model->GetLink(it->to);
+
+            it->ptr->Attach(parent, child);
+
+            // if they are touching, attach the joint again
+          } else {
+
+          }
+          
+          if (it->latched) {
+            
+          }
+        }
+      }
+
 
       for(typename physics::Link_V::const_iterator it = links.begin(); it != links.end(); ++it) {
         tf::Transform t;
