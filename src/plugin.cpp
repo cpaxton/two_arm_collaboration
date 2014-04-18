@@ -106,10 +106,11 @@ namespace gazebo
         latch_torque = _sdf->GetElement("latch_torque")->Get<double>();
         latch_distance = _sdf->GetElement("latch_distance")->Get<double>();
         latch_rotation = _sdf->GetElement("latch_rotation")->Get<double>();
-        teleport_latch - _sdf->GetElement("teleport_latch")->Get<int>();
+        teleport_latch = _sdf->GetElement("teleport_latch")->Get<int>();
       } else {
         latch_force = 0.0;
         latch_torque = 0.0;
+        teleport_latch = 0;
       }
       verbosity = _sdf->GetElement("verbosity")->Get<int>();
       ns = _sdf->GetElement("namespace")->Get<std::string>();
@@ -216,7 +217,14 @@ namespace gazebo
     }
 
     static inline double vector3_norm(const double x, const double y, const double z) {
-      return sqrt((x*x) + (y*y) + (z*z));
+      //return sqrt((x*x) + (y*y) + (z*z));
+      if(x > y && x > z) {
+        return x;
+      } else if (y > z) {
+        return y;
+      } else {
+        return z;
+      }
     }
 
 
@@ -224,12 +232,22 @@ namespace gazebo
       double x = vec.x;
       double y = vec.y;
       double z = vec.z;
-      return sqrt((x*x) + (y*y) + (z*z));
+      //return sqrt((x*x) + (y*y) + (z*z));
+      return vector3_norm(x, y, z);
     }
 
 
     static inline double quaternion_norm(const double x, const double y, const double z, const double w) {
-      return sqrt((x*x) + (y*y) + (z*z) + (w*w));
+      //return sqrt((x*x) + (y*y) + (z*z) + (w*w));
+      if(x > y && x > z && x > w) {
+        return x;
+      } else if (y >z && y > w) {
+        return y;
+      } else if (z > w) {
+        return z;
+      } else {
+        return w;
+      }
     }
 
     // Called by the world update start event
@@ -278,7 +296,9 @@ namespace gazebo
           double tdist = vector3_norm(diff.pos.x, diff.pos.y, diff.pos.z);
           double rdist = quaternion_norm(diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
 
-          
+         
+          ROS_INFO("tdist=%f, rdist=%f", tdist, rdist);
+
           if(verbosity > 2) {
             ROS_INFO("Joint from %s to %s: (%f %f %f) (%f %f %f %f)", it->from.c_str(), it->to.c_str(),
                      diff.pos.x, diff.pos.y, diff.pos.z,
@@ -293,6 +313,7 @@ namespace gazebo
               }
 
               if(teleport_latch) {
+                ROS_WARN("Teleporting links into position is not stable!");
                 child->SetWorldPose(parent->GetWorldPose() + it->pose);
               }
               it->ptr->Attach(parent, child);
