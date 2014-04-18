@@ -290,7 +290,7 @@ namespace gazebo
           physics::LinkPtr parent = model->GetLink(it->from);
           physics::LinkPtr child = model->GetLink(it->to);
           
-          math::Pose diff = child->GetWorldCoGPose() - parent->GetWorldCoGPose() - it->pose;
+          math::Pose diff = parent->GetWorldCoGPose() - child->GetWorldCoGPose() - it->pose;
 
           // check relative position
           double tdist = vector3_norm(diff.pos.x, diff.pos.y, diff.pos.z);
