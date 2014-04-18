@@ -46,6 +46,7 @@ namespace gazebo
     int verbosity; // amount of output to print
 
     int enable_latch; // is latching enabled for this model?
+    int teleport_latch; // should we jump blocks into place when they latch?
     double latch_force; // how much force can joints withstand?
     double latch_torque; // how much torque can joints withstand?
     double latch_distance; // how close before joints latch together?
@@ -105,6 +106,7 @@ namespace gazebo
         latch_torque = _sdf->GetElement("latch_torque")->Get<double>();
         latch_distance = _sdf->GetElement("latch_distance")->Get<double>();
         latch_rotation = _sdf->GetElement("latch_rotation")->Get<double>();
+        teleport_latch - _sdf->GetElement("teleport_latch")->Get<int>();
       } else {
         latch_force = 0.0;
         latch_torque = 0.0;
@@ -288,6 +290,10 @@ namespace gazebo
             if(tdist <= latch_distance && rdist <= latch_rotation) {
               if(verbosity > 1) {
                 ROS_INFO("Latching joint between \"%s\" and \"%s\" now!", it->from.c_str(), it->to.c_str());
+              }
+
+              if(teleport_latch) {
+                child->SetWorldPose(parent->GetWorldPose() + it->pose);
               }
               it->ptr->Attach(parent, child);
               it->latched = true;
