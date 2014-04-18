@@ -158,6 +158,7 @@ namespace gazebo
           jnt.from = ptr->GetElement("parent")->Get<std::string>();
           jnt.to = ptr->GetElement("child")->Get<std::string>();
           jnt.ptr= model->GetJoint(joint_name_);
+          jnt.ptr->SetProvideFeedback(true);
           jnt.ptr->Detach();
           //jnt.ptr->Attach(model->GetLink(jnt.from), model->GetLink(jnt.to));
 
@@ -272,14 +273,14 @@ namespace gazebo
           double tdist = vector3_norm(diff.pos.x, diff.pos.y, diff.pos.z);
           double rdist = quaternion_norm(diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
 
+          
+          if(verbosity > 2) {
+            ROS_INFO("Joint from %s to %s: (%f %f %f) (%f %f %f %f)", it->from.c_str(), it->to.c_str(),
+                     diff.pos.x, diff.pos.y, diff.pos.z,
+                     diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
+          }
+
           if(!it->latched) {
-
-            if(verbosity > 2) {
-              ROS_INFO("Joint from %s to %s: (%f %f %f) (%f %f %f %f)", it->from.c_str(), it->to.c_str(),
-                       diff.pos.x, diff.pos.y, diff.pos.z,
-                       diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
-            }
-
 
             if(tdist <= latch_distance && rdist <= latch_rotation) {
               if(verbosity > 1) {
@@ -291,20 +292,32 @@ namespace gazebo
 
             // if they are touching, attach the joint again
           } else {
+
             math::Vector3 rf = child->GetWorldForce();
             math::Vector3 rt = child->GetWorldTorque();
+
+            physics::JointWrench wrench = it->ptr->GetForceTorque(0);
 
             double force = vector3_norm(rf.x, rf.y, rf.z);
             double torque = vector3_norm(rt.x, rt.y, rt.z);
 
-            if(verbosity > 3) {
-              ROS_INFO("%f %f / %f %f", vector3_norm(child->GetWorldLinearAccel()),
-                     vector3_norm(child->GetWorldCoGLinearVel()),
-                     vector3_norm(parent->GetWorldLinearAccel()),
-                     vector3_norm(parent->GetWorldCoGLinearVel()));
+            double cf, pf, cF, pF;
+            cf = vector3_norm(wrench.body1Torque);
+            pf = vector3_norm(wrench.body2Torque);
+            cF = vector3_norm(wrench.body1Force);
+            pF = vector3_norm(wrench.body2Force);
+
+            ROS_INFO("force torque etc %f %f %f %f", cf, pf, cF, pF);
+
+            if(verbosity > 2) {
+              ROS_INFO("[%s --> %s] %f %f / %f %f", it->from.c_str(), it->to.c_str(),
+                      vector3_norm(child->GetWorldLinearAccel()),
+                      vector3_norm(child->GetWorldCoGLinearVel()),
+                      vector3_norm(parent->GetWorldLinearAccel()),
+                      vector3_norm(parent->GetWorldCoGLinearVel()));
             }
 
-            if(tdist > 2*latch_distance) {
+            if(rdist > 2*latch_rotation) {
               ROS_INFO("Detaching joint between \"%s\" and \"%s\" now!", it->from.c_str(), it->to.c_str());
             }
           }
