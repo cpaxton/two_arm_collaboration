@@ -196,7 +196,7 @@ namespace gazebo
           math::Pose parent = model->GetLink(it->from)->GetWorldCoGPose();
           math::Pose child = model->GetLink(it->to)->GetWorldCoGPose();
 
-          it->pose = child - parent;
+          it->pose = parent - child; //child - parent;
           it->latched = false; // start off without any joints latched
 
           if(verbosity > 1) {
@@ -217,14 +217,14 @@ namespace gazebo
     }
 
     static inline double vector3_norm(const double x, const double y, const double z) {
-      //return sqrt((x*x) + (y*y) + (z*z));
-      if(x > y && x > z) {
+      return sqrt((x*x) + (y*y) + (z*z));
+      /*if(x > y && x > z) {
         return x;
       } else if (y > z) {
         return y;
       } else {
         return z;
-      }
+      }*/
     }
 
 
@@ -232,14 +232,14 @@ namespace gazebo
       double x = vec.x;
       double y = vec.y;
       double z = vec.z;
-      //return sqrt((x*x) + (y*y) + (z*z));
-      return vector3_norm(x, y, z);
+      return sqrt((x*x) + (y*y) + (z*z));
+      //return vector3_norm(x, y, z);
     }
 
 
     static inline double quaternion_norm(const double x, const double y, const double z, const double w) {
-      //return sqrt((x*x) + (y*y) + (z*z) + (w*w));
-      if(x > y && x > z && x > w) {
+      return sqrt((x*x) + (y*y) + (z*z) + (w*w));
+      /*if(x > y && x > z && x > w) {
         return x;
       } else if (y >z && y > w) {
         return y;
@@ -247,7 +247,7 @@ namespace gazebo
         return z;
       } else {
         return w;
-      }
+      }*/
     }
 
     // Called by the world update start event
@@ -294,7 +294,8 @@ namespace gazebo
 
           // check relative position
           double tdist = vector3_norm(diff.pos.x, diff.pos.y, diff.pos.z);
-          double rdist = quaternion_norm(diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
+          //double rdist = quaternion_norm(diff.rot.x, diff.rot.y, diff.rot.z, diff.rot.w);
+          double rdist = vector3_norm(diff.rot.x, diff.rot.y, diff.rot.z);
 
          
           ROS_INFO("tdist=%f, rdist=%f", tdist, rdist);
