@@ -46,12 +46,15 @@
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>oro_barrett_msgs</build_depend>
+  <build_depend>lcsr_construction_plugin</build_depend>
+
   <run_depend>lcsr_barrett</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>oro_barrett_msgs</run_depend>
+  <run_depend>lcsr_construction_plugin</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
