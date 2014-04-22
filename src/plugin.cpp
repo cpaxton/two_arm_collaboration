@@ -298,7 +298,7 @@ namespace gazebo
           double rdist = vector3_norm(diff.rot.x, diff.rot.y, diff.rot.z);
 
          
-          ROS_INFO("tdist=%f, rdist=%f", tdist, rdist);
+          //ROS_INFO("tdist=%f, rdist=%f", tdist, rdist);
 
           if(verbosity > 2) {
             ROS_INFO("Joint from %s to %s: (%f %f %f) (%f %f %f %f)", it->from.c_str(), it->to.c_str(),
