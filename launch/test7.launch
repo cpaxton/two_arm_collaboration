@@ -17,7 +17,7 @@
     <arg name="log_level" value="$(arg log_level)" />
     <arg name="debug" value="$(arg debug)"/>
   </include>
-  <include if="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7x2_sim_ik.launch" >
+  <include if="$(arg usetwo)" file="$(find lcsr_collab)/sim/wam7x2_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
