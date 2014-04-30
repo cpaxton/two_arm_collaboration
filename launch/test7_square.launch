@@ -10,7 +10,7 @@
   <arg name="closed_position" default="1.42" doc="(float) closed position to send to the grippers"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_spacenav)/launch/spacenav.launch">
+  <include file="$(find lcsr_spacenav)/launch/spacenav_rostopics.launch">
     <arg name="gripper_closed_position" value="$(arg closed_position)"/>
   </include>
   <include file="$(find lcsr_collab)/launch/test7_square.launch">
