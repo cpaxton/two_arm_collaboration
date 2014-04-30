@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <tf/transform_broadcaster.h>
+#include <tf/transform_datatypes.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Joy.h>
 #include <oro_barrett_msgs/BHandCmd.h>
@@ -9,6 +9,8 @@ ros::Subscriber joy_sub;
 
 ros::Publisher arm1_pub; // publish position messages to arm1's gripper
 ros::Publisher arm2_pub; // publish position messages to arm2's gripper
+ros::Publisher tf1_pub;
+ros::Publisher tf2_pub;
 
 int use_both;
 int current_arm;
@@ -90,9 +92,8 @@ double t1yaw;
 double t2yaw;
 
 void poseCallback(const geometry_msgs::TwistConstPtr& msg){
-  static tf::TransformBroadcaster br;
 
-  ROS_INFO("callback received command");
+  //ROS_INFO("callback received command");
 
   double x = 0, y = 0, z = 0;
   ros::Time t2 = ros::Time::now();
@@ -151,13 +152,19 @@ void poseCallback(const geometry_msgs::TwistConstPtr& msg){
     t2yaw = yaw;
   }
 
-  br.sendTransform(tf::StampedTransform(transform1, ros::Time::now(), "world", topic_name.c_str()));
+  tf::StampedTransform stf1(transform1, ros::Time::now(), "world", topic_name.c_str());
+  geometry_msgs::TransformStamped stf1_msg;
+  tf::transformStampedTFToMsg(stf1, stf1_msg);
+  tf1_pub.publish(stf1_msg);
   if(use_both) {
-    br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "world", other_topic_name.c_str()));
+    tf::StampedTransform stf2(transform2, ros::Time::now(), "world", other_topic_name.c_str());
+    geometry_msgs::TransformStamped stf2_msg;
+    tf::transformStampedTFToMsg(stf2, stf2_msg);
+    tf2_pub.publish(stf2_msg);
   }
   //ROS_INFO("sending message from world to %s", topic_name.c_str());
-  ROS_INFO("pos = (%f %f %f)", x, y, z);
-  ROS_INFO("rot = (%f %f %f)", r, p, yaw);
+  //ROS_INFO("pos = (%f %f %f)", x, y, z);
+  //ROS_INFO("rot = (%f %f %f)", r, p, yaw);
 }
 
 int main(int argc, char** argv){
@@ -167,9 +174,9 @@ int main(int argc, char** argv){
 
   std::string arm_topic_name, arm2_topic_name; // names of the topics to publish messages on to close/open grippers
 
-  ros::init(argc, argv, "spacenav_tf_broadcaster");
+  ros::init(argc, argv, "spacenav_client_node");
 
-  ROS_INFO("starting...");
+  ROS_INFO("starting spacenav_client...");
 
   topic_name = "/wam/cmd";
   current_arm = 0;
@@ -187,8 +194,11 @@ int main(int argc, char** argv){
 
   arm1_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm_topic_name, 10); 
   arm2_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm2_topic_name, 10); 
+  tf1_pub = node.advertise<geometry_msgs::TransformStamped>(topic_name, 10);
+  tf2_pub = node.advertise<geometry_msgs::TransformStamped>(other_topic_name, 10);
+  
 
-  ROS_INFO("initialized.");
+  //ROS_INFO("initialized.");
 
   t = ros::Time::now();
 

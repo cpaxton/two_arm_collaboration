@@ -82,10 +82,10 @@ add_executable(spacenav_client_node src/spacenav_client.cpp)
 target_link_libraries(spacenav_tf_node
   ${catkin_LIBRARIES}
 )
-target_link_libraries(spacenav_tf_pub
+target_link_libraries(spacenav_pub_node
   ${catkin_LIBRARIES}
 )
-target_link_libraries(spacenav_tf_client
+target_link_libraries(spacenav_client_node
   ${catkin_LIBRARIES}
 )
 
