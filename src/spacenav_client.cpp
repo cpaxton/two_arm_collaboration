@@ -194,8 +194,8 @@ int main(int argc, char** argv){
 
   arm1_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm_topic_name, 10); 
   arm2_pub = node.advertise<oro_barrett_msgs::BHandCmd>(arm2_topic_name, 10); 
-  tf1_pub = node.advertise<geometry_msgs::TransformStamped>(topic_name, 10);
-  tf2_pub = node.advertise<geometry_msgs::TransformStamped>(other_topic_name, 10);
+  tf1_pub = node.advertise<geometry_msgs::TransformStamped>(topic_name, 60);
+  tf2_pub = node.advertise<geometry_msgs::TransformStamped>(other_topic_name, 60);
   
 
   //ROS_INFO("initialized.");
