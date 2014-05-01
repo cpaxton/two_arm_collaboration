@@ -20,5 +20,6 @@
   <node if="$(arg usetwo)" pkg="lcsr_spacenav" type="spacenav_pub_node" name="spacenav_pub_node" >
     <param name="cmd_topic" value="wam/cmd"/>
     <param name="cmd_topic2" value="wam2/cmd"/>
+    <param name="use_two_arms" value="1"/>
   </node>
 </launch>

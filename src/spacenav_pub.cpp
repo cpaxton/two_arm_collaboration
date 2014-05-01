@@ -43,9 +43,14 @@ int main(int argc, char** argv){
   nh.param("cmd_topic2", other_topic_name, std::string("wam2/cmd"));
   nh.param("use_two_arms", use_both, int(0));
 
+  ROS_INFO("use_both=%d",use_both);
+  ROS_INFO("topic1=%s",topic_name.c_str());
+  ROS_INFO("topic2=%s",other_topic_name.c_str());
+
   tf1_sub = node.subscribe(topic_name.c_str(), 60, &tf1Callback);
   if(use_both) {
-    tf2_sub = node.subscribe(other_topic_name.c_str(), 60, &tf1Callback);
+    tf2_sub = node.subscribe(other_topic_name.c_str(), 60, &tf2Callback);
+    ROS_INFO("using two arms!");
   }
 
   static tf::TransformBroadcaster br;
