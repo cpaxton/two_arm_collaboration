@@ -1,6 +1,13 @@
 <launch>
+
+  <node pkg="tf" name="arm1_pub" type="static_transform_publisher" args="0 1 1 0 0 0 1 /world /arm1 100"/>
+  <node pkg="tf" name="arm2_pub" type="static_transform_publisher" args="0 -1 1 0 0 0 1 /world /arm2 100"/>
+  <node pkg="tf" name="ring1_pub" type="static_transform_publisher" args="0.5 1 2 0 0 0 1 /world /ring1 100"/>
+  <node pkg="tf" name="peg1_pub" type="static_transform_publisher" args="0 1 2 0 0 0 1 /world /peg1 100"/>
+  <node pkg="tf" name="peg2_pub" type="static_transform_publisher" args="0 -1 2 0 0 0 1 /world /peg2 100"/>
+
   <node pkg="lcsr_replay" name="lcsr_replay_recorder" type="rrec" output="screen">
-    <rosparam param="base_frames">[arm1, arm2, arm1, arm2]</rosparam>
-    <rosparam param="child_frames">[ring1, ring1, peg1, peg2]</rosparam>
+    <rosparam param="base_frames">[/arm1, /arm2, /arm1, /arm2]</rosparam>
+    <rosparam param="child_frames">[/ring1, /ring1, /peg1, /peg2]</rosparam>
   </node>
 </launch>

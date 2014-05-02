@@ -145,7 +145,10 @@ namespace lcsr_replay {
         }
       }
 
-
+      // loop over frame pairs (features)
+      for(unsigned int i = 0; i < bases.size(); ++i) {
+        geometry_msgs::Transform t = finder.find(bases[i], children[i]);
+      }
 
     }
 
