@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>lcsr_replay</name>
+  <version>0.0.0</version>
+
+  <description>
+     Load, analyze, and replay trajectories adapted based on observed features.
+  </description>
+  <maintainer email="cpaxton3@jhu.edu">Chris Paxton</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/lcsr_replay</url>
+
+  <buildtool_depend/>catkin</buildtool_depend>
+
+  <build_depend/>lcsr_collab</build_depend>
+  <build_depend/>lcsr_spacenav</build_depend>
+  <build_depend/>lcsr_barrett</build_depend>
+  <build_depend/>tf</build_depend>
+  <build_depend/>geometry_msgs</build_depend>
+  <build_depend/>rosbag</build_depend>
+
+  <run_depend/>lcsr_collab</run_depend>
+  <run_depend/>rosbag</run_depend>
+  <run_depend/>lcsr_spacenav</run_depend>
+  <run_depend/>lcsr_barrett</run_depend>
+  <run_depend/>tf</run_depend>
+  <run_depend/>geometry_msgs</run_depend>
+  <run_depend/>rosbag</run_depend>
+
+</package>
+
+
