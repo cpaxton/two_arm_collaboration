@@ -19,6 +19,7 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>rosbag</build_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>oro_barrett_msgs</build_depend>
 
   <run_depend>lcsr_collab</run_depend>
   <run_depend>rosbag</run_depend>
@@ -28,6 +29,7 @@
   <run_depend>geometry_msgs</run_depend>
   <run_depend>rosbag</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>oro_barrett_msgs</run_depend>
 
 </package>
 

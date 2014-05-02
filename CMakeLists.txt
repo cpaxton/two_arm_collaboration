@@ -3,14 +3,16 @@ project(lcsr_replay)
 
 # FIND DEPENDENCIES
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs tf roscpp rosbag
+  geometry_msgs tf roscpp rosbag oro_barrett_msgs
 )
 
 # PACKAGE SETTINGS
 catkin_package(
-  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav
+  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav oro_barrett_msgs
   DEPENDS system_lib
 )
 
 include_directories( ${catkin_INCLUDE_DIRS} )
 link_directories( ${catkin_LIBRARY_DIRS} )
+
+
