@@ -19,6 +19,7 @@
 //message includes
 #include <geometry_msgs/TransformStamped.h>
 #include <oro_barrett_msgs/BHandCmd.h>
+#include <lcsr_replay/Features.h>
 
 namespace lcsr_replay {
 
@@ -147,10 +148,19 @@ namespace lcsr_replay {
         }
       }
 
+      Features f;
+
       // loop over frame pairs (features)
       for(unsigned int i = 0; i < bases.size(); ++i) {
         geometry_msgs::Transform t = finder.find(bases[i], children[i]);
+        f.base.push_back(bases[i]);
+        f.child.push_back(children[i]);
+        f.transform.push_back(t);
+
+        ROS_INFO("%s-->%s transform found", bases[i].c_str(), children[i].c_str());
       }
+
+      bag.write("/FEATURES", t, f);
 
     }
 
