@@ -10,6 +10,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Boost REQUIRED COMPONENTS system)
 
+add_message_files(FILES Features.msg)
+generate_messages(DEPENDENCIES geometry_msgs)
+
 # PACKAGE SETTINGS
 catkin_package(
   CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav oro_barrett_msgs
