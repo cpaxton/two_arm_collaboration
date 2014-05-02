@@ -10,8 +10,8 @@
 #include <ros/ros.h>
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
+//#include <message_filters/subscriber.h>
+//#include <message_filters/time_synchronizer.h>
 
 // LCSR includes
 #include <oro_barrett_msgs/BHandCmd.h>
@@ -30,7 +30,7 @@ namespace lcsr_replay {
   private:
     int verbosity;
 
-    const int DEFAULT_RATE = 60;
+    static const int DEFAULT_RATE = 60;
 
   protected:
     
@@ -42,9 +42,11 @@ namespace lcsr_replay {
     // record certain things which we just send as-is at times, we do not interpret or warp them
     std::vector<ros::Publisher> discrete_topics;
 
+    rosbag::Bag bag;
+
   public:
 
-    DemoReader(const std::string &bagfile) : rosbag::Bag(bagfile), nh(), nh_tilde("~") {
+    DemoReader(const std::string &bagfile) : bag(bagfile, rosbag::bagmode::Read), nh(), nh_tilde("~") {
 
       nh_tilde.param("verbosity", verbosity, int(1));
 
@@ -89,15 +91,21 @@ namespace lcsr_replay {
       return 1;
     }
 
+    /* examine()
+     * Read the contents of a bag so that we know what happened at each point in time in the demonstration.
+     */
     int examine() {
-      rosbag::View view((rosbag::Bag *this, rosbag::TopicQuery(topics)));
 
-      foreach(rosbag::MessageInstance const m, view) {
+      rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+      for(const rosbag::MessageInstance &m: view) {
+      //for(rosbag::View::iterator it = view.begin(); it != view.end(); ++it) {
+        //rosbag::MessageInstance m = *it;
         ROS_INFO("topic=\"%s\", time=%f", m.getTopic().c_str(), m.getTime().toSec());
       }
     }
     
-  }
+  };
 
 
 
