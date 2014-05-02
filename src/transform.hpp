@@ -20,6 +20,10 @@ namespace lcsr_replay {
       // nothing here yet
     }
 
+    void wait(const std::string &frame1, const std::string &frame2, ros::Duration time) {
+      listener.waitForTransform(frame2, frame1, ros::Time::now(), time);
+    }
+
     geometry_msgs::Transform find(const std::string &frame1, const std::string &frame2) {
       try{
         // read through pairs of frames, record transforms

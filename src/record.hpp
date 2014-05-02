@@ -153,6 +153,12 @@ namespace lcsr_replay {
     }
 
     void spin() {
+
+      // make sure we have transforms for all of these things
+      for(unsigned int i = 0; i < bases.size(); ++i) {
+        finder.wait(bases[i], children[i], ros::Duration(1.0));
+      }
+
       while(ros::ok()) {
         ros::spinOnce();
         update();
