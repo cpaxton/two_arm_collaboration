@@ -10,7 +10,7 @@
   <license>BSD</license>
   <url>http://ros.org/wiki/lcsr_replay</url>
 
-  <buildtool_depend/>catkin</buildtool_depend>
+  <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend/>lcsr_collab</build_depend>
   <build_depend/>lcsr_spacenav</build_depend>
