@@ -30,6 +30,6 @@ int main(int argc, char **argv) {
   dr.addTopic(arm1_topic);
   dr.addTopic(arm2_topic);
 
-  dr.examine();
+  dr.show();
 
 }

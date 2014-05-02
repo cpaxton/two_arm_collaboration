@@ -13,13 +13,15 @@
 //#include <message_filters/subscriber.h>
 //#include <message_filters/time_synchronizer.h>
 
-// LCSR includes
+// message includes
 #include <oro_barrett_msgs/BHandCmd.h>
+#include <geometry_msgs/TransformStamped.h>
 
 namespace lcsr_replay {
 
   /* typedef to avoid worrying about templates just yet */
   typedef oro_barrett_msgs::BHandCmd discrete_msg_t;
+  typedef geometry_msgs::TransformStamped msg_t;
 
   /**
    * DemoReader
@@ -39,8 +41,8 @@ namespace lcsr_replay {
     ros::NodeHandle nh; // default namespace for publishers
     ros::NodeHandle nh_tilde; // private namespace
 
-    // record certain things which we just send as-is at times, we do not interpret or warp them
-    std::vector<ros::Publisher> discrete_topics;
+    // publishers to replay content
+    std::vector<ros::Publisher> publishers;
 
     rosbag::Bag bag;
 
@@ -63,16 +65,15 @@ namespace lcsr_replay {
      * FUTURE PLANS: template function that adds a ROS publisher?
      */
     //template<class T = discrete_msg_t>
-    int addDiscreteTopic(const std::string &topic, int rate = DEFAULT_RATE) {
+    void addDiscreteTopic(const std::string &topic, int rate = DEFAULT_RATE) {
       topics.push_back(topic);
 
       ros::Publisher pub = nh.advertise<discrete_msg_t>(topic, rate);
+      publishers.push_back(pub);
 
       if(verbosity > 0) {
         ROS_INFO("Adding discrete topic %s, publishing at rate %d", topic.c_str(), rate);
       }
-
-      return 1;
     }
 
 
@@ -81,20 +82,21 @@ namespace lcsr_replay {
      * Add a continuous/inverse kinematics command topic.
      * These are interpreted according to feature counts.
      */
-    int addTopic(const std::string &topic, int rate = DEFAULT_RATE) {
+    void addTopic(const std::string &topic, int rate = DEFAULT_RATE) {
       topics.push_back(topic);
+      
+      ros::Publisher pub = nh.advertise<msg_t>(topic, rate);
+      publishers.push_back(pub); 
 
       if(verbosity > 0) {
         ROS_INFO("Adding topic %s, publishing at rate %d", topic.c_str(), rate);
       }
-
-      return 1;
     }
 
-    /* examine()
+    /* show()
      * Read the contents of a bag so that we know what happened at each point in time in the demonstration.
      */
-    int examine() {
+    void show() {
 
       rosbag::View view(bag, rosbag::TopicQuery(topics));
 
@@ -103,16 +105,16 @@ namespace lcsr_replay {
         //rosbag::MessageInstance m = *it;
         ROS_INFO("topic=\"%s\", time=%f", m.getTopic().c_str(), m.getTime().toSec());
       }
-
-      return 1;
     }
-    
+
+    /* replay()
+     * 
+     */
+    void replay() {
+
+    }
   };
 
-
-
-
 }
-
 
 #endif
