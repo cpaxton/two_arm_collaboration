@@ -5,13 +5,12 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <iostream>
 
 // ROS includes
 #include <ros/ros.h>
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
-//#include <message_filters/subscriber.h>
-//#include <message_filters/time_synchronizer.h>
 
 // message includes
 #include <oro_barrett_msgs/BHandCmd.h>
@@ -42,7 +41,9 @@ namespace lcsr_replay {
     ros::NodeHandle nh_tilde; // private namespace
 
     // publishers to replay content
-    std::vector<ros::Publisher> publishers;
+    std::map<std::string, ros::Publisher> publishers;
+    std::set<std::string> discrete_topics; // discrete topics
+    std::set<std::string> def_topics; // deformable topics
 
     rosbag::Bag bag;
 
@@ -67,9 +68,10 @@ namespace lcsr_replay {
     //template<class T = discrete_msg_t>
     void addDiscreteTopic(const std::string &topic, int rate = DEFAULT_RATE) {
       topics.push_back(topic);
+      discrete_topics.insert(topic);
 
       ros::Publisher pub = nh.advertise<discrete_msg_t>(topic, rate);
-      publishers.push_back(pub);
+      publishers[topic] = pub;
 
       if(verbosity > 0) {
         ROS_INFO("Adding discrete topic %s, publishing at rate %d", topic.c_str(), rate);
@@ -84,9 +86,10 @@ namespace lcsr_replay {
      */
     void addTopic(const std::string &topic, int rate = DEFAULT_RATE) {
       topics.push_back(topic);
+      def_topics.insert(topic);
       
       ros::Publisher pub = nh.advertise<msg_t>(topic, rate);
-      publishers.push_back(pub); 
+      publishers[topic] = pub; 
 
       if(verbosity > 0) {
         ROS_INFO("Adding topic %s, publishing at rate %d", topic.c_str(), rate);
@@ -101,9 +104,7 @@ namespace lcsr_replay {
       rosbag::View view(bag, rosbag::TopicQuery(topics));
 
       for(const rosbag::MessageInstance &m: view) {
-      //for(rosbag::View::iterator it = view.begin(); it != view.end(); ++it) {
-        //rosbag::MessageInstance m = *it;
-        ROS_INFO("topic=\"%s\", time=%f", m.getTopic().c_str(), m.getTime().toSec());
+        std::cout << m.getDataType() << " " << m.getTopic() << " at t=" << m.getTime().toSec() << std::endl;
       }
     }
 
@@ -112,6 +113,29 @@ namespace lcsr_replay {
      */
     void replay() {
 
+      rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+      ros::Time cur = view.getBeginTime();
+      double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
+      double time_spent = 0;
+      for(const rosbag::MessageInstance &m: view) {
+
+        if(discrete_topics.find(m.getTopic()) != discrete_topics.end()) {
+          publishers[m.getTopic()].publish(m.instantiate<discrete_msg_t>());
+        } else if (def_topics.find(m.getTopic()) != def_topics.end()) {
+          publishers[m.getTopic()].publish(m.instantiate<msg_t>());
+        }
+
+        ros::spinOnce();
+        ros::Duration wait = m.getTime() - cur;
+        cur = m.getTime();
+        time_spent += wait.toSec();
+        if(verbosity > 0) {
+          double percent = time_spent / total_time * 100.0;
+          std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+        }
+        wait.sleep();
+      }
     }
   };
 

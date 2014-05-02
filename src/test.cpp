@@ -31,5 +31,7 @@ int main(int argc, char **argv) {
   dr.addTopic(arm2_topic);
 
   dr.show();
+  dr.replay();
 
+  ros::spin();
 }
