@@ -1,5 +1,5 @@
-#ifndef _LCSR_REPLAY
-#define _LCSR_REPLAY
+#ifndef _LCSR_REPLAY_READ
+#define _LCSR_REPLAY_READ
 
 // STL includes
 #include <vector>
@@ -26,7 +26,7 @@ namespace lcsr_replay {
    * Read a demonstration from ROSBAG file.
    * Extract features.
    * */
-  class DemoReader : rosbag::Bag {
+  class DemoReader {
   private:
     int verbosity;
 
@@ -103,6 +103,8 @@ namespace lcsr_replay {
         //rosbag::MessageInstance m = *it;
         ROS_INFO("topic=\"%s\", time=%f", m.getTopic().c_str(), m.getTime().toSec());
       }
+
+      return 1;
     }
     
   };
