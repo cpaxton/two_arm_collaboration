@@ -20,13 +20,9 @@ link_directories( ${catkin_LIBRARY_DIRS} )
 add_executable (lcsr_replay_test src/test.cpp src/read.hpp)
 target_link_libraries(lcsr_replay_test ${catkin_LIBRARIES})
 
-add_executable (lcsr_replay_record src/run_record.cpp src/record.hpp)
-target_link_libraries(lcsr_replay_record ${catkin_LIBRARIES})
+add_executable (rrec src/run_record.cpp src/record.hpp)
+target_link_libraries(rrec ${catkin_LIBRARIES})
 
 set_target_properties(lcsr_replay_test
                       PROPERTIES OUTPUT_NAME test
-                      PREFIX "")
-
-set_target_properties(lcsr_replay_record
-                      PROPERTIES OUTPUT_NAME record
                       PREFIX "")
