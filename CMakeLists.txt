@@ -22,7 +22,7 @@ link_directories( ${catkin_LIBRARY_DIRS} )
 add_executable (lcsr_replay_test src/test.cpp src/read.hpp)
 target_link_libraries(lcsr_replay_test ${catkin_LIBRARIES})
 
-add_executable (rrec src/run_record.cpp src/record.hpp)
+add_executable (rrec src/run_record.cpp src/record.hpp src/transform.hpp)
 target_link_libraries(rrec ${catkin_LIBRARIES})
 
 set_target_properties(lcsr_replay_test
