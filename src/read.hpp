@@ -54,7 +54,7 @@ namespace lcsr_replay {
       nh_tilde.param("verbosity", verbosity, int(1));
 
       if(verbosity > 0) {
-        ROS_INFO("Initializing Demonstration Reader...");
+        ROS_INFO("Initialized Demonstration Reader with file=\"%s\"!", bagfile.c_str());
       }
     }
 
@@ -109,7 +109,7 @@ namespace lcsr_replay {
     }
 
     /* replay()
-     * 
+     * Publish all commands on their old ROS topics with the same timing
      */
     void replay() {
 
