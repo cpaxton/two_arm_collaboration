@@ -82,6 +82,8 @@ namespace lcsr_replay {
       XmlRpc::XmlRpcValue child_list;
 
       if(nh_tilde.hasParam("base_frames") &&  nh_tilde.hasParam("child_frames")) {
+        nh_tilde.param("base_frames", base_list, base_list);
+        nh_tilde.param("child_frames", child_list, child_list);
         for(int i = 0; i < base_list.size(); ++i) {
           if(base_list[i].getType() == XmlRpc::XmlRpcValue::TypeString &&
             child_list[i].getType() == XmlRpc::XmlRpcValue::TypeString)
