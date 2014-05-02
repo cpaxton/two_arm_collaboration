@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lcsr_spacenav)
+project(lcsr_replay)
 
 # FIND DEPENDENCIES
 find_package(catkin REQUIRED COMPONENTS
