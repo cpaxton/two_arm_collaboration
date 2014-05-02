@@ -32,6 +32,7 @@ namespace lcsr_replay {
   class DemoWriter {
   private:
     int verbosity;
+    int wait_for_transforms;
     ros::Rate rate_;
 
     static const int DEFAULT_RATE = 60;
@@ -77,6 +78,7 @@ namespace lcsr_replay {
     {
 
       nh_tilde.param("verbosity", verbosity, int(1));
+      nh_tilde.param("wait_for_transforms", wait_for_transforms, int(1));
 
       XmlRpc::XmlRpcValue base_list;
       XmlRpc::XmlRpcValue child_list;
@@ -154,9 +156,11 @@ namespace lcsr_replay {
 
     void spin() {
 
-      // make sure we have transforms for all of these things
-      for(unsigned int i = 0; i < bases.size(); ++i) {
-        finder.wait(bases[i], children[i], ros::Duration(1.0));
+      if(wait_for_transforms) {
+        // make sure we have transforms for all of these things
+        for(unsigned int i = 0; i < bases.size(); ++i) {
+          finder.wait(bases[i], children[i], ros::Duration(1.0));
+        }
       }
 
       while(ros::ok()) {
