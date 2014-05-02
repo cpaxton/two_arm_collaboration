@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="lcsr_replay" name="lcsr_replay_recorder" type="rrec" output="screen">
+    <rosparam param="base_frames">[arm1, arm2, arm1, arm2]</rosparam>
+    <rosparam param="child_frames">[ring1, ring1, peg1, peg2]</rosparam>
+  </node>
+</launch>
