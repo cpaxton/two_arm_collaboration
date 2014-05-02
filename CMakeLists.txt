@@ -8,6 +8,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs tf roscpp rosbag oro_barrett_msgs
 )
 
+find_package(Boost REQUIRED COMPONENTS system)
+
 # PACKAGE SETTINGS
 catkin_package(
   CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav oro_barrett_msgs
