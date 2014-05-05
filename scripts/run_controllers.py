@@ -13,22 +13,26 @@ def start_controllers (conname, filename, world, target):
     rospy.wait_for_service(sname)
     print "Waiting for transform from %s to %s"%(world, target)
 
-    rate = rospy.Rate(10.0)
+    rate = rospy.Rate(30.0)
     while not rospy.is_shutdown():
+
+        rate.sleep()
+
         try:
             listener = tf.TransformListener()
-            listener.waitForTransform(world, target, rospy.Time.now(), rospy.Duration(1.0))
+            listener.waitForTransform(world, target, rospy.Time.now(), rospy.Duration(0.1))
             break
         except tf.Exception, e:
             continue
 
-        rospy.spinOnce()
-        rate.sleep()
         
 
     print "Found TF target frame."
 
     while not rospy.is_shutdown(): 
+        
+        rate.sleep()
+
         try:
             runscript = rospy.ServiceProxy(sname, RunScript)
             res = runscript(filename)
