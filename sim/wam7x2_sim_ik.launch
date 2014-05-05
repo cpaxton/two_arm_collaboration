@@ -60,7 +60,7 @@
   <node name="arm2_script_runner"
     pkg="lcsr_collab"
     type="run_controllers.py"
-    args="/gazebo/wam2__deployer__ $(find lcsr_collab)/sim/enable/arm2_enable_ik.ops"
+    args="/gazebo/wam2__deployer__ $(find lcsr_collab)/sim/enable/arm2_enable_ik.ops world wam2/cmd"
     output="screen"/>
 
 </launch>
