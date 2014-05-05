@@ -61,4 +61,11 @@
     <include if="$(arg planning)" file="$(find lcsr_barrett)/sim/wam7_planning.launch"/>
 
   </group>
+
+  <node name="arm1_script_runner"
+    pkg="lcsr_collab"
+    type="run_controllers.py"
+    args="/gazebo/wam__deployer__ $(find lcsr_collab)/sim/enable/arm1_enable_ik.ops"
+    output="screen"/>
+
 </launch>

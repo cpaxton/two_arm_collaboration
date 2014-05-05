@@ -72,6 +72,8 @@ link_directories(
   ${catkin_LIBRARY_DIRS}
 )
 
+catkin_python_setup()
+
 ## Declare a cpp executable
 #add_executable(spacenav_tf_node src/spacenav_tf.cpp)
 

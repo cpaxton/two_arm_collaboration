@@ -55,6 +55,7 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>oro_barrett_msgs</run_depend>
   <run_depend>lcsr_construction_plugin</run_depend>
+  <run_depend>rtt_ros_msgs</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
