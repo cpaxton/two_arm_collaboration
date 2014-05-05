@@ -11,7 +11,7 @@ def start_controllers (conname, filename):
     print "Service name: %s"%sname
     rospy.wait_for_service(sname)
     try:
-        runscript = rospy.ServiceProxy(sname, filename)
+        runscript = rospy.ServiceProxy(sname, RunScript)
         res = runscript(filename)
         return res.success
     except rospy.ServiceException, e:
@@ -26,4 +26,5 @@ if __name__ == "__main__":
         conname = sys.argv[1]
         filename = sys.argv[2]
         print "Starting %s script %s"%(conname, filename)
-        print "Status=%s"%(start_controllers(conname, filename))
+        res = start_controllers(conname, filename)
+        print "Success: %s"%res
