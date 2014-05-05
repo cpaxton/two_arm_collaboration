@@ -4,6 +4,6 @@
   <node pkg="lcsr_replay" name="lcsr_replay_recorder" type="rrec" output="screen">
     <rosparam param="base_frames">[/wam/wrist_palm_link, /wam/wrist_palm_link, /wam2/wrist_palm_link, /wam2/wrist_palm_link]</rosparam>
     <rosparam param="child_frames">[/marker1, /marker2, /marker1, /marker2]</rosparam>
-    <param name="bag" value="$(find lcsr_replay)/list_test.bag"/>
+    <param name="bag" value="$(find lcsr_replay)/$(arg filename)"/>
   </node>
 </launch>
