@@ -6,7 +6,7 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="$(find lcsr_collab)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rviz_config" default="$(find lcsr_collab)/config/tf_markers.rviz" doc="(string) rviz config file for user interface"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find lcsr_collab)/launch/test7.launch">
