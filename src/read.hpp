@@ -111,7 +111,7 @@ namespace lcsr_replay {
     /* replay()
      * Publish all commands on their old ROS topics with the same timing
      */
-    void replay() {
+    void replay(double rate = 1.0) {
 
       rosbag::View view(bag, rosbag::TopicQuery(topics));
 
@@ -127,7 +127,7 @@ namespace lcsr_replay {
         }
 
         ros::spinOnce();
-        ros::Duration wait = m.getTime() - cur;
+        ros::Duration wait((m.getTime() - cur).toSec() / rate);
         cur = m.getTime();
         time_spent += wait.toSec();
         if(verbosity > 0) {
