@@ -35,6 +35,9 @@ target_link_libraries(rrec ${catkin_LIBRARIES})
 add_executable (b2play src/barrett_play.cpp src/read.hpp src/features.hpp)
 target_link_libraries(b2play ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
+add_executable (registered_b2play src/barrett_play.cpp src/read.hpp src/features.hpp)
+target_link_libraries(registered_b2play ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
 set_target_properties(lcsr_replay_test
                       PROPERTIES OUTPUT_NAME test
                       PREFIX "")
