@@ -161,11 +161,16 @@ namespace lcsr_replay {
         ROS_INFO("Starting feature registered replay!");
       }
 
+      cv::Mat affine = cv::Mat(3, 4, CV_64FC1);
+      cv::Point3f rec_avg;
+      cv::Point3f obs_avg;
       for(const rosbag::MessageInstance &m: view) {
 
         if((features_loaded == false || topics_loaded < def_topics.size()) && m.getTime() != start) {
           ROS_INFO("Setting start time at %f seconds!", m.getTime().toSec());
           start = m.getTime();
+          rec_avg.x = rec_avg.y = rec_avg.z = 0;
+          obs_avg.x = obs_avg.y = obs_avg.z = 0;
         }
 
         // compute registration
@@ -190,25 +195,76 @@ namespace lcsr_replay {
           if(features_loaded && topics_loaded == def_topics.size()) {
             ROS_INFO("Computing values");
 
+
             for(unsigned int i = 0; i < f->base.size(); ++i) {
               cv::Point3f pt;
               pt.x = base_tfs[f->base[i]]->transform.translation.x + f->transform[i].translation.x;
               pt.y = base_tfs[f->base[i]]->transform.translation.y + f->transform[i].translation.y;
               pt.z = base_tfs[f->base[i]]->transform.translation.z + f->transform[i].translation.z;
 
+              rec_avg.x += pt.x;
+              rec_avg.y += pt.y;
+              rec_avg.z += pt.z;
+
               rec_pts.push_back(pt);
 
-              ROS_INFO("Adding reference point at (%f, %f, %f)", pt.x, pt.y, pt.z);
+              //ROS_INFO("Adding reference point at (%f, %f, %f)", pt.x, pt.y, pt.z);
+              //ROS_INFO("%s %s", f->base[i].c_str(), f->child[i].c_str());
+ 
+              finder_.wait(f->child[i], "/world", ros::Duration(1.0));
+              geometry_msgs::Transform child_tf = finder_.find(f->child[i], "/world");
 
-              ROS_INFO("%s %s", f->base[i].c_str(), f->child[i].c_str());
+              cv::Point3f npt;
+              npt.x = child_tf.translation.x;
+              npt.y = child_tf.translation.y;
+              npt.z = child_tf.translation.z;
 
-              finder_.wait("/world", f->child[i], ros::Duration(1.0));
-              geometry_msgs::Transform child_tf = finder_.find("/world", f->child[i]);
+              obs_avg.x += npt.x;
+              obs_avg.y += npt.y;
+              obs_avg.z += npt.z;
+
+              obs_pts.push_back(npt);
+              
+              if(verbosity > 0) {
+                ROS_INFO("demo: (%f, %f, %f) world: (%f %f %f)", pt.x, pt.y, pt.z, npt.x, npt.y, npt.z);
+              }
+            }
+
+            rec_avg.x /= f->base.size();
+            rec_avg.y /= f->base.size();
+            rec_avg.z /= f->base.size();
+            obs_avg.x /= f->base.size();
+            obs_avg.y /= f->base.size();
+            obs_avg.z /= f->base.size();
+
+            ROS_INFO("demo avg: (%f, %f, %f) world avg: (%f, %f, %f)", rec_avg.x, rec_avg.y, rec_avg.z, obs_avg.x, obs_avg.y, obs_avg.z);
+
+            for(unsigned int i = 0; i < rec_pts.size(); ++i) {
+              rec_pts[i].x -= rec_avg.x;
+              rec_pts[i].y -= rec_avg.y;
+              rec_pts[i].z -= rec_avg.z;
+              obs_pts[i].x -= obs_avg.x;
+              obs_pts[i].y -= obs_avg.y;
+              obs_pts[i].z -= obs_avg.z;
+            }
+
+            cv::Mat inliers;
+            int status = cv::estimateAffine3D(rec_pts, obs_pts, affine, inliers);
+
+            if(verbosity > 0) {
+              ROS_INFO("computed %dx%d affine transform with status=%d, type=%d",
+                       affine.rows, affine.cols, status, affine.type());
+              std::cout << "Transform = " << std::endl;
+              for(int i = 0; i < 3; ++i) {
+                for( int j = 0; j < 4; ++j) {
+                  std::cout << "\t" << affine.at<double>(i, j);
+                }
+                std::cout << std::endl;
+              }
             }
           }
-        }
 
-        if(features_loaded == false && !(start == m.getTime())) {
+        } else if(features_loaded == false && !(start == m.getTime())) {
           ROS_ERROR("Could not find features at time=%f!", start.toSec());
           exit(-1);
         } else if (topics_loaded != def_topics.size() && !(start == m.getTime())) {
@@ -219,7 +275,26 @@ namespace lcsr_replay {
           if(discrete_topics.find(m.getTopic()) != discrete_topics.end()) {
             publishers[m.getTopic()].publish(m.instantiate<discrete_msg_t>());
           } else if (def_topics.find(m.getTopic()) != def_topics.end()) {
-            publishers[m.getTopic()].publish(m.instantiate<msg_t>());
+
+            msg_ptr mptr = m.instantiate<msg_t>();
+
+            cv::Mat cv_pt = cv::Mat::zeros(1, 3, CV_64FC1);
+            cv_pt.at<double>(0) = mptr->transform.translation.x - rec_avg.x;
+            cv_pt.at<double>(1) = mptr->transform.translation.y - rec_avg.y;
+            cv_pt.at<double>(2) = mptr->transform.translation.z - rec_avg.z;
+
+            cv::Mat res = cv_pt * affine;
+            ROS_INFO("(%f %f %f) mapped to (%f %f %f)", cv_pt.at<double>(0),
+                cv_pt.at<double>(1), cv_pt.at<double>(2), 
+                res.at<double>(0), res.at<double>(1), res.at<double>(2));
+
+            msg_t pub_pt = *mptr;
+          
+            pub_pt.transform.translation.x = res.at<double>(0) + obs_avg.x;
+            pub_pt.transform.translation.y = res.at<double>(1) + obs_avg.y;
+            pub_pt.transform.translation.z = res.at<double>(2) + obs_avg.z;
+
+            publishers[m.getTopic()].publish(pub_pt);
           }
 
           ros::spinOnce();
@@ -228,7 +303,9 @@ namespace lcsr_replay {
           time_spent += wait.toSec();
           if(verbosity > 0) {
             double percent = time_spent / (total_time / rate) * 100.0;
-            std::cout << "Registered Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+            if(verbosity > 1) {
+              std::cout << "Registered Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+            }
           }
           wait.sleep();
         }
