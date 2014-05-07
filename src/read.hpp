@@ -188,8 +188,9 @@ namespace lcsr_replay {
 
           }
           else if (def_topics.find(m.getTopic()) != def_topics.end()) {
-            ROS_INFO("added topic %s (%u/%lu)", m.getTopic().c_str(), ++topics_loaded, def_topics.size());
             base_tfs[m.getTopic()] = m.instantiate<msg_t>();
+            topics_loaded = base_tfs.size();
+            ROS_INFO("added topic %s (%u/%lu)", m.getTopic().c_str(), topics_loaded, def_topics.size());
           }
 
           if(features_loaded && topics_loaded == def_topics.size()) {
@@ -197,6 +198,9 @@ namespace lcsr_replay {
 
 
             for(unsigned int i = 0; i < f->base.size(); ++i) {
+
+              ROS_INFO("base=%s", f->base[i].c_str());
+
               cv::Point3f pt;
               pt.x = base_tfs[f->base[i]]->transform.translation.x + f->transform[i].translation.x;
               pt.y = base_tfs[f->base[i]]->transform.translation.y + f->transform[i].translation.y;
@@ -209,7 +213,7 @@ namespace lcsr_replay {
               rec_pts.push_back(pt);
 
               //ROS_INFO("Adding reference point at (%f, %f, %f)", pt.x, pt.y, pt.z);
-              //ROS_INFO("%s %s", f->base[i].c_str(), f->child[i].c_str());
+              ROS_INFO("%s %s", f->base[i].c_str(), f->child[i].c_str());
  
               finder_.wait(f->child[i], "/world", ros::Duration(1.0));
               geometry_msgs::Transform child_tf = finder_.find(f->child[i], "/world");
