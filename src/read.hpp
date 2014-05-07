@@ -21,12 +21,15 @@
 #include "features.hpp"
 #include "transform.hpp"
 
+//opencv includes (for point registration)
+#include <opencv2/opencv.hpp>
 
 namespace lcsr_replay {
 
   /* typedef to avoid worrying about templates just yet */
   typedef oro_barrett_msgs::BHandCmd discrete_msg_t;
   typedef geometry_msgs::TransformStamped msg_t;
+  typedef geometry_msgs::TransformStampedConstPtr msg_ptr;
 
   /**
    * DemoReader
@@ -144,26 +147,58 @@ namespace lcsr_replay {
       double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
       double time_spent = 0;
 
-      if(def_topics.size() != 2) {
-        ROS_ERROR("Wrong number of trajectory topics! Found %d, should be 2.", def_topics.size());
-        exit(-1);
-      }
+      unsigned int topics_loaded = 0;
+      bool start_message = false; // have we started yet?
+      bool features_loaded = false; // have we gotten the features yet?
+      FeaturesConstPtr f; // starting features
 
-      Features f; // starting features
-      
+      std::vector<cv::Point3f> obs_pts;
+      std::vector<cv::Point3f> rec_pts;
+
+      std::map<std::string, msg_ptr> base_tfs;
 
       for(const rosbag::MessageInstance &m: view) {
 
+        // compute registration
         if(m.getTime() == start) {
-          // compute registration
-          //
-          if(verbosity > 0) {
+
+          if(verbosity > 0 && start_message == false) {
             ROS_INFO("Starting to compute registration between known correspondences...");
+            start_message = true;
           }
 
           // first let's look at what all the features are
+          if(m.getTopic() == "/FEATURES") {
+            features_loaded = true;
+            f = m.instantiate<Features>();
+
+          }
+          else if (def_topics.find(m.getTopic()) != def_topics.end()) {
+            base_tfs[m.getTopic()] = m.instantiate<msg_t>();
+          }
+
+          if(features_loaded && topics_loaded == def_topics.size()) {
+            ROS_INFO("Computing values");
+
+            for(unsigned int i = 0; i < f->base.size(); ++i) {
+              cv::Point3f pt;
+              pt.x = base_tfs[f->base[i]]->transform.translation.x + f->transform[i].translation.x;
+              pt.y = base_tfs[f->base[i]]->transform.translation.y + f->transform[i].translation.y;
+              pt.z = base_tfs[f->base[i]]->transform.translation.z + f->transform[i].translation.z;
+
+              rec_pts.push_back(pt);
+
+              ROS_INFO("Adding reference point at (%f, %f, %f)", pt.x, pt.y, pt.z);
+            }
+          }
+
 
         } else {
+
+          if(features_loaded == false) {
+            ROS_ERROR("Could not find features at time=%f!", start.toSec());
+            exit(-1);
+          }
 
           if(discrete_topics.find(m.getTopic()) != discrete_topics.end()) {
             publishers[m.getTopic()].publish(m.instantiate<discrete_msg_t>());
