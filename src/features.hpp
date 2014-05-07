@@ -2,8 +2,8 @@
 #define _LCSR_REPLAY_FEATURES
 
 #include <ros/ros.h>
-#include "geometry_msgs/Transform"
-#include <pair>
+#include <geometry_msgs/Transform.h>
+#include <utility>
 #include <map>
 #include <iostream>
 #include <sstream>
@@ -15,10 +15,10 @@ namespace lcsr_replay {
 
   class FeaturesLookup {
     private:
-      std::map <std::string, Transform> tf_data_;
+      std::map <std::string, double> data_;
       
     protected:
-      std::string item_name(std::string item1, std::string item2, std::string name = "") {
+      std::string item_name(std::string base_frame, std::string child_frame, std::string name = "") {
         std::stringstream ss;
         ss << base_frame << "_" << child_frame << "_" << name;
         return ss.str();
@@ -39,15 +39,18 @@ namespace lcsr_replay {
 
         dist = sqrt((x*x) + (y*y) + (z*z));
 
-        tf_data_[item_name(base_frame, child_frame, "dist")] = dist;
-        tf_data_[item_name(base_frame, child_frame, "dx")] = x;
-        tf_data_[item_name(base_frame, child_frame, "dy")] = y;
-        tf_data_[item_name(base_frame, child_frame, "dz")] = z;
+        data_[item_name(base_frame, child_frame, "dist")] = dist;
+        data_[item_name(base_frame, child_frame, "dx")] = x;
+        data_[item_name(base_frame, child_frame, "dy")] = y;
+        data_[item_name(base_frame, child_frame, "dz")] = z;
       }
 
       void print() {
-        for (std::pair<std::string, Transform> d: tf_data_) {
-          std::cout << d->first << ": " << std::endl;
+        for (typename std::map<std::string, double>::const_iterator it = data_.begin();
+             it != data_.end();
+             ++it)
+        {
+          std::cout << it->first << "=" << it->second << std::endl;
         }
       }
 

@@ -5,7 +5,9 @@ SET(CMAKE_CXX_FLAGS "-std=c++0x")
 
 # FIND DEPENDENCIES
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs tf roscpp rosbag oro_barrett_msgs
+  geometry_msgs tf roscpp rosbag
+  oro_barrett_msgs
+  pcl_ros
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -28,7 +30,7 @@ target_link_libraries(lcsr_replay_test ${catkin_LIBRARIES})
 add_executable (rrec src/run_record.cpp src/record.hpp src/transform.hpp)
 target_link_libraries(rrec ${catkin_LIBRARIES})
 
-add_executable (b2play src/barrett_play.cpp src/read.hpp src/transform.hpp)
+add_executable (b2play src/barrett_play.cpp src/read.hpp src/features.hpp)
 target_link_libraries(b2play ${catkin_LIBRARIES})
 
 set_target_properties(lcsr_replay_test
