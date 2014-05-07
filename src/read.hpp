@@ -243,6 +243,7 @@ namespace lcsr_replay {
 
             ROS_INFO("demo avg: (%f, %f, %f) world avg: (%f, %f, %f)", rec_avg.x, rec_avg.y, rec_avg.z, obs_avg.x, obs_avg.y, obs_avg.z);
 
+            /*
             for(unsigned int i = 0; i < rec_pts.size(); ++i) {
               rec_pts[i].x -= rec_avg.x;
               rec_pts[i].y -= rec_avg.y;
@@ -250,16 +251,23 @@ namespace lcsr_replay {
               obs_pts[i].x -= obs_avg.x;
               obs_pts[i].y -= obs_avg.y;
               obs_pts[i].z -= obs_avg.z;
-            }
+            }*/
 
             cv::Mat inliers;
             int status = cv::estimateAffine3D(rec_pts, obs_pts, affine, inliers);
+            cv::Mat extra_affine_row = cv::Mat::zeros(1, 4, CV_64FC1);
+            extra_affine_row.at<double>(3) = 1;
+
+            std::cout << affine << std::endl;
+            std::cout << extra_affine_row << std::endl;
+
+            affine.push_back(extra_affine_row);
 
             if(verbosity > 0) {
               ROS_INFO("computed %dx%d affine transform with status=%d, type=%d",
                        affine.rows, affine.cols, status, affine.type());
               std::cout << "Transform = " << std::endl;
-              for(int i = 0; i < 3; ++i) {
+              for(int i = 0; i < 4; ++i) {
                 for( int j = 0; j < 4; ++j) {
                   std::cout << "\t" << affine.at<double>(i, j);
                 }
@@ -283,9 +291,9 @@ namespace lcsr_replay {
             msg_ptr mptr = m.instantiate<msg_t>();
 
             cv::Mat cv_pt = cv::Mat::zeros(1, 3, CV_64FC1);
-            cv_pt.at<double>(0) = mptr->transform.translation.x - rec_avg.x;
-            cv_pt.at<double>(1) = mptr->transform.translation.y - rec_avg.y;
-            cv_pt.at<double>(2) = mptr->transform.translation.z - rec_avg.z;
+            cv_pt.at<double>(0) = mptr->transform.translation.x;
+            cv_pt.at<double>(1) = mptr->transform.translation.y;
+            cv_pt.at<double>(2) = mptr->transform.translation.z;
 
             cv::Mat res = cv_pt * affine;
             ROS_INFO("(%f %f %f) mapped to (%f %f %f)", cv_pt.at<double>(0),
@@ -294,9 +302,9 @@ namespace lcsr_replay {
 
             msg_t pub_pt = *mptr;
           
-            pub_pt.transform.translation.x = res.at<double>(0) + obs_avg.x;
-            pub_pt.transform.translation.y = res.at<double>(1) + obs_avg.y;
-            pub_pt.transform.translation.z = res.at<double>(2) + obs_avg.z;
+            pub_pt.transform.translation.x = res.at<double>(0);
+            pub_pt.transform.translation.y = res.at<double>(1);
+            pub_pt.transform.translation.z = res.at<double>(2);
 
             publishers[m.getTopic()].publish(pub_pt);
           }
