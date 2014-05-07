@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
   dr.addTopic(arm1_topic);
   dr.addTopic(arm2_topic);
 
-  dr.register_replay(0.5);
+  dr.registered_replay(0.5);
 
   ros::spin();
 }

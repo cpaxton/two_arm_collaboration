@@ -157,7 +157,16 @@ namespace lcsr_replay {
 
       std::map<std::string, msg_ptr> base_tfs;
 
+      if(verbosity > 0) {
+        ROS_INFO("Starting feature registered replay!");
+      }
+
       for(const rosbag::MessageInstance &m: view) {
+
+        if((features_loaded == false || topics_loaded < def_topics.size()) && m.getTime() != start) {
+          ROS_INFO("Setting start time at %f seconds!", m.getTime().toSec());
+          start = m.getTime();
+        }
 
         // compute registration
         if(m.getTime() == start) {
@@ -174,6 +183,7 @@ namespace lcsr_replay {
 
           }
           else if (def_topics.find(m.getTopic()) != def_topics.end()) {
+            ROS_INFO("added topic %s (%u/%lu)", m.getTopic().c_str(), ++topics_loaded, def_topics.size());
             base_tfs[m.getTopic()] = m.instantiate<msg_t>();
           }
 
@@ -189,16 +199,22 @@ namespace lcsr_replay {
               rec_pts.push_back(pt);
 
               ROS_INFO("Adding reference point at (%f, %f, %f)", pt.x, pt.y, pt.z);
+
+              ROS_INFO("%s %s", f->base[i].c_str(), f->child[i].c_str());
+
+              finder_.wait("/world", f->child[i], ros::Duration(1.0));
+              geometry_msgs::Transform child_tf = finder_.find("/world", f->child[i]);
             }
           }
+        }
 
-
+        if(features_loaded == false && !(start == m.getTime())) {
+          ROS_ERROR("Could not find features at time=%f!", start.toSec());
+          exit(-1);
+        } else if (topics_loaded != def_topics.size() && !(start == m.getTime())) {
+          ROS_ERROR("Could not find all trajectory topics! Only found %u.", topics_loaded);
+          exit(-1);
         } else {
-
-          if(features_loaded == false) {
-            ROS_ERROR("Could not find features at time=%f!", start.toSec());
-            exit(-1);
-          }
 
           if(discrete_topics.find(m.getTopic()) != discrete_topics.end()) {
             publishers[m.getTopic()].publish(m.instantiate<discrete_msg_t>());
@@ -211,8 +227,8 @@ namespace lcsr_replay {
           cur = m.getTime();
           time_spent += wait.toSec();
           if(verbosity > 0) {
-            double percent = time_spent / total_time * 100.0;
-            std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+            double percent = time_spent / (total_time / rate) * 100.0;
+            std::cout << "Registered Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
           }
           wait.sleep();
         }
@@ -242,7 +258,7 @@ namespace lcsr_replay {
         cur = m.getTime();
         time_spent += wait.toSec();
         if(verbosity > 0) {
-          double percent = time_spent / total_time * 100.0;
+          double percent = time_spent / (total_time / rate) * 100.0;
           std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
         }
         wait.sleep();
