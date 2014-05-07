@@ -1,0 +1,46 @@
+<launch>
+
+  <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
+  <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
+  <arg name="rviz" default="true" doc="(bool) run rviz"/>
+  <arg name="rviz_config" default="$(find lcsr_collab)/config/tf_markers.rviz" doc="(string) rviz config file for user interface"/>
+
+  <!-- load the WAM arm settings, space nav controller, and user interface -->
+  <include file="$(find lcsr_collab)/launch/test7.launch">
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="hand" value="$(arg hand)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rviz_config" value="$(arg rviz_config)" />
+    <arg name="usetwo" value="$(arg usetwo)" />
+  </include>
+
+  <node name="marker1_node"
+    pkg="lcsr_tf_tools"
+    type="interactive_transform_publisher"
+    args="0.75 0.75 0.75 3.14159 -1.57079 0 /world /marker1 10"
+    />
+
+  <node name="marker2_node"
+    pkg="lcsr_tf_tools"
+    type="interactive_transform_publisher"
+    args="0.75 0.25 0.75 3.14159 -1.57079 0 /world /marker2 10"
+    />
+
+  <node name="marker3_node"
+    pkg="lcsr_tf_tools"
+    type="interactive_transform_publisher"
+    args="0.75 -0.25 0.75 3.14159 -1.57079 0 /world /marker3 10"
+    />
+
+  <node name="marker4_node"
+    pkg="lcsr_tf_tools"
+    type="interactive_transform_publisher"
+    args="0.75 -0.75 0.75 3.14159 -1.57079 0 /world /marker4 10"
+  />
+
+</launch>
