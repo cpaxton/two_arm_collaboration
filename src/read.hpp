@@ -12,12 +12,6 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 
-// PCL specific includes
-#include <pcl/conversions.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include <pcl/registration/transforms.h>
-
 // message includes
 #include <oro_barrett_msgs/BHandCmd.h>
 #include <geometry_msgs/TransformStamped.h>

@@ -7,8 +7,9 @@ SET(CMAKE_CXX_FLAGS "-std=c++0x")
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs tf roscpp rosbag
   oro_barrett_msgs
-  pcl_ros
 )
+
+find_package(OpenCV)
 
 find_package(Boost REQUIRED COMPONENTS system)
 
@@ -21,17 +22,18 @@ catkin_package(
   DEPENDS system_lib
 )
 
+include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories( ${catkin_INCLUDE_DIRS} )
 link_directories( ${catkin_LIBRARY_DIRS} )
 
 add_executable (lcsr_replay_test src/test.cpp src/read.hpp)
-target_link_libraries(lcsr_replay_test ${catkin_LIBRARIES})
+target_link_libraries(lcsr_replay_test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable (rrec src/run_record.cpp src/record.hpp src/transform.hpp)
 target_link_libraries(rrec ${catkin_LIBRARIES})
 
 add_executable (b2play src/barrett_play.cpp src/read.hpp src/features.hpp)
-target_link_libraries(b2play ${catkin_LIBRARIES})
+target_link_libraries(b2play ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 set_target_properties(lcsr_replay_test
                       PROPERTIES OUTPUT_NAME test
