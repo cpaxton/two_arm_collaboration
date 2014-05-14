@@ -61,8 +61,7 @@ namespace lcsr_replay {
     std::set<std::string> discrete_topics;
     std::set<std::string> def_topics;
 
-    std::vector<std::string> bases;
-    std::vector<std::string> children;
+    std::vector<std::string> frames;
 
   public:
 
@@ -82,20 +81,16 @@ namespace lcsr_replay {
       nh_tilde.param("wait_for_transforms", wait_for_transforms, int(1));
 
       XmlRpc::XmlRpcValue base_list;
-      XmlRpc::XmlRpcValue child_list;
+      XmlRpc::XmlRpcValue frame_list;
 
-      if(nh_tilde.hasParam("base_frames") &&  nh_tilde.hasParam("child_frames")) {
-        nh_tilde.param("base_frames", base_list, base_list);
-        nh_tilde.param("child_frames", child_list, child_list);
-        for(int i = 0; i < base_list.size(); ++i) {
-          if(base_list[i].getType() == XmlRpc::XmlRpcValue::TypeString &&
-            child_list[i].getType() == XmlRpc::XmlRpcValue::TypeString)
+      if(nh_tilde.hasParam("frames")) {
+        nh_tilde.param("frame_frames", frame_list, frame_list);
+        for (int i = 0; i < frame_list.size(); ++i) {
+          if(frame_list[i].getType() == XmlRpc::XmlRpcValue::TypeString)
           {
-            std::string b = static_cast<std::string>(base_list[i]);
-            std::string c = static_cast<std::string>(child_list[i]);
-            ROS_INFO("Feature: transform from %s to %s", b.c_str(), c.c_str());
-            bases.push_back(b);
-            children.push_back(c);
+            std::string c = static_cast<std::string>(frame_list[i]);
+            ROS_INFO("Feature: transform to %s", c.c_str());
+            frames.push_back(c);
           }
         }
       }
@@ -151,13 +146,12 @@ namespace lcsr_replay {
       Features f;
 
       // loop over frame pairs (features)
-      for(unsigned int i = 0; i < bases.size(); ++i) {
-        geometry_msgs::Transform t = finder.find(bases[i], children[i]);
-        f.base.push_back(bases[i]);
-        f.child.push_back(children[i]);
+      for(unsigned int i = 0; i < frames.size(); ++i) {
+        geometry_msgs::Transform t = finder.find("/world", frames[i]);
+        f.names.push_back(frames[i]);
         f.transform.push_back(t);
 
-        ROS_INFO("%s-->%s transform found", bases[i].c_str(), children[i].c_str());
+        ROS_INFO("%s-->%s transform found", "/world", frames[i].c_str());
       }
 
       bag.write("/FEATURES", t, f);
@@ -169,7 +163,8 @@ namespace lcsr_replay {
       if(wait_for_transforms) {
         // make sure we have transforms for all of these things
         for(unsigned int i = 0; i < bases.size(); ++i) {
-          finder.wait(bases[i], children[i], ros::Duration(1.0));
+          finder.wait("/world", frames[i], ros::Duration(1.0));
+          // NOTE: default to using world as a reference frame here
         }
       }
 

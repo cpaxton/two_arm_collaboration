@@ -8,8 +8,9 @@
 Header h
 ##################
 # reference frame: command point/hand location
-string[] base
+#string[] base
 # compared to: peg stand/ring/hand position
-string[] child
+#string[] child
 # transform: position/rotation difference
+string[] names
 geometry_msgs/Transform[] transform
