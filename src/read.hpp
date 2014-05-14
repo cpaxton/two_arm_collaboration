@@ -32,6 +32,13 @@ namespace lcsr_replay {
   typedef geometry_msgs::TransformStampedConstPtr msg_ptr;
 
   namespace Topics {
+
+    /**
+     * Topic_t
+     * Types of information stored in Replay bag files.
+     * Important to know so we can write/save them in different formats.
+     * These are definitely treated differently.
+     */
     enum Topic_t {
       Trajectory, // trajectory positions (directly controllable things)
       Discrete, // preset actions (i.e. grasp)
@@ -39,7 +46,6 @@ namespace lcsr_replay {
       Segment // segment labels
     };
   }
-
   typedef Topics::Topic_t Topic_t;
 
   /**
