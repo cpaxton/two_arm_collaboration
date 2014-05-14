@@ -63,6 +63,8 @@ namespace lcsr_replay {
 
     std::vector<std::string> frames;
 
+    int current_segment;
+
   public:
 
     void discrete_callback(const discrete_msg_ptr &msg, const std::string &topic) {
@@ -74,7 +76,8 @@ namespace lcsr_replay {
       finder(),
       rate_(rate),
       nh(),
-      nh_tilde("~")
+      nh_tilde("~"),
+      current_segment(1)
     {
 
       nh_tilde.param("verbosity", verbosity, int(1));
