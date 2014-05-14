@@ -58,12 +58,17 @@ namespace lcsr_replay {
     // set of all transform messages 
     std::map<std::string, msg_t> arm_msgs;
 
+    // what was the last arm topic that changed?
+    // used for segment labeling
+    std::string last_arm_topic;
+
     std::set<std::string> discrete_topics;
     std::set<std::string> def_topics;
 
     std::vector<std::string> frames;
 
-    int current_segment;
+    int current_segment; // what is the label of the current segment?
+    bool label_segments; // should we automatically label segments based on when things are happening?
 
   public:
 
@@ -160,17 +165,6 @@ namespace lcsr_replay {
       bag.write("/FEATURES", t, f);
     }
 
-    void write_feature_topic(std::string &topic) {
-
-    }
-
-    void write_discrete_topic(std::string &topic) {
-
-    }
-
-    void write_trajectory_topic(std::string &topic) {
-
-    }
 
     void spin() {
 
