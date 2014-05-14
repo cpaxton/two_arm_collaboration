@@ -160,6 +160,18 @@ namespace lcsr_replay {
       bag.write("/FEATURES", t, f);
     }
 
+    void write_feature_topic(std::string &topic) {
+
+    }
+
+    void write_discrete_topic(std::string &topic) {
+
+    }
+
+    void write_trajectory_topic(std::string &topic) {
+
+    }
+
     void spin() {
 
       if(wait_for_transforms) {

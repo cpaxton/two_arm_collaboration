@@ -59,17 +59,29 @@ namespace lcsr_replay {
 
     rosbag::Bag bag;
 
+    int segment_id; // id of a segment to find
+    std::string segment_name; // name of a segment to find
+
   public:
 
-    DemoReader(const std::string &bagfile) : bag(bagfile, rosbag::bagmode::Read), nh(), nh_tilde("~") {
+    DemoReader(const std::string &bagfile) :
+      bag(bagfile, rosbag::bagmode::Read),
+      nh(),
+      nh_tilde("~"),
+      segment_id(0),
+      segment_name("")
+    {
 
       nh_tilde.param("verbosity", verbosity, int(1));
+      nh_tilde.param("segment_id", segment_id, int(0));
+      nh_tilde.param("segment_name", segment_name, std::string(""));
 
       if(verbosity > 0) {
         ROS_INFO("Initialized Demonstration Reader with file=\"%s\"!", bagfile.c_str());
       }
 
-      topics.push_back("/FEATURES");
+      topics.push_back("/FEATURES"); // records feature positions
+      topics.push_back("/SEGMENTS"); // records segment labels
     }
 
     /* addDiscreteTopic()
@@ -322,6 +334,70 @@ namespace lcsr_replay {
         }
       }
     }
+
+    void write_feature_topic(std::string &topic) {
+
+      rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+      ros::Time cur = view.getBeginTime();
+      double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
+      double time_spent = 0;
+      for(const rosbag::MessageInstance &m: view) {
+
+        ros::spinOnce();
+        ros::Duration wait((m.getTime() - cur).toSec());
+        cur = m.getTime();
+        time_spent += wait.toSec();
+        if(verbosity > 0) {
+          double percent = time_spent / total_time * 100.0;
+          std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+        }
+        wait.sleep();
+      }
+    }
+
+    void write_discrete_topic(std::string &topic) {
+
+      rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+      ros::Time cur = view.getBeginTime();
+      double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
+      double time_spent = 0;
+      for(const rosbag::MessageInstance &m: view) {
+
+        ros::spinOnce();
+        ros::Duration wait((m.getTime() - cur).toSec());
+        cur = m.getTime();
+        time_spent += wait.toSec();
+        if(verbosity > 0) {
+          double percent = time_spent / total_time * 100.0;
+          std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+        }
+        wait.sleep();
+      }
+    }
+
+    void write_trajectory_topic(std::string &topic) {
+
+      rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+      ros::Time cur = view.getBeginTime();
+      double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
+      double time_spent = 0;
+      for(const rosbag::MessageInstance &m: view) {
+
+        ros::spinOnce();
+        ros::Duration wait((m.getTime() - cur).toSec());
+        cur = m.getTime();
+        time_spent += wait.toSec();
+        if(verbosity > 0) {
+          double percent = time_spent / total_time * 100.0;
+          std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
+        }
+        wait.sleep();
+      }
+    }
+
 
     /* replay()
      * Publish all commands on their old ROS topics with the same timing
