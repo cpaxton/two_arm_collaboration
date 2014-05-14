@@ -158,7 +158,6 @@ namespace lcsr_replay {
       }
 
       bag.write("/FEATURES", t, f);
-
     }
 
     void spin() {
