@@ -31,6 +31,17 @@ namespace lcsr_replay {
   typedef geometry_msgs::TransformStamped msg_t;
   typedef geometry_msgs::TransformStampedConstPtr msg_ptr;
 
+  namespace Topics {
+    enum Topic_t {
+      Trajectory, // trajectory positions (directly controllable things)
+      Discrete, // preset actions (i.e. grasp)
+      Feature, // features (other object coordinates)
+      Segment // segment labels
+    };
+  }
+
+  typedef Topics::Topic_t Topic_t;
+
   /**
    * DemoReader
    * Read a demonstration from ROSBAG file.
@@ -335,7 +346,19 @@ namespace lcsr_replay {
       }
     }
 
-    void write_feature_topic(std::string &topic) {
+    /**
+     * read_topic()
+     * Reads a topic from a text file.
+     */
+    void read_topic(std::string &topic, Topic_t type) {
+
+    }
+
+    /**
+     * write_topic()
+     * Writes the transforms or other information from a given topic into a format other programs (like MATLAB) can read.
+     */
+    void write_topic(std::string &topic, Topic_t type) {
 
       rosbag::View view(bag, rosbag::TopicQuery(topics));
 
@@ -355,49 +378,6 @@ namespace lcsr_replay {
         wait.sleep();
       }
     }
-
-    void write_discrete_topic(std::string &topic) {
-
-      rosbag::View view(bag, rosbag::TopicQuery(topics));
-
-      ros::Time cur = view.getBeginTime();
-      double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
-      double time_spent = 0;
-      for(const rosbag::MessageInstance &m: view) {
-
-        ros::spinOnce();
-        ros::Duration wait((m.getTime() - cur).toSec());
-        cur = m.getTime();
-        time_spent += wait.toSec();
-        if(verbosity > 0) {
-          double percent = time_spent / total_time * 100.0;
-          std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
-        }
-        wait.sleep();
-      }
-    }
-
-    void write_trajectory_topic(std::string &topic) {
-
-      rosbag::View view(bag, rosbag::TopicQuery(topics));
-
-      ros::Time cur = view.getBeginTime();
-      double total_time = ros::Duration(view.getEndTime() - view.getBeginTime()).toSec();
-      double time_spent = 0;
-      for(const rosbag::MessageInstance &m: view) {
-
-        ros::spinOnce();
-        ros::Duration wait((m.getTime() - cur).toSec());
-        cur = m.getTime();
-        time_spent += wait.toSec();
-        if(verbosity > 0) {
-          double percent = time_spent / total_time * 100.0;
-          std::cout << "Replay: " << percent << "% done, waiting " << wait.toSec() << " seconds" << std::endl;
-        }
-        wait.sleep();
-      }
-    }
-
 
     /* replay()
      * Publish all commands on their old ROS topics with the same timing
