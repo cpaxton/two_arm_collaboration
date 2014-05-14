@@ -125,9 +125,9 @@ namespace lcsr_replay {
           FeaturesLookup fl;
 
 
-          for(unsigned int i =  0; i < f->base.size(); ++i) {
+          for(unsigned int i =  0; i < f->names.size(); ++i) {
             //std::cout << "adding data " << i << std::endl;
-            fl.add_data(f->base[i], f->child[i], f->transform[i]);
+            fl.add_data("/world", f->names[i], f->transform[i]);
           }
 
           fl.print();
@@ -197,19 +197,18 @@ namespace lcsr_replay {
             ROS_INFO("Computing values");
 
 
-            for(unsigned int i = 0; i < f->base.size(); ++i) {
+            for(unsigned int i = 0; i < f->names.size(); ++i) {
 
-              ROS_INFO("base=%s", f->base[i].c_str());
+              ROS_INFO("frame=%s", f->names[i].c_str());
 
               cv::Point3f pt;
               // NOTE: for some reason it looks like x and z were switched here
-              pt.x = base_tfs[f->base[i]]->transform.translation.x - f->transform[i].translation.z;
-              pt.y = base_tfs[f->base[i]]->transform.translation.y + f->transform[i].translation.y;
-              pt.z = base_tfs[f->base[i]]->transform.translation.z - f->transform[i].translation.x;
+              pt.x = f->transform[i].translation.x;
+              pt.y = f->transform[i].translation.y;
+              pt.z = f->transform[i].translation.z;
 
               if(verbosity > 2) {
-                ROS_INFO("RECOVER FEATURES: %f %f %f / %f %f %f", base_tfs[f->base[i]]->transform.translation.x, base_tfs[f->base[i]]->transform.translation.y, base_tfs[f->base[i]]->transform.translation.z,
-                         f->transform[i].translation.x,  f->transform[i].translation.y,  f->transform[i].translation.z);
+                ROS_INFO("RECOVERED FEATURES: %f %f %f", f->transform[i].translation.x,  f->transform[i].translation.y,  f->transform[i].translation.z);
               }
 
               rec_avg.x += pt.x;
@@ -217,12 +216,9 @@ namespace lcsr_replay {
               rec_avg.z += pt.z;
 
               rec_pts.push_back(pt);
-
-              //ROS_INFO("Adding reference point at (%f, %f, %f)", pt.x, pt.y, pt.z);
-              //ROS_INFO("%s %s", f->base[i].c_str(), f->child[i].c_str());
  
-              finder_.wait(f->child[i], "/world", ros::Duration(1.0));
-              geometry_msgs::Transform child_tf = finder_.find(f->child[i], "/world");
+              finder_.wait(f->names[i], "/world", ros::Duration(1.0));
+              geometry_msgs::Transform child_tf = finder_.find(f->names[i], "/world");
 
               cv::Point3f npt;
               npt.x = child_tf.translation.x;
@@ -240,12 +236,12 @@ namespace lcsr_replay {
               }
             }
 
-            rec_avg.x /= f->base.size();
-            rec_avg.y /= f->base.size();
-            rec_avg.z /= f->base.size();
-            obs_avg.x /= f->base.size();
-            obs_avg.y /= f->base.size();
-            obs_avg.z /= f->base.size();
+            rec_avg.x /= f->names.size();
+            rec_avg.y /= f->names.size();
+            rec_avg.z /= f->names.size();
+            obs_avg.x /= f->names.size();
+            obs_avg.y /= f->names.size();
+            obs_avg.z /= f->names.size();
 
             ROS_INFO("demo avg: (%f, %f, %f) world avg: (%f, %f, %f)", rec_avg.x, rec_avg.y, rec_avg.z, obs_avg.x, obs_avg.y, obs_avg.z);
 

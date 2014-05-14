@@ -84,7 +84,7 @@ namespace lcsr_replay {
       XmlRpc::XmlRpcValue frame_list;
 
       if(nh_tilde.hasParam("frames")) {
-        nh_tilde.param("frame_frames", frame_list, frame_list);
+        nh_tilde.param("frames", frame_list, frame_list);
         for (int i = 0; i < frame_list.size(); ++i) {
           if(frame_list[i].getType() == XmlRpc::XmlRpcValue::TypeString)
           {
@@ -147,11 +147,11 @@ namespace lcsr_replay {
 
       // loop over frame pairs (features)
       for(unsigned int i = 0; i < frames.size(); ++i) {
-        geometry_msgs::Transform t = finder.find("/world", frames[i]);
+        geometry_msgs::Transform t = finder.find(frames[i], "/world");
         f.names.push_back(frames[i]);
         f.transform.push_back(t);
 
-        ROS_INFO("%s-->%s transform found", "/world", frames[i].c_str());
+        ROS_INFO("%s-->%s transform found", frames[i].c_str(), "/world");
       }
 
       bag.write("/FEATURES", t, f);
@@ -162,8 +162,8 @@ namespace lcsr_replay {
 
       if(wait_for_transforms) {
         // make sure we have transforms for all of these things
-        for(unsigned int i = 0; i < bases.size(); ++i) {
-          finder.wait("/world", frames[i], ros::Duration(1.0));
+        for(unsigned int i = 0; i < frames.size(); ++i) {
+          finder.wait(frames[i], "/world", ros::Duration(1.0));
           // NOTE: default to using world as a reference frame here
         }
       }
