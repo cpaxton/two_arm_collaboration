@@ -13,7 +13,7 @@ find_package(OpenCV)
 
 find_package(Boost REQUIRED COMPONENTS system)
 
-add_message_files(FILES Features.msg)
+add_message_files(FILES Features.msg Segment.msg)
 generate_messages(DEPENDENCIES geometry_msgs)
 
 # PACKAGE SETTINGS

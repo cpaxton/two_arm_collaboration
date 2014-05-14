@@ -10,4 +10,4 @@ Header h
 # give some information about the segment if possible
 string name
 # what number is the segment
-int num
+int32 num
