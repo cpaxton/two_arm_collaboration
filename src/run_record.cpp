@@ -28,6 +28,8 @@ int main(int argc, char **argv) {
   DemoWriter dw(bagfile, rate);
   dw.addTopic(arm1_topic);
   dw.addTopic(arm2_topic);
+  dw.addDiscreteTopic(bhand1_topic);
+  dw.addDiscreteTopic(bhand2_topic);
 
   dw.spin();
 }
