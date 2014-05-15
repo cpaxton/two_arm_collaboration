@@ -87,13 +87,13 @@ namespace lcsr_replay {
       bag(bagfile, rosbag::bagmode::Read),
       nh(),
       nh_tilde("~"),
-      segment_id(0),
+      segment_id(-1), // negative segment id: ignore this
       segment_name("")
     {
 
       nh_tilde.param("verbosity", verbosity, int(1));
-      nh_tilde.param("segment_id", segment_id, int(0));
-      nh_tilde.param("segment_name", segment_name, std::string(""));
+      nh_tilde.param("segment_id", segment_id, int(-1)); // default to ignoring segment labels; just do everything
+      nh_tilde.param("segment_name", segment_name, std::string("")); // empty label name by default
 
       if(verbosity > 0) {
         ROS_INFO("Initialized Demonstration Reader with file=\"%s\"!", bagfile.c_str());
