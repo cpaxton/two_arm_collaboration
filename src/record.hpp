@@ -20,6 +20,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <oro_barrett_msgs/BHandCmd.h>
 #include <lcsr_replay/Features.h>
+#include <lcsr_replay/Segment.h>
 
 namespace lcsr_replay {
 
@@ -115,7 +116,7 @@ namespace lcsr_replay {
       rate_(rate),
       nh(),
       nh_tilde("~"),
-      current_segment(1),
+      current_segment(0), // first segment is segment 1, starts when first arm moves
       label_segments(false)
     {
 
@@ -168,7 +169,7 @@ namespace lcsr_replay {
         boost::bind(&DemoWriter::def_callback, this, _1, topic));
       def_topics.insert(topic);
     }
-
+ 
     
 
     /* update()
@@ -198,6 +199,7 @@ namespace lcsr_replay {
         {
           ++current_segment;
           switched_topic = true;
+          last_arm = ""; // make it so we start a new segment as soon as any arm moves again
           if(verbosity > 2) {
             ROS_INFO("current segment = %d", current_segment);
           }
@@ -239,6 +241,14 @@ namespace lcsr_replay {
       }
 
       bag.write("/FEATURES", t, f);
+
+      // write the segement labels from what we were doing here
+      if(label_segments) {
+        Segment s;
+        s.name = "";
+        s.num = current_segment;
+        bag.write("/SEGMENT", t, s);
+      }
     }
 
 
