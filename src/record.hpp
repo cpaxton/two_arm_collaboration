@@ -104,9 +104,6 @@ namespace lcsr_replay {
   public:
 
     void discrete_callback(const discrete_msg_ptr &msg, const std::string &topic) {
-      if(hand_msgs.find(topic) != hand_msgs.end()) {
-        old_hand_msgs[topic] = hand_msgs[topic];
-      }
       hand_msgs[topic] = *msg;
     }
 
@@ -158,9 +155,6 @@ namespace lcsr_replay {
      * callback for the trajectory controlling messages
      */
     void def_callback(const msg_ptr &msg, const std::string &topic) {
-      if(arm_msgs.find(topic) != arm_msgs.end()) {
-        old_arm_msgs[topic] = arm_msgs[topic];
-      }
       arm_msgs[topic] = *msg;
     }
 
@@ -187,9 +181,6 @@ namespace lcsr_replay {
       bool switched_topic = false;
 
       for(const std::string &topic: discrete_topics) {
-        if(hand_msgs.find(topic) != hand_msgs.end()) {
-         bag.write(topic, t, hand_msgs[topic]);
-        }
 
         // if we are labelling the segments, see if the hands changed
         if(label_segments
@@ -204,12 +195,14 @@ namespace lcsr_replay {
             ROS_INFO("current segment = %d", current_segment);
           }
         }
+
+        if(hand_msgs.find(topic) != hand_msgs.end()) {
+         bag.write(topic, t, hand_msgs[topic]);
+          old_hand_msgs[topic] = hand_msgs[topic];
+        }
       }
 
       for(const std::string &topic: def_topics) {
-        if(arm_msgs.find(topic) != arm_msgs.end()) {
-          bag.write(topic, t, arm_msgs[topic]);
-        }
 
         // if not that, check to see if there were any changes in the position described
         if(label_segments
@@ -224,6 +217,11 @@ namespace lcsr_replay {
           if(verbosity > 2) {
             ROS_INFO("arm update: current segment = %d, topic=%s", current_segment, last_arm.c_str());
           }
+        }
+
+        if(arm_msgs.find(topic) != arm_msgs.end()) {
+          bag.write(topic, t, arm_msgs[topic]);
+          old_arm_msgs[topic] = arm_msgs[topic];
         }
       }
 
