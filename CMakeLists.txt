@@ -7,6 +7,7 @@ SET(CMAKE_CXX_FLAGS "-std=c++0x")
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs tf roscpp rosbag
   oro_barrett_msgs
+  dmp
 )
 
 find_package(OpenCV)
@@ -18,7 +19,7 @@ generate_messages(DEPENDENCIES geometry_msgs)
 
 # PACKAGE SETTINGS
 catkin_package(
-  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav oro_barrett_msgs
+  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav oro_barrett_msgs dmp
   DEPENDS system_lib
 )
 
