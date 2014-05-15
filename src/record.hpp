@@ -181,7 +181,7 @@ namespace lcsr_replay {
       ros::Time t = ros::Time::now();
 
       if(verbosity > 0) {
-        std::cout << t << ": writing from " << (hand_msgs.size() + arm_msgs.size()) << " topics." << std::endl;
+        std::cout << t << ": writing from " << (hand_msgs.size() + arm_msgs.size()) << " topics (segment=" << current_segment << ")." << std::endl;
       }
 
       bool switched_topic = false;

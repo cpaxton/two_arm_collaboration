@@ -16,6 +16,7 @@
 #include <oro_barrett_msgs/BHandCmd.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <lcsr_replay/Features.h>
+#include <lcsr_replay/Segment.h>
 
 // replay includes
 #include "features.hpp"
@@ -46,6 +47,7 @@ namespace lcsr_replay {
       Segment // segment labels
     };
   }
+
   typedef Topics::Topic_t Topic_t;
 
   /**
@@ -98,7 +100,7 @@ namespace lcsr_replay {
       }
 
       topics.push_back("/FEATURES"); // records feature positions
-      topics.push_back("/SEGMENTS"); // records segment labels
+      topics.push_back("/SEGMENT"); // records segment labels
     }
 
     /* addDiscreteTopic()
@@ -160,6 +162,10 @@ namespace lcsr_replay {
           }
 
           fl.print();
+        }
+        else if (m.getTopic() == "/SEGMENT") {
+          Segment::ConstPtr s = m.instantiate<Segment>();
+          std::cout << "Segment id=" << s->num << ", name=\"" << s->name << "\"" << std::endl;
         }
       }
     }
