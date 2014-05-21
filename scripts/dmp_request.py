@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 import roslib; 
-roslib.load_manifest('dmp')
+roslib.load_manifest('lcsr_replay')
+
 import rospy 
 import numpy as np
+
+
 from dmp.srv import *
 from dmp.msg import *
 

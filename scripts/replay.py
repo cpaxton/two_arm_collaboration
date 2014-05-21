@@ -3,6 +3,7 @@ import roslib
 import rospy
 import rosbag # reading bag files
 
+from oro_barrett_msgs import *
 from lcsr_replay.msg import *
 from dmp.msg import *
 from dmp.srv import *
@@ -15,77 +16,107 @@ This includes features, segments, etc.
 
 '''
 
+'''
+verbosity
+Controls amount of text output produced by the script
+'''
+verbosity = 0
+
+class ReplayEvent:
+    def __init__(self) :
+        self.arm1 = []
+        self.arm2 = []
+        self.hand1 = []
+        self.hand2 = []
+        self.features = []
+
+'''
+BhandToVector()
+Convert a Bhand command message into a vector
+'''
+def BhandToVector(bhand_cmd_msg) :
+    vec = [bhand_cmd_msg.mode[0], bhand_cmd_msg.mode[1],
+            bhand_cmd_msg.mode[2], bhand_cmd_msg.mode[3],
+            bhand_cmd_msg.cmd[0], bhand_cmd_msg.cmd[1],
+            bhand_cmd_msg.cmd[2], bhand_cmd_msg.cmd[3]]
+    return vec
+
 class ReplayIO:
-    bagfile = 'demo.bag'
-    io_topics = ['wam/cmd', 'wam2/cmd', '/FEATURES', '/SEGMENT']
 
-    verbosity = 0
+    def __init__(self) :
+        self.bagfile = 'demo.bag'
+        self.io_topics = ['/wam/cmd', '/wam2/cmd', '/FEATURES', '/SEGMENT']
+        self.trajectory_topics = ['/wam/cmd','/wam2/cmd']
+        self.hand_topics = ['/hand/cmd', '/hand2/cmd']
 
-    segment = []
-    data = {}
-    parsed = False
+        self.segment = []
+        self.data = {}
+        self.parsed = False
 
     '''
     parse()
     Takes a filename, opens the bag up.
     Should also parse out necessary information by segment.
     '''
-    def parse(filename = bagfile) :
-        bagfile = filename
+    def parse(self) :
 
-        segment = []
-        data = {}
-        for topic in io_topics:
-            data[topic] = []
+        self.segment = []
+        self.data = {}
+        for topic in self.io_topics:
+            self.data[topic] = []
 
-        for topic, msg, t in bag.read_messages(io_topics) :
+        tdata = {}
+
+        bag = rosbag.Bag(self.bagfile)
+        for topic, msg, t in bag.read_messages(self.io_topics) :
 
             if topic == "/SEGMENT" :
-                data[topic] += [msg.num]
-            else if topic == "/FEATURES" :
+                self.data[topic] += [msg.num]
+            elif topic == "/FEATURES" :
                 # loop over names and transforms in FEATURES msg
                 for i in range(len(msg.names)) :
-                    data[topic + "/" + msg.names[i]] = msg.transforms[i]
-            else if topic in trajectory_topics:
+                    self.data[topic + "/" + msg.names[i]] = msg.transform[i]
+            elif topic in self.trajectory_topics:
+                # parse in the translation and rotation of the transform
                 pos = [msg.transform.translation.x, msg.transform.translation.y, msg.transform.translation.z]
                 rot = [msg.transform.rotation.x, msg.transform.rotation.y, msg.transform.rotation.z, msg.transform.rotation.w]
 
-                data[topic] += [pos + rot]
+                self.data[topic] += [pos + rot]
+            else :
+                self.data[topic] += [msg]
 
-            if verbosity > 0
-                print "%f: %s=%s"%(t, topic, data[topic][-1])
+            if verbosity > 0 and len(self.data[topic]) > 0:
+                print "%f: %s=%s"%(t.to_sec(), topic, self.data[topic][-1])
 
-
-            # TODO: convert format to 
-            data{topic} += [msg]
 
         parsed = True
-
 
     '''
     setFilename()
     Takes filename, saves it to this replay object.
     '''
-    def setFilename(filename) :
-        bagfile = filename
+    def setFilename(self, filename) :
+        self.bagfile = filename
 
     '''
     print()
     Display information about what was actually in the bag, for debugging.
     '''
-    def print() :
-        bag = rosbag.Bag(bagfile)
-        for topic, msg, t in bag.read_messages(io_topics) :
-            print "%f: %s"%(t, topic)
+    def printFile(self) :
+        bag = rosbag.Bag(self.bagfile)
+        for topic, msg, t in bag.read_messages(self.io_topics) :
+            print "%f: %s"%(t.to_sec(), topic)
 
-    def getTrajectory(topic) :
+    '''
+    getTrajectory()
+    This should return the trajectory for a certain topic (and optionally segment)
+    '''
+    def getTrajectory(self, topic, segment=-1) :
 
-        if parsed == False :
-            parse()
-
-        bag = rosbag.Bag(bagfile)
+        if self.parsed == False :
+            self.parse()
            
-        return data[topic]
+        return self.data[topic]
 
 '''
 default_io_startup()
@@ -94,16 +125,28 @@ Reads parameter from command line and sets up an IO object.
 '''
 def default_io_startup():
 
-    bagfile = rospy.getParam('bag', 'demo.bag')
-    v = rospy.getParam('verbosity', 1)
+    bagfile = rospy.get_param('~bag', 'demo.bag')
+    v = rospy.get_param('verbosity', 1)
 
     io = ReplayIO()
     io.setFilename(bagfile)
-    io.verbosity = v;
+
+    # choose which topics we want to save here
+    io.io_topics = ['/wam/cmd', '/wam2/cmd',
+            '/gazebo/barrett_manager/hand/cmd', '/gazebo/w2barrett_manager/hand/cmd',
+            '/SEGMENT', '/FEATURES']
+    io.trajectory_topics = ['/wam/cmd','/wam2/cmd']
+    io.hand_topics = ['/gazebo/barrett_manager/hand/cmd', '/gazebo/w2barrett_manager/hand/cmd']
+
+    return io
 
 if __name__ == '__main__':
     rospy.init_node('replay_read_node')
 
+    print rospy.get_param('~bag')
+
     io = default_io_startup()
+    io.printFile()
+    io.parse()
 
 
