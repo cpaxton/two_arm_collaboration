@@ -44,6 +44,15 @@ def BhandToVector(bhand_cmd_msg) :
             bhand_cmd_msg.cmd[2], bhand_cmd_msg.cmd[3]]
     return vec
 
+'''
+VectorToBhand()
+Convert a vector back into a Barrett Hand command message
+'''
+def VectorToBhand(vector) :
+    bhand_cmd_msg.mode = [vector[i] for i in range(0,4)]
+    bhand_cmd_msg.cmd = [vector[i] for i in range(4,8)]
+    return bhand_cmd_msg
+
 class ReplayIO:
 
     def __init__(self) :
@@ -71,7 +80,7 @@ class ReplayIO:
         tdata = {}
 
         bag = rosbag.Bag(self.bagfile)
-        self.times = [t for t in bag.read_messages(self.io_topics)] 
+        self.times = [t for topic, msg, t in bag.read_messages(self.io_topics)] 
         for topic, msg, t in bag.read_messages(self.io_topics) :
 
             if topic == SEGMENT :
@@ -125,12 +134,16 @@ class ReplayIO:
         if segment >= 0 :
             idx = [i for (i, s) in zip(range(len(self.data[SEGMENT])), self.data[SEGMENT]) if s == segment]
         else :
-            idx = range(len(self.data[SEGMENT]))
+            idx = range(len(self.data[topic]))
 
         if verbosity > 1:
             print idx
-           
-        return [self.data[topic][i] for i in idx]
+        
+        if verbosity > 1:
+            for i in idx :
+                print [self.data[SEGMENT][i], self.data[topic][i]]
+
+        return ([self.times[i].to_sec() for i in idx], [self.data[topic][i] for i in idx])
 
 '''
 default_io_startup()
@@ -163,6 +176,8 @@ if __name__ == '__main__':
     io.printFile()
     io.parse()
 
+    verbosity = 2
+
     print "Testing trajectory retrieval..."
-    print io.getTrajectory('/wam/cmd', 3)
+    print io.getTrajectory('/wam/cmd', -1)
 
