@@ -5,8 +5,7 @@ import rosbag # reading bag files
 
 from oro_barrett_msgs import *
 from lcsr_replay.msg import *
-from dmp.msg import *
-from dmp.srv import *
+from geometry_msgs.msg import TransformStamped
 
 '''
 REPLAY.PY
@@ -53,6 +52,24 @@ def VectorToBhand(vector) :
     bhand_cmd_msg.cmd = [vector[i] for i in range(4,8)]
     return bhand_cmd_msg
 
+def TfToVector(tform) :
+    pos = [tform.translation.x, tform.translation.y, tform.translation.z]
+    rot = [tform.rotation.x, tform.rotation.y, tform.rotation.z, tform.rotation.w]
+
+    return [pos + rot]
+
+def VectorToStampedTf(vector) :
+    tform = TransformStamped()
+    tf.transform.translation.x = vector[0];
+    tf.transform.translation.y = vector[1];
+    tf.transform.translation.z = vector[2];
+    tf.transform.rotation.x = vector[3];
+    tf.transform.rotation.y = vector[4];
+    tf.transform.rotation.z = vector[5];
+    tf.transform.rotation.w = vector[6];
+
+    return tf
+
 class ReplayIO:
 
     def __init__(self) :
@@ -60,10 +77,62 @@ class ReplayIO:
         self.io_topics = ['/wam/cmd', '/wam2/cmd', '/FEATURES', '/SEGMENT']
         self.trajectory_topics = ['/wam/cmd','/wam2/cmd']
         self.hand_topics = ['/hand/cmd', '/hand2/cmd']
+        self.traj_pubs = []
+        self.hand_pubs = []
+        self.pubs = {}
 
         self.segment = []
         self.data = {}
         self.parsed = False
+
+    '''
+    addTrajectoryPublisher()
+    Adds a single publisher, sending out transform messages.
+    '''
+    def addTrajectoryPublisher(self, topic) :
+        if not topic in self.pubs :
+            self.pubs[topic] = rospy.Publisher(topic, TransformStamped)
+            self.traj_pubs += [topic]
+
+    '''
+    addHandPublisher()
+    Adds a single publisher, sending out barrett hand messages.
+    '''
+    def addHandPublisher(self, topic) :
+        if not topic in self.pubs :
+            self.pubs[topic] = rospy.Publisher(topic, BHandCmd)
+            self.hand_pubs += [topic]
+
+    '''
+    publish()
+    Wait to time t and publish a message ("point") on topic
+    '''
+    def publish(self, point, t, topic) :
+        rospy.sleep(t)
+        if type(point) is list:
+            if topic in self.traj_pubs:
+                msg = VectorToTfStamped(point)
+            elif topic in self.hand_pubs:
+                msg = VectorToBhand(point)
+            else :
+                raise NameError("Unknown topic given list type!")
+            self.pubs[topic].publish(msg)
+        elif type(point) is BhandCmd and topic in self.hand_pubs:
+            self.pubs[topic].publish(point)
+        elif type(point) is TransformStamped and topic in self.traj_pubs:
+            self.pubs[topic].publish(point)
+        else :
+            raise TypeError("Unknown topic or type!")
+
+    '''
+    play_trajectory()
+    Runs through an entire trajectory given by something like DMP.
+    Converts elements into message types and sends them by iteratively calling "publish()"
+    '''
+    def play_trajectory(traj, times, topic) :
+        first_t = times[0]
+        for point, t in zip(traj, times) :
+            self.publish(point, t - first_t, topic)
 
     '''
     parse()
@@ -77,8 +146,6 @@ class ReplayIO:
         for topic in self.io_topics:
             self.data[topic] = []
 
-        tdata = {}
-
         bag = rosbag.Bag(self.bagfile)
         for topic, msg, t in bag.read_messages(self.io_topics) :
 
@@ -88,13 +155,13 @@ class ReplayIO:
             elif topic == FEATURES :
                 # loop over names and transforms in FEATURES msg
                 for i in range(len(msg.names)) :
-                    self.data[topic + "/" + msg.names[i]] = msg.transform[i]
+                    name = topic + msg.names[i]
+                    if not name in self.data :
+                        self.data[name] = []
+                    self.data[name] += TfToVector(msg.transform[i])
             elif topic in self.trajectory_topics:
                 # parse in the translation and rotation of the transform
-                pos = [msg.transform.translation.x, msg.transform.translation.y, msg.transform.translation.z]
-                rot = [msg.transform.rotation.x, msg.transform.rotation.y, msg.transform.rotation.z, msg.transform.rotation.w]
-
-                self.data[topic] += [pos + rot]
+                self.data[topic] += TfToVector(msg.transform)
             else :
                 self.data[topic] += [msg]
 
@@ -144,6 +211,7 @@ class ReplayIO:
                 print [self.data[SEGMENT][i], self.data[topic][i]]
 
         return ([self.times[i].to_sec() for i in idx], [self.data[topic][i] for i in idx])
+
 
 '''
 default_io_startup()
