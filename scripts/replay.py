@@ -3,9 +3,9 @@ import roslib
 import rospy
 import rosbag # reading bag files
 
-from oro_barrett_msgs import *
 from lcsr_replay.msg import *
 from geometry_msgs.msg import TransformStamped
+from oro_barrett_msgs.msg import BHandCmd
 
 '''
 REPLAY.PY
@@ -59,7 +59,7 @@ def TfToVector(tform) :
     return [pos + rot]
 
 def VectorToStampedTf(vector) :
-    tform = TransformStamped()
+    tf = TransformStamped()
     tf.transform.translation.x = vector[0];
     tf.transform.translation.y = vector[1];
     tf.transform.translation.z = vector[2];
@@ -109,15 +109,16 @@ class ReplayIO:
     '''
     def publish(self, point, t, topic) :
         rospy.sleep(t)
-        if type(point) is list:
+        print t
+        if type(point) is list or type(point) is tuple:
             if topic in self.traj_pubs:
-                msg = VectorToTfStamped(point)
+                msg = VectorToStampedTf(point)
             elif topic in self.hand_pubs:
                 msg = VectorToBhand(point)
             else :
                 raise NameError("Unknown topic given list type!")
             self.pubs[topic].publish(msg)
-        elif type(point) is BhandCmd and topic in self.hand_pubs:
+        elif type(point) is BHandCmd and topic in self.hand_pubs:
             self.pubs[topic].publish(point)
         elif type(point) is TransformStamped and topic in self.traj_pubs:
             self.pubs[topic].publish(point)
@@ -129,7 +130,7 @@ class ReplayIO:
     Runs through an entire trajectory given by something like DMP.
     Converts elements into message types and sends them by iteratively calling "publish()"
     '''
-    def play_trajectory(traj, times, topic) :
+    def play_trajectory(self, traj, times, topic) :
         first_t = times[0]
         for point, t in zip(traj, times) :
             self.publish(point, t - first_t, topic)
@@ -232,6 +233,12 @@ def default_io_startup():
             '/SEGMENT', '/FEATURES']
     io.trajectory_topics = ['/wam/cmd','/wam2/cmd']
     io.hand_topics = ['/gazebo/barrett_manager/hand/cmd', '/gazebo/w2barrett_manager/hand/cmd']
+
+    for topic in io.trajectory_topics:
+        io.addTrajectoryPublisher(topic)
+
+    for topic in io.hand_topics:
+        io.addHandPublisher(topic)
 
     return io
 
