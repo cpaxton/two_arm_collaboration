@@ -72,7 +72,7 @@ class ReplayIO:
     '''
     def parse(self) :
 
-        self.segment = []
+        self.times = []
         self.data = {}
         for topic in self.io_topics:
             self.data[topic] = []
@@ -80,11 +80,11 @@ class ReplayIO:
         tdata = {}
 
         bag = rosbag.Bag(self.bagfile)
-        self.times = [t for topic, msg, t in bag.read_messages(self.io_topics)] 
         for topic, msg, t in bag.read_messages(self.io_topics) :
 
             if topic == SEGMENT :
                 self.data[topic] += [msg.num]
+                self.times += [t]
             elif topic == FEATURES :
                 # loop over names and transforms in FEATURES msg
                 for i in range(len(msg.names)) :

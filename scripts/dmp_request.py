@@ -11,7 +11,7 @@ from dmp.srv import *
 from dmp.msg import *
 
 #Learn a DMP from demonstration data
-def makeLFDRequest(dims, traj, dt, K_gain, 
+def makeLFDRequest(dims, traj, t, K_gain, 
                    D_gain, num_bases):
     demotraj = DMPTraj()
         
@@ -19,7 +19,7 @@ def makeLFDRequest(dims, traj, dt, K_gain,
         pt = DMPPoint();
         pt.positions = traj[i]
         demotraj.points.append(pt)
-        demotraj.times.append(dt*i)
+        demotraj.times.append(t[i]-t[0])
             
     k_gains = [K_gain]*dims
     d_gains = [D_gain]*dims
@@ -62,30 +62,45 @@ def makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh,
 
 
 if __name__ == '__main__':
-    rospy.init_node('dmp_tutorial_node')
+    rospy.init_node('replay_dmp_node')
+
+    io = default_io_startup()
+    io.parse()
+
+    segment = rospy.get_param('~segment', 0)
+    topic = rospy.get_param('~topic', '/wam/cmd');
+
+    (t, traj) = io.getTrajectory(topic, segment)
 
     #Create a DMP from a 2-D trajectory
-    dims = 2                
-    dt = 1.0                
+    dims = len(traj[0])
     K = 100                 
     D = 2.0 * np.sqrt(K)      
-    num_bases = 4          
-    traj = [[1.0,1.0],[2.0,2.0],[3.0,4.0],[6.0,8.0]]
-    resp = makeLFDRequest(dims, traj, dt, K, D, num_bases)
+    num_bases = 10
+
+    print "Requesting DMP from trajectory of length %d with %d dimensions"%(len(traj), dims)
+    resp = makeLFDRequest(dims, traj, t, K, D, num_bases)
+
+    print resp
 
     #Set it as the active DMP
     makeSetActiveRequest(resp.dmp_list)
 
     #Now, generate a plan
-    x_0 = [0.0,0.0]          #Plan starting at a different point than demo 
-    x_dot_0 = [0.0,0.0]   
+    x_0 = [x + 1 for x in traj[0]]          #Plan starting at a different point than demo 
+    x_dot_0 = [0.0]*dims
     t_0 = 0                
-    goal = [8.0,7.0]         #Plan to a different goal than demo
-    goal_thresh = [0.2,0.2]
+    goal = [x + 1 for x in traj[-1]]         #Plan to a different goal than demo
+    goal_thresh = [0.01]*dims
     seg_length = -1          #Plan until convergence to goal
     tau = 2 * resp.tau       #Desired plan should take twice as long as demo
-    dt = 1.0
+    dt = (t[-1] - t[0]) / len(t) # speed to replay the trajectory at 
     integrate_iter = 5       #dt is rather large, so this is > 1  
+
+    print dt
+    print x_0
+    print goal
+
     plan = makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh, 
                            seg_length, tau, dt, integrate_iter)
 
