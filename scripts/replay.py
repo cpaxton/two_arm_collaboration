@@ -22,6 +22,9 @@ Controls amount of text output produced by the script
 '''
 verbosity = 0
 
+SEGMENT = '/SEGMENT'
+FEATURES = '/FEATURES'
+
 class ReplayEvent:
     def __init__(self) :
         self.arm1 = []
@@ -68,11 +71,12 @@ class ReplayIO:
         tdata = {}
 
         bag = rosbag.Bag(self.bagfile)
+        self.times = [t for t in bag.read_messages(self.io_topics)] 
         for topic, msg, t in bag.read_messages(self.io_topics) :
 
-            if topic == "/SEGMENT" :
+            if topic == SEGMENT :
                 self.data[topic] += [msg.num]
-            elif topic == "/FEATURES" :
+            elif topic == FEATURES :
                 # loop over names and transforms in FEATURES msg
                 for i in range(len(msg.names)) :
                     self.data[topic + "/" + msg.names[i]] = msg.transform[i]
@@ -88,8 +92,9 @@ class ReplayIO:
             if verbosity > 0 and len(self.data[topic]) > 0:
                 print "%f: %s=%s"%(t.to_sec(), topic, self.data[topic][-1])
 
-
         parsed = True
+
+
 
     '''
     setFilename()
@@ -115,8 +120,17 @@ class ReplayIO:
 
         if self.parsed == False :
             self.parse()
+
+
+        if segment >= 0 :
+            idx = [i for (i, s) in zip(range(len(self.data[SEGMENT])), self.data[SEGMENT]) if s == segment]
+        else :
+            idx = range(len(self.data[SEGMENT]))
+
+        if verbosity > 1:
+            print idx
            
-        return self.data[topic]
+        return [self.data[topic][i] for i in idx]
 
 '''
 default_io_startup()
@@ -149,4 +163,6 @@ if __name__ == '__main__':
     io.printFile()
     io.parse()
 
+    print "Testing trajectory retrieval..."
+    print io.getTrajectory('/wam/cmd', 3)
 
