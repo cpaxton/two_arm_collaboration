@@ -58,7 +58,7 @@ def TfToVector(tform) :
 
     return [pos + rot]
 
-def VectorToStampedTf(vector) :
+def VectorToStampedTf(vector, child) :
     tf = TransformStamped()
     tf.transform.translation.x = vector[0];
     tf.transform.translation.y = vector[1];
@@ -67,6 +67,8 @@ def VectorToStampedTf(vector) :
     tf.transform.rotation.y = vector[4];
     tf.transform.rotation.z = vector[5];
     tf.transform.rotation.w = vector[6];
+    tf.child_frame_id = child
+    tf.header.frame_id = "/world"
 
     return tf
 
@@ -112,7 +114,7 @@ class ReplayIO:
         print t
         if type(point) is list or type(point) is tuple:
             if topic in self.traj_pubs:
-                msg = VectorToStampedTf(point)
+                msg = VectorToStampedTf(point, topic)
             elif topic in self.hand_pubs:
                 msg = VectorToBhand(point)
             else :
@@ -131,9 +133,10 @@ class ReplayIO:
     Converts elements into message types and sends them by iteratively calling "publish()"
     '''
     def play_trajectory(self, traj, times, topic) :
-        first_t = times[0]
+        last_t = times[0]
         for point, t in zip(traj, times) :
-            self.publish(point, t - first_t, topic)
+            self.publish(point, t - last_t, topic)
+            last_t = t
 
     '''
     parse()

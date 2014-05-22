@@ -87,10 +87,10 @@ if __name__ == '__main__':
     makeSetActiveRequest(resp.dmp_list)
 
     #Now, generate a plan
-    x_0 = [x + 1 for x in traj[-1]]          #Plan starting at a different point than demo 
+    x_0 = [x for x in traj[-1]]          #Plan starting at a different point than demo 
     x_dot_0 = [0.0]*dims
     t_0 = 0                
-    goal = [x + 1 for x in traj[0]]         #Plan to a different goal than demo
+    goal = [x for x in traj[0]]         #Plan to a different goal than demo
     goal_thresh = [0.01]*dims
     seg_length = -1          #Plan until convergence to goal
     tau = 2 * resp.tau       #Desired plan should take twice as long as demo
