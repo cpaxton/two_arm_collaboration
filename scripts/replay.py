@@ -111,7 +111,6 @@ class ReplayIO:
     '''
     def publish(self, point, t, topic) :
         rospy.sleep(t)
-        print t
         if type(point) is list or type(point) is tuple:
             if topic in self.traj_pubs:
                 msg = VectorToStampedTf(point, topic)
@@ -134,6 +133,8 @@ class ReplayIO:
     '''
     def play_trajectory(self, traj, times, topic) :
         last_t = times[0]
+        if verbosity > 0 :
+            print t
         for point, t in zip(traj, times) :
             self.publish(point, t - last_t, topic)
             last_t = t
