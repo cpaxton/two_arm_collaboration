@@ -2,7 +2,7 @@
   <arg name="filename" default="pegs.bag" doc="(string) name of output file"/>
 
   <node pkg="lcsr_replay" name="lcsr_replay_recorder" type="rrec" output="screen">
-    <rosparam param="frames">[/peg1/base_link peg1/peg_link peg2/base_link peg2/peg_link ring1 ring1/ring_link]</rosparam>
+    <rosparam param="frames">[/peg1/base_link, /peg1/peg_link, /peg2/base_link, /peg2/peg_link, /ring1, /ring1/ring_link]</rosparam>
     <param name="bag" value="$(find lcsr_replay)/$(arg filename)"/>
   </node>
 </launch>
