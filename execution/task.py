@@ -5,6 +5,12 @@ import rospy
 import smach
 import smach_ros
 
+# import simple action state
+from smach_ros import SimpleActionState
+
+# import message types for the different possible actions
+from peg_assist_demo.msg import *
+
 human_arm = 'wam'
 auto_arm = 'wam2'
 
