@@ -3,7 +3,7 @@
    - This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator.
    -
    - run with rviz like this for planning demo:
-   - rosrun rviz rviz __ns:=/gazebo /planning_scene:=/gazebo/planning_scene /get_planning_scene:=/gazebo/get_planning_scene
+   - rosrun rviz rviz __ns:=/gazebo/barrett_manager /planning_scene:=/gazebo/barrett_manager/planning_scene /get_planning_scene:=/gazebo/barrett_manager/get_planning_scene
    -
    - rostopic pub /gazebo/barrett_manager/hand/cmd oro_barrett_msgs/BHandCmd "{ mode: [3,3,3,3], cmd: [2.5,2.5,2.5,0.0] }"
    - rostopic pub -r 1 /gazebo/traj_rml/joint_traj_point_cmd trajectory_msgs/JointTrajectoryPoint "{ positions: [0.0,0,0,0.0,0,0,0.0] }"
@@ -32,7 +32,7 @@
   <!-- Load WAM URDF -->
   <group ns="gazebo">
     <param name="barrett_manager/robot_description" 
-      command="$(find xacro)/xacro.py '$(find lcsr_barrett)/sim/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1' ops_script:='$(find lcsr_barrett)/sim/wam7_sim_ik.ops' bhand_script:='$(find lcsr_barrett)/sim/bhand_sim.ops' hand:=$(arg hand)" />
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1' ops_script:='$(find lcsr_barrett)/sim/wam7_sim_ik.ops' bhand_script:='$(find lcsr_collab)/sim/bhand_sim.ops' hand:=$(arg hand)" />
 
     <!-- Spawn the robot in Gazebo -->
     <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
@@ -70,8 +70,8 @@
     output="screen"/>
 
   <node name="arm1_rqt_barret" pkg="rqt_barrett" type="rqt_barrett">
-    <param name="joint_states" value="/gazebo/barrett_manager/wam/joint_states"/>
-    <param name="robot_description" value="/gazebo/barrett_manager/robot_description"/>
+    <remap from="joint_states" to="/gazebo/barrett_manager/wam/joint_states"/>
+    <remap from="robot_description" to="/gazebo/barrett_manager/robot_description"/>
   </node>
 
 </launch>
