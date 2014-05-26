@@ -1,6 +1,7 @@
 # Define the goal
 string arm_id # what arm are we looking at? wam1, wam2?
 string ring_id # what is the ring we want to wait for?
+float64 distance_threshold # what is the distance we are waiting for, from the base of the arm?
 ---
 # Define the result
 uint32 ring_available

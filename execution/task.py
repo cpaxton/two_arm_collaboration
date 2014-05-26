@@ -21,8 +21,16 @@ class WaitForRing (smach.State):
 
     def execute(self, userdata):
         rospy.loginfo('Waiting for Ring...')
-        return 'success'
-
+        client = actionlib.SimpleActionClient('fibonacci', actionlib_tutorials.msg.FibonacciAction)
+        client.wait_for_server()
+        goal = actionlib_tutorials.msg.FibonacciGoal(order=20)
+        client.send_goal(goal)
+        client.wait_for_result()
+        res =  client.get_result()
+        if res.ring_available == 1 :
+            return 'success'
+        else :
+            return 'failure'
 
 class GrabRing(smach.State):
     def __init__(self):
