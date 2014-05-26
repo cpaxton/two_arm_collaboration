@@ -10,6 +10,8 @@ from replay import *
 from dmp.srv import *
 from dmp.msg import *
 
+#import yaml
+
 #Learn a DMP from demonstration data
 def makeLFDRequest(dims, traj, t, K_gain, 
                    D_gain, num_bases):
@@ -103,7 +105,6 @@ if __name__ == '__main__':
 
     plan = makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh, 
                            seg_length, tau, dt, integrate_iter)
-
     new_traj = []
 
     for i in range(len(plan.plan.points)) :
@@ -113,4 +114,7 @@ if __name__ == '__main__':
 
     if verbosity > 2 :
         print plan
+
+    # with open('data.yml', 'w') as outfile:
+    #     outfile.write( yaml.dump(resp, default_flow_style=True) )
 
