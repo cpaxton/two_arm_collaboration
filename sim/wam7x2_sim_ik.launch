@@ -31,7 +31,7 @@
 
     <!-- Load WAM URDF -->
     <param name="w2barrett_manager/robot_description" 
-      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 0.75' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
 <!--sim/wam7_arm2_sim_ik.ops-->
   
     <!-- Spawn the robot in Gazebo -->
