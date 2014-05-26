@@ -43,7 +43,7 @@
   <group ns="gazebo">
 
     <!-- Barrett Hardwre Config and Orocos Components -->
-    <include file="$(find lcsr_barrett)/sim/barrett_manager.launch">
+    <include file="$(find lcsr_collab)/sim/barrett_manager.launch">
       <arg name="hand" value="$(arg hand)"/>
       <arg name="tf_prefix" value="wam2"/>
       <arg name="oro_prefix" value="w2"/>
