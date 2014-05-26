@@ -75,4 +75,6 @@
     <remap from="robot_description" to="/gazebo/barrett_manager/robot_description"/>
   </node>
 
+  <node name="run_gazebo_script" pkg="lcsr_collab" type="run_gazebo.py" output="screen"/>
+
 </launch>
