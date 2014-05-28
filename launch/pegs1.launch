@@ -21,4 +21,19 @@
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
   </include>
+
+  <!-- node for moving ring to destination peg -->
+  <node name="move_ring_motion"
+    pkg="dmp_action"
+    type="dmp_motion_server.py" />
+
+  <!-- node for reaching towards ring -->
+  <node name="reach_ring_motion"
+    pkg="dmp_action"
+    type="dmp_motion_server.py" />
+
+  <!-- node for running the plan -->
+  
+
+
 </launch>
