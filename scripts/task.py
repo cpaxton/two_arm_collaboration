@@ -81,7 +81,15 @@ if __name__ == '__main__':
             smach.StateMachine.add('DropRing', DropRing(),
                     transitions={'success':'RING_TRANSFER_COMPLETE'})
 
+    # Create SMACH introspection server
+    sis = smach_ros.IntrospectionServer('peg_task_introspection_server', sm, '/SM_ROOT')
+    sis.start()
+
+    # execute the state machine
     outcome = sm.execute()
+
+    rospy.spin()
+    sis.stop()
 
     print outcome
 

@@ -32,8 +32,19 @@
     pkg="dmp_action"
     type="dmp_motion_server.py" />
 
-  <!-- node for running the plan -->
-  
+  <!-- startup script to make sure the arms are running the right controllers -->
+  <node name="peg_demo_startup"
+    pkg="peg_assist_demo"
+    type="startup.py" />
 
+  <!-- node for running the plan -->
+  <node name="execution_task"
+    pkg="peg_assist_demo"
+    type="task.py" />
+
+  <!-- view execution progress -->
+  <node name="smach_viewer"
+    pkg="smach_viewer"
+    type="smach_viewer.py" />
 
 </launch>
