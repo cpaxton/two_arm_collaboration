@@ -23,12 +23,15 @@
   <build_depend>lcsr_replay</build_depend>
   <build_depend>lcsr_spacenav</build_depend>
   <build_depend>smach</build_depend>
+  <build_depend>dmp_action</build_depend>
+
   <run_depend>actionlib</run_depend>
   <run_depend>actionlib_msgs</run_depend>
   <run_depend>lcsr_collab</run_depend>
   <run_depend>lcsr_replay</run_depend>
   <run_depend>lcsr_spacenav</run_depend>
   <run_depend>smach</run_depend>
+  <run_depend>dmp_action</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
