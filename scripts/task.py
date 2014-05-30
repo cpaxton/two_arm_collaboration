@@ -16,7 +16,7 @@ auto_arm = 'wam2'
 
 class WaitForRing (smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['success'])
+        smach.State.__init__(self, outcomes=['success','failure'])
         self.result = 0
 
     def execute(self, userdata):
@@ -32,12 +32,32 @@ class WaitForRing (smach.State):
         else :
             return 'failure'
 
+class FindRing(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['in_range','out_of_range'])
+
+    def execute(self, userdata):
+        rospy.loginfo('Finding ring and setting location data...')
+
+        return 'in_range'
+
+class ResetPosition(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['reset'])
+
+    def execute(self, userdata):
+        rospy.loginfo('Reset position of arm to home')
+
+        return 'reset'
+
+# for now: compute location of ring, play 
 class GrabRing(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['success'])
+        smach.State.__init__(self, outcomes=['success','failure'])
 
     def execute(self, userdata):
         rospy.loginfo('Attempting to grab ring...')
+
         return 'success'
 
 class WaitForRelease(smach.State):
@@ -61,6 +81,8 @@ class DropRing(smach.State):
         smach.State.__init__(self, outcomes=['success'])
 
     def execute(self, userdata):
+        rospy.loginfo('Waiting for gripper control service...')
+
         rospy.loginfo('Dropping ring...')
         return 'success'
 
@@ -71,9 +93,20 @@ if __name__ == '__main__':
 
     with sm:
             smach.StateMachine.add('WaitForRing', WaitForRing(),
-                    transitions={'success':'GrabRing'})
+                    transitions={
+                        'success':'FindRing',
+                        'failure':'WaitForRing'})
+            smach.StateMachine.add('FindRing', FindRing(),
+                    transitions={
+                        'in_range':'GrabRing',
+                        'out_of_range':'WaitForRing'})
             smach.StateMachine.add('GrabRing', GrabRing(),
-                    transitions={'success':'WaitForRelease'})
+                    transitions={
+                        'success':'WaitForRelease',
+                        'failure': 'ResetPosition1'})
+            smach.StateMachine.add('ResetPosition1', ResetPosition(),
+                    transitions={
+                        'reset':'FindRing'})
             smach.StateMachine.add('WaitForRelease', WaitForRelease(),
                     transitions={'success':'RingToPeg'})
             smach.StateMachine.add('RingToPeg', RingToPeg(),
@@ -84,6 +117,18 @@ if __name__ == '__main__':
     # Create SMACH introspection server
     sis = smach_ros.IntrospectionServer('peg_task_introspection_server', sm, '/SM_ROOT')
     sis.start()
+
+    move_ring_file = rospy.get_param("~move_ring_file")
+    grab_ring_file = rospy.get_param("~grab_ring_file")
+
+    # load the YAML file describing the move to peg ring motion
+    rospy.wait_for_service('move_ring_motion/load_file')
+    loader = rospy.ServiceProxy('move_ring_motion/load_file')
+
+    
+    # load the YAML file describing the grab ring motion
+    rospy.wait_for_service('grab_ring_motion/load_file')
+    loader = rospy.ServiceProxy('grab_ring_motion/load_file')
 
     # execute the state machine
     outcome = sm.execute()

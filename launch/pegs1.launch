@@ -32,15 +32,26 @@
     pkg="dmp_action"
     type="dmp_motion_server.py" />
 
+  <!-- wait for the ring to be in range with this action -->
+  <node name="wait_for_ring"
+    pkg="peg_assist_demo"
+    type="WaitForRing.py" />
+
   <!-- startup script to make sure the arms are running the right controllers -->
   <node name="peg_demo_startup"
     pkg="peg_assist_demo"
     type="startup.py" />
 
   <!-- node for running the plan -->
-  <node name="execution_task"
-    pkg="peg_assist_demo"
-    type="task.py" />
+  <node name="execution_task" pkg="peg_assist_demo" type="task.py">
+    <param name="move_ring_file" value="($find peg_assist_demo)/data/move_ring.yaml"/>
+    <param name="grab_ring_file" value="($find peg_assist_demo)/data/grab_ring.yaml"/>
+  </node>
+
+  <!-- service node for controlling the robot arm, interfaces with MoveIt and orocos -->
+  <node name="Arm2Commander" pkg="peg_assist_demo" type="ArmCommander.py">
+    <param name="hand_topic" value="/gazebo/w2barrett_manager/hand/cmd"/>
+  </node>
 
   <!-- view execution progress -->
   <node name="smach_viewer"
