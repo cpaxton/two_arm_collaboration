@@ -14,6 +14,10 @@
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
   <arg name="planning" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
+  <arg name="rqt_barrett_arm1" default="true"/>
+  <arg name="rqt_barrett_arm2" default="true"/>
+  <arg name="run_script_arm1" default="true"/>
+  <arg name="run_script_arm2" default="true"/>
 
   <!--<rosparam>use_sim_time: true</rosparam>-->
 
@@ -24,6 +28,8 @@
     <arg name="debug" value="$(arg debug)"/>
     <arg name="planning" value="$(arg planning)" />
     <arg name="hand" value="$(arg hand)" />
+    <arg name="rqt_barrett" value="$(arg rqt_barrett_arm1)" />
+    <arg name="run_script" value="$(arg run_script_arm1)" />
   </include>
 
   <!-- Load WAM URDF -->

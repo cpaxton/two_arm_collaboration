@@ -15,6 +15,7 @@
   <arg name="planning" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
   <arg name="rqt_barrett" default="true" doc="(bool) Launch the rqt_barrett joint manager"/>
+  <arg name="run_script" default="true" doc="(bool) Run script to start IK controller"/>
 
   <rosparam>use_sim_time: true</rosparam>
 
@@ -67,7 +68,7 @@
 
   </group>
 
-  <node name="arm1_script_runner"
+  <node if="$(arg run_script)" name="arm1_script_runner"
     pkg="lcsr_collab"
     type="run_controllers.py"
     args="/gazebo/wam__deployer__ $(find lcsr_collab)/sim/enable/arm1_enable_ik.ops world wam/cmd"
