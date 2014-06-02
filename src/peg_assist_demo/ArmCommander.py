@@ -9,7 +9,7 @@ from cartesian_trajectory_msgs.msg import CartesianTrajectoryPoint
 from oro_barrett_msgs.msg import BHandCmd
 
 '''
-Arm2Commander.py
+ArmCommander.py
 
 This file contains code to republish cartesian trajectories for the WAM arms.
 It reads from a topic like 'wam2/cmd_traj' and republishes 'wam2/cmd'.
@@ -34,7 +34,7 @@ class ArmCommander(object):
         self.hand_closed.mode = [3, 3, 3, 3]
         self.hand_closed.cmd = [2.0, 2.0, 2.0, 2.0]
         
-        self.hand_pub = rospy.Publisher(self.hand_topic, 
+        self.hand_pub = rospy.Publisher(self.hand_topic, BHandCmd, 10)
 
     '''
     reset_cb()
@@ -54,7 +54,7 @@ class ArmCommander(object):
 
         # iterate over trajectory
 
-if __name__ = '__main__' :
+if __name__ == '__main__' :
 
     rospy.init_node('arm_command_node')
 

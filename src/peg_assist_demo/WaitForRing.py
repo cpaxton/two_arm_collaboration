@@ -4,7 +4,7 @@ import roslib; roslib.load_manifest('peg_assist_demo')
 import rospy
 import actionlib
 
-import * from peg_assist_demo.msg
+from peg_assist_demo.msg import *
 
 class WaitForRingAction(object) :
     # create messages
@@ -24,4 +24,5 @@ class WaitForRingAction(object) :
         r = rospy.Rate(1)
         success = True
 
-
+if __name__ == '__main__' :
+    rospy.init_node('wait_for_ring_server')
