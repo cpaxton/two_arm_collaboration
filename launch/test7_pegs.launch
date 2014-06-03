@@ -7,6 +7,10 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find lcsr_collab)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rqt_barrett_arm1" default="false"/>
+  <arg name="rqt_barrett_arm2" default="false"/>
+  <arg name="run_script_arm1" default="true"/>
+  <arg name="run_script_arm2" default="true"/>
 
   <!-- spawn peg 1 -->
   <param name="peg1_description"
@@ -56,6 +60,10 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)" />
+    <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
+    <arg name="run_script_arm1" value="$(arg run_script_arm1)" />
+    <arg name="run_script_arm2" value="$(arg run_script_arm2)" />
   </include>
 
 </launch>

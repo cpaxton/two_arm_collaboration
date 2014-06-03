@@ -14,8 +14,8 @@
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
   <arg name="planning" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
-  <arg name="rqt_barrett_arm1" default="true"/>
-  <arg name="rqt_barrett_arm2" default="true"/>
+  <arg name="rqt_barrett_arm1" default="false"/>
+  <arg name="rqt_barrett_arm2" default="false"/>
   <arg name="run_script_arm1" default="true"/>
   <arg name="run_script_arm2" default="true"/>
 
@@ -37,11 +37,11 @@
 
     <!-- Load WAM URDF -->
     <param name="w2barrett_manager/robot_description" 
-      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 0.75' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
   
     <!-- Load WAM URDF for inverse kinematics -->
     <param name="w2barrett_manager/ik_robot_description" 
-      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 0.75' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=false component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=false component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
 
     <!-- Spawn the robot in Gazebo -->
     <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
@@ -75,6 +75,7 @@
     pkg="lcsr_collab"
     type="run_controllers.py"
     args="/gazebo/wam2__deployer__ $(find lcsr_collab)/sim/enable/arm2_enable_ik.ops world wam2/cmd"
+    if="$(arg run_script_arm2)"
     output="screen"/>
 
 </launch>
