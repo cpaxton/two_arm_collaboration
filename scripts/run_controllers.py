@@ -14,9 +14,13 @@ def start_controllers (conname, filename, world, target):
     print "Waiting for transform from %s to %s"%(world, target)
 
     rate = rospy.Rate(30.0)
+
+    '''
+    # REMOVED BECAUSE IT MESSED UP SOME OF THE LAUNCH SCRIPTS
     while not rospy.is_shutdown():
 
         rate.sleep()
+        print "test"
 
         try:
             listener = tf.TransformListener()
@@ -24,7 +28,7 @@ def start_controllers (conname, filename, world, target):
             break
         except tf.Exception, e:
             continue
-
+    '''
         
 
     print "Found TF target frame."
