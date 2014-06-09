@@ -74,7 +74,7 @@
     args="/gazebo/wam__deployer__ $(find lcsr_collab)/sim/enable/arm1_enable_ik.ops world wam/cmd"
     output="screen"/>
 
-  <node name="arm1_rqt_barret" pkg="rqt_barrett" type="rqt_barrett" if="$(arg rqt_barrett)">
+  <node name="arm1_rqt_barrett" pkg="rqt_barrett" type="rqt_barrett" if="$(arg rqt_barrett)">
     <remap from="joint_states" to="/gazebo/barrett_manager/wam/joint_states"/>
     <remap from="robot_description" to="/gazebo/barrett_manager/robot_description"/>
   </node>
