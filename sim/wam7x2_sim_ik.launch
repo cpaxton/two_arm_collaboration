@@ -12,7 +12,8 @@
   <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
   <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
-  <arg name="planning" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" default="true" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
   <arg name="rqt_barrett_arm1" default="false"/>
   <arg name="rqt_barrett_arm2" default="false"/>
@@ -26,7 +27,7 @@
     <env name="log_level" value="$(arg log_level)"/>
     <arg name="gui" value="$(arg gui)" />
     <arg name="debug" value="$(arg debug)"/>
-    <arg name="planning" value="$(arg planning)" />
+    <arg name="planning" value="$(arg planning_arm1)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="rqt_barrett" value="$(arg rqt_barrett_arm1)" />
     <arg name="run_script" value="$(arg run_script_arm1)" />
@@ -64,9 +65,9 @@
       <arg name="oro_prefix" value="w2"/>
     </include>
 
-    <group ns="wam2">
+    <group ns="w2barrett_manager">
       <!-- Moveit -->
-      <include if="$(arg planning)" file="$(find lcsr_barrett)/sim/wam7_planning.launch"/>
+      <include if="$(arg planning_arm2)" file="$(find lcsr_barrett)/sim/wam7_planning.launch"/>
     </group>
       
   </group>

@@ -62,9 +62,11 @@
 
     <!-- RTT Component parameters -->
     <include file="$(find lcsr_collab)/sim/orocos_component_params.launch"/>
-      
-    <!-- Moveit -->
-    <include if="$(arg planning)" file="$(find lcsr_barrett)/sim/wam7_planning.launch"/>
+
+    <group ns="barrett_manager">
+      <!-- Moveit -->
+      <include if="$(arg planning)" file="$(find lcsr_barrett)/sim/wam7_planning.launch"/>
+    </group>
 
   </group>
 
