@@ -11,11 +11,13 @@
   <arg name="rqt_barrett_arm2" default="false"/>
   <arg name="run_script_arm1" default="true"/>
   <arg name="run_script_arm2" default="true"/>
+  <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
 
   <!-- spawn peg 1 -->
   <param name="peg1_description"
     command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/peg.urdf.xacro' name:=peg1 xx:=0.75 yy:=0.75"
-  />
+    />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model peg1 -param peg1_description"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="peg1_st_pub" >
@@ -28,7 +30,7 @@
   <!-- spawn peg 2 -->
   <param name="peg2_description"
     command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/peg.urdf.xacro' name:=peg2 xx:=0.75 yy:=-0.75"
-  />
+    />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model peg2 -param peg2_description"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="peg2_st_pub" >
@@ -64,6 +66,8 @@
     <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
     <arg name="run_script_arm1" value="$(arg run_script_arm1)" />
     <arg name="run_script_arm2" value="$(arg run_script_arm2)" />
+    <arg name="planning_arm1" value="$(arg planning_arm1)"/>
+    <arg name="planning_arm2" value="$(arg planning_arm2)"/>
   </include>
 
 </launch>

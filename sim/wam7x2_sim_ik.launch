@@ -13,7 +13,7 @@
   <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
   <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
-  <arg name="planning_arm2" default="true" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
   <arg name="rqt_barrett_arm1" default="false"/>
   <arg name="rqt_barrett_arm2" default="false"/>

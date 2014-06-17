@@ -11,6 +11,8 @@
   <arg name="rqt_barrett_arm2" default="false"/>
   <arg name="run_script_arm1" default="true"/>
   <arg name="run_script_arm2" default="true"/>
+  <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
 
   <!--
     This launchfile brings up one-two 7-DOF WAM robots in the gazebo simulator from the lcsr_barrett package.
@@ -22,6 +24,7 @@
     <arg name="debug" value="$(arg debug)"/>
     <arg name="rqt_barrett" value="$(arg rqt_barrett_arm1)" />
     <arg name="run_script" value="$(arg run_script_arm1)" />
+    <arg name="planning" value="$(arg planning_arm1)" />
   </include>
   <include if="$(arg usetwo)" file="$(find lcsr_collab)/sim/wam7x2_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
@@ -32,6 +35,8 @@
     <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
     <arg name="run_script_arm1" value="$(arg run_script_arm1)" />
     <arg name="run_script_arm2" value="$(arg run_script_arm2)" />
+    <arg name="planning_arm1" value="$(arg planning_arm1)"/>
+    <arg name="planning_arm2" value="$(arg planning_arm2)"/>
   </include>
 
   <!-- start rviz and load the appropriate rviz configuration if desired -->
