@@ -10,9 +10,12 @@ from smach_ros import SimpleActionState
 
 # import message types for the different possible actions
 from peg_assist_demo.msg import *
+from dmp_action.srv import *
+from dmp.msg import *
 
 human_arm = 'wam'
 auto_arm = 'wam2'
+goal_ring = 'ring1'
 
 class WaitForRing (smach.State):
     def __init__(self):
@@ -21,9 +24,17 @@ class WaitForRing (smach.State):
 
     def execute(self, userdata):
         rospy.loginfo('Waiting for Ring...')
-        client = actionlib.SimpleActionClient('fibonacci', actionlib_tutorials.msg.FibonacciAction)
+        client = actionlib.SimpleActionClient('WaitForRing',
+                peg_assist_demo.msg)
         client.wait_for_server()
-        goal = actionlib_tutorials.msg.FibonacciGoal(order=20)
+        
+        # set up the goal for the action
+        goal = peg_assist_demo.msg.WaitForRingGoal();
+        goal.arm_id = auto_arm
+        goal.ring_id = goal_ring
+        goal.distance_threshold = 0.5 # should be learned
+
+        # send the goal along
         client.send_goal(goal)
         client.wait_for_result()
         res =  client.get_result()
@@ -120,18 +131,23 @@ if __name__ == '__main__':
 
     move_ring_file = rospy.get_param("~move_ring_file")
     grab_ring_file = rospy.get_param("~grab_ring_file")
+    
+    print "TASK >>> services"
 
     # load the YAML file describing the move to peg ring motion
     rospy.wait_for_service('move_ring_motion/load_file')
-    loader = rospy.ServiceProxy('move_ring_motion/load_file')
-
+    loader = rospy.ServiceProxy('move_ring_motion/load_file', LoadFile)
     
     # load the YAML file describing the grab ring motion
     rospy.wait_for_service('grab_ring_motion/load_file')
-    loader = rospy.ServiceProxy('grab_ring_motion/load_file')
+    loader = rospy.ServiceProxy('grab_ring_motion/load_file', LoadFile)
+
+    print "TASK >>> Loaded files?"
 
     # execute the state machine
     outcome = sm.execute()
+
+    print "TASK >>> Done state machine?"
 
     rospy.spin()
     sis.stop()

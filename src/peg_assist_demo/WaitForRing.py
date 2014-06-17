@@ -24,5 +24,8 @@ class WaitForRingAction(object) :
         r = rospy.Rate(1)
         success = True
 
+        # detect when the ring is in the right area
+
 if __name__ == '__main__' :
     rospy.init_node('wait_for_ring_server')
+

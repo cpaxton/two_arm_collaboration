@@ -6,7 +6,9 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="$(find lcsr_collab)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rviz_config" default="$(find peg_assist_demo)/config/peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rqt_barrett_arm1" default="false" doc="(bool) show rqt barrett UI for user-controlled arm" />
+  <arg name="rqt_barrett_arm2" default="false" doc="(bool) show rqt barrett UI for algorithm-controlled arm" />
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find lcsr_spacenav)/launch/spacenav_rostopics.launch">
@@ -17,9 +19,13 @@
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
     <arg name="debug" value="$(arg debug)"/>
-    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rviz" value="false" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)" />
+    <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
+    <arg name="planning_arm2" value="true" /> <!-- start MoveIt for the second arm -->
+    <arg name="run_script_arm2" value="false" />
   </include>
 
   <!-- node for moving ring to destination peg -->
@@ -43,7 +49,7 @@
     type="startup.py" />
 
   <!-- node for running the plan -->
-  <node name="execution_task" pkg="peg_assist_demo" type="task.py">
+  <node name="execution_task" pkg="peg_assist_demo" type="task.py" output="screen">
     <param name="move_ring_file" value="($find peg_assist_demo)/data/move_ring.yaml"/>
     <param name="grab_ring_file" value="($find peg_assist_demo)/data/grab_ring.yaml"/>
   </node>
@@ -57,5 +63,25 @@
   <node name="smach_viewer"
     pkg="smach_viewer"
     type="smach_viewer.py" />
+
+  <!-- =================================================================================
+                        Launch Visualization
+       ================================================================================= -->
+
+  <!-- NOTE: this section is based on barrett_wam_moveit_config/launch/moveit_rviz.launch -->
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+  <!--
+  <arg name="config" default="false" />
+  <arg unless="$(arg config)" name="command_args" value="" />
+  <arg     if="$(arg config)" name="command_args" value="-d $(find barrett_wam_moveit_config)/launch/moveit.rviz" />
+  -->
+
+  <!-- launch rviz with remapping for the moveit display -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
+    <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene"/>
+    <rosparam command="load" file="$(find barrett_wam_moveit_config)/config/kinematics.yaml"/>
+  </node>
 
 </launch>
