@@ -44,6 +44,11 @@
     <param name="barrett_manager/robot_description" 
       command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_sim_ik.ops' bhand_script:='$(find lcsr_collab)/sim/bhand_sim.ops' hand:=$(arg hand)" />
 
+    <!-- Load WAM SRDF -->
+    <param name="barrett_manager/robot_description_semantic" 
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam.srdf.xacro' prefix:=wam" />
+
+    <!-- Load WAM URDF for inverse kinematics -->
     <param name="barrett_manager/ik_robot_description" 
       command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_sim_ik.ops' bhand_script:='$(find lcsr_collab)/sim/bhand_sim.ops' hand:=false" />
 

@@ -1,15 +1,17 @@
 <robot name="$(arg name)"
   xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!--<link name="world"/>-->
 
-  <!-- Fix this robot to the world -->
-  <!--<joint name="world_joint"  type="floating">
-    <origin xyz="0 0 0" rpy="0 0 0" />
+  <!-- Attach this robot to the world:
+    - this was changed because of the way MoveIt works
+    - we need to determine the relationship between any object and the world
+  -->
+  <!--<link name="world"/>
+  <joint name="$(arg name)_to_world"  type="floating">
+    <origin xyz="$(arg xx) $(arg yy) $(arg zz)" rpy="0 0 0" />
     <parent link="world"/>
-    <child link="ring_link"/>
+    <child link="$(arg name)/ring_link"/>
   </joint>-->
-
 
   <link name = "$(arg name)/ring_link">
     <inertial>
