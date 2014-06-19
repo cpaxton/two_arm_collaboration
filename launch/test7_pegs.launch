@@ -48,6 +48,7 @@
   <!--
     command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/ring.urdf.xacro' name:=ring1 xx:=0.75 yy:=0.75 zz:=0.25"/>
   -->
+  <!--<node name="peg1_start_pub" pkg="tf" type="static_transform_publisher" args="0.75 0.75 0.75 0 0 0 /world /peg1_start 100"/>-->
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args=" -urdf -model ring1 -param ring1_description -x 0.75 -y 0.75 -z 0.25"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="ring1_st_pub" >
