@@ -43,6 +43,8 @@
   <!-- spawn ring 1 -->
   <param name="ring1_description"
     command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/ring.urdf.xacro' name:=ring1"/>
+  <param name="ring1_description_semantic"
+    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/ring.srdf.xacro' name:=ring1"/>
   <!--
     command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/ring.urdf.xacro' name:=ring1 xx:=0.75 yy:=0.75 zz:=0.25"/>
   -->
