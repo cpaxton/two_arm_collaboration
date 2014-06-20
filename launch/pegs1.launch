@@ -28,6 +28,11 @@
     <arg name="run_script_arm2" value="false" />
   </include>
 
+  <!-- =================================================================================
+                        Launch Task Management Stuff
+       ================================================================================= -->
+
+
   <!-- node for moving ring to destination peg -->
   <node name="move_ring_motion"
     pkg="dmp_action"
@@ -63,6 +68,15 @@
   <node name="smach_viewer"
     pkg="smach_viewer"
     type="smach_viewer.py" />
+
+
+  <!-- =================================================================================
+                        Launch Predicator
+       ================================================================================= -->
+
+  <include file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch"/>
+
+  <node name="predicator_core" pkg="predicator_core" type="core.py"/>
 
   <!-- =================================================================================
                         Launch Visualization

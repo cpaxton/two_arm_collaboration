@@ -34,7 +34,9 @@
   <run_depend>smach</run_depend>
   <run_depend>smach_viewer</run_depend>
   <run_depend>dmp_action</run_depend>
-
+  <run_depend>predicator_core</run_depend>
+  <run_depend>predicator_collision</run_depend>
+  <run_depend>predicator_msgs</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
