@@ -7,11 +7,11 @@ import tf
 
 from rtt_ros_msgs.srv import *
 
-def start_controllers (conname, filename, world, target):
+def start_controllers (conname, filename):
     sname = conname + "/run_script"
     print "Service name: %s"%sname
     rospy.wait_for_service(sname)
-    print "Waiting for transform from %s to %s"%(world, target)
+    #print "Waiting for transform from %s to %s"%(world, target)
 
     rate = rospy.Rate(30.0)
 
@@ -57,10 +57,10 @@ if __name__ == "__main__":
     if len(sys.argv) >= 5:
         conname = sys.argv[1]
         filename = sys.argv[2]
-        world = sys.argv[3]
-        target = sys.argv[4]
+        #world = sys.argv[3]
+        #target = sys.argv[4]
         print "Starting %s script %s"%(conname, filename)
-        res = start_controllers(conname, filename, world, target)
+        res = start_controllers(conname, filename)
         print "Success: %s"%res
     else:
         print "RUN_CONTROLLERS.PY"
