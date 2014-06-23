@@ -38,7 +38,6 @@
   <node name="stage_pose_broadcaster" pkg="tf" type="static_transform_publisher"
     args="0 0 0 0 0 0 /world /stage_link 50"/>
 
-
   <!-- Load WAM URDF -->
   <group ns="gazebo">
     <param name="barrett_manager/robot_description" 
@@ -70,7 +69,7 @@
 
     <group ns="barrett_manager">
       <!-- Moveit -->
-      <include if="$(arg planning)" file="$(find lcsr_barrett)/sim/wam7_planning.launch"/>
+      <include if="$(arg planning)" file="$(find lcsr_collab)/sim/wam7_planning.launch"/>
     </group>
 
   </group>
