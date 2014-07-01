@@ -28,6 +28,12 @@
     <arg name="run_script_arm2" value="false" />
   </include>
 
+  <node name="arm2_joint_script_runner"
+    pkg="lcsr_collab"
+    type="run_controllers.py"
+    args="/gazebo/wam2__deployer__ $(find lcsr_collab)/sim/enable/arm2_enable_joint.ops"
+    output="screen"/>
+
   <!-- =================================================================================
                         Launch Task Management Stuff
        ================================================================================= -->
@@ -74,8 +80,27 @@
                         Launch Predicator
        ================================================================================= -->
 
-  <include file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch"/>
+  <!-- touching, etc. -->
+  <include file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch">
+    <arg name="output" value="log"/>
+  </include>
 
+  <!-- left, right, up, down, etc. -->
+  <include file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
+    <arg name="output" value="log"/>
+  </include>
+
+  <include file="$(find predicator_fake_classification)/launch/pegs_classification_predicates_test.launch">
+    <arg name="output" value="log"/>
+  </include>
+
+  <include file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
+    <arg name="output" value="log"/>
+  </include>
+
+
+
+  <!-- predicator core: test to determine if something has happened -->
   <node name="predicator_core" pkg="predicator_core" type="core.py"/>
 
   <!-- =================================================================================
