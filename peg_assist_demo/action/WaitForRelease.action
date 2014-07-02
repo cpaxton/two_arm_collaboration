@@ -1,0 +1,8 @@
+# topic to listen to for arm commands
+string hand_topic
+# time to wait after a command to release is sent
+float64 secs_to_wait
+---
+uint32 ring_released
+---
+float64 secs_waiting

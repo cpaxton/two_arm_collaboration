@@ -1,0 +1,9 @@
+# We want to move to and grasp a certain ring
+string ring_id
+---
+# see if ring has been successfully grabbed
+uint32 ring_grasped
+---
+float64 secs_waiting
+float64 ring_distance
+uint32 plan_success
