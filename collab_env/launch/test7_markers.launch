@@ -7,6 +7,13 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find collab_env)/config/tf_markers.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rqt_barrett_arm1" default="false"/>
+  <arg name="rqt_barrett_arm2" default="false"/>
+  <arg name="run_script_arm1" default="true"/>
+  <arg name="run_script_arm2" default="true"/>
+  <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
+
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find collab_env)/launch/test7.launch">
@@ -17,6 +24,12 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)" />
+    <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
+    <arg name="run_script_arm1" value="$(arg run_script_arm1)" />
+    <arg name="run_script_arm2" value="$(arg run_script_arm2)" />
+    <arg name="planning_arm1" value="$(arg planning_arm1)"/>
+    <arg name="planning_arm2" value="$(arg planning_arm2)"/>
   </include>
 
   <node name="marker1_node"
