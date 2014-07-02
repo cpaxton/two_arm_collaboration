@@ -1,0 +1,22 @@
+<launch>
+
+  <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
+  <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
+  <arg name="rviz" default="true" doc="(bool) run rviz"/>
+  <arg name="rviz_config" default="$(find lcsr_collab)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+
+  <!-- load the WAM arm settings, space nav controller, and user interface -->
+  <include file="$(find lcsr_spacenav)/launch/spacenav_rostopics.launch"/>
+  <include file="$(find lcsr_collab)/launch/test7_pegs.launch">
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="hand" value="$(arg hand)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rviz_config" value="$(arg rviz_config)" />
+    <arg name="usetwo" value="$(arg usetwo)" />
+  </include>
+</launch>
