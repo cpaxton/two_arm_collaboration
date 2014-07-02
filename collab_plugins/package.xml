@@ -40,7 +40,7 @@
     <!-- Beetree Condition Plugins -->
     <instructor plugin="collab_plugins.NodeConditionExistsGUI" type="CONDITION"
       description="Test to see if a given entity exists of a certain type"
-      name="Test Predicate Condition"/>
+      name="Entity Exists Condition"/>
 
 
   </export>
