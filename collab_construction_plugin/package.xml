@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>lcsr_construction_plugin</name>
+  <name>collab_construction_plugin</name>
   <version>0.0.0</version>
   <description>The lcsr_construction_plugin package</description>
 

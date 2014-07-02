@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lcsr_construction_plugin)
+project(collab_construction_plugin)
 
 # Load catkin and all dependencies required for this package
 find_package(catkin REQUIRED COMPONENTS

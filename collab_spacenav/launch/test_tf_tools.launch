@@ -27,6 +27,6 @@
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lcsr_collab)/config/tf.rviz" />
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find collab_env)/config/tf.rviz" />
 
 </launch>

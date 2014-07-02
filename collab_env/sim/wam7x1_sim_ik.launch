@@ -41,15 +41,15 @@
   <!-- Load WAM URDF -->
   <group ns="gazebo">
     <param name="barrett_manager/robot_description" 
-      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_sim_ik.ops' bhand_script:='$(find lcsr_collab)/sim/bhand_sim.ops' hand:=$(arg hand)" />
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_sim_ik.ops' bhand_script:='$(find collab_env)/sim/bhand_sim.ops' hand:=$(arg hand)" />
 
     <!-- Load WAM SRDF -->
     <param name="barrett_manager/robot_description_semantic" 
-      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam.srdf.xacro' prefix:=wam" />
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam.srdf.xacro' prefix:=wam" />
 
     <!-- Load WAM URDF for inverse kinematics -->
     <param name="barrett_manager/ik_robot_description" 
-      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_sim_ik.ops' bhand_script:='$(find lcsr_collab)/sim/bhand_sim.ops' hand:=false" />
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_sim_ik.ops' bhand_script:='$(find collab_env)/sim/bhand_sim.ops' hand:=false" />
 
     <!-- Spawn the robot in Gazebo -->
     <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
@@ -60,24 +60,24 @@
   <group ns="gazebo">
 
     <!-- Barrett Hardwre Config and Orocos Components -->
-    <include file="$(find lcsr_collab)/sim/barrett_manager.launch">
+    <include file="$(find collab_env)/sim/barrett_manager.launch">
       <arg name="hand" value="$(arg hand)"/>
     </include>
 
     <!-- RTT Component parameters -->
-    <include file="$(find lcsr_collab)/sim/orocos_component_params.launch"/>
+    <include file="$(find collab_env)/sim/orocos_component_params.launch"/>
 
     <group ns="barrett_manager">
       <!-- Moveit -->
-      <include if="$(arg planning)" file="$(find lcsr_collab)/sim/wam7_planning.launch"/>
+      <include if="$(arg planning)" file="$(find collab_env)/sim/wam7_planning.launch"/>
     </group>
 
   </group>
 
   <node if="$(arg run_script)" name="arm1_script_runner"
-    pkg="lcsr_collab"
+    pkg="collab_env"
     type="run_controllers.py"
-    args="/gazebo/wam__deployer__ $(find lcsr_collab)/sim/enable/arm1_enable_ik.ops world wam/cmd"
+    args="/gazebo/wam__deployer__ $(find collab_env)/sim/enable/arm1_enable_ik.ops world wam/cmd"
     output="screen"/>
 
   <node name="arm1_rqt_barrett" pkg="rqt_barrett" type="rqt_barrett" if="$(arg rqt_barrett)">
@@ -85,6 +85,6 @@
     <remap from="robot_description" to="/gazebo/barrett_manager/robot_description"/>
   </node>
 
-  <node name="run_gazebo_script" pkg="lcsr_collab" type="run_gazebo.py" output="screen"/>
+  <node name="run_gazebo_script" pkg="collab_env" type="run_gazebo.py" output="screen"/>
 
 </launch>
