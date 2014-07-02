@@ -81,6 +81,10 @@ rosnode kill spacenav_client_node
 
 TODO: Replay can be modified from its current state to record Predicator messages instead.
 
+### Instructor Plugins
+
+The `collab_plugins` package contains/will contain information to create nodes in Instructor that can control the robot or test for robot-related conditions.
+
 ### Construction Plugin
 
 ## Troubleshooting
