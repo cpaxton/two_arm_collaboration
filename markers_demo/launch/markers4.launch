@@ -6,7 +6,7 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="$(find peg_assist_demo)/config/peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rviz_config" default="$(find collab_env)/config/tf_markers_x4.rviz" doc="(string) rviz config file for user interface"/>
   <arg name="rqt_barrett_arm1" default="false" doc="(bool) show rqt barrett UI for user-controlled arm" />
   <arg name="rqt_barrett_arm2" default="false" doc="(bool) show rqt barrett UI for algorithm-controlled arm" />
 
@@ -19,7 +19,7 @@
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
     <arg name="debug" value="$(arg debug)"/>
-    <arg name="rviz" value="false" />
+    <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
     <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)" />
