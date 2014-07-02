@@ -11,10 +11,10 @@
   <arg name="rqt_barrett_arm2" default="false" doc="(bool) show rqt barrett UI for algorithm-controlled arm" />
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_spacenav)/launch/spacenav_rostopics.launch">
+  <include file="$(find collab_spacenav)/launch/spacenav_rostopics.launch">
     <arg name="usetwo" value="false"/>
   </include>
-  <include file="$(find lcsr_collab)/launch/test7_pegs.launch">
+  <include file="$(find collab_env)/launch/test7_pegs.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
@@ -29,9 +29,9 @@
   </include>
 
   <node name="arm2_joint_script_runner"
-    pkg="lcsr_collab"
+    pkg="collab_collab"
     type="run_controllers.py"
-    args="/gazebo/wam2__deployer__ $(find lcsr_collab)/sim/enable/arm2_enable_joint.ops"
+    args="/gazebo/wam2__deployer__ $(find collab_env)/sim/enable/arm2_enable_joint.ops"
     output="screen"/>
 
   <!-- =================================================================================
