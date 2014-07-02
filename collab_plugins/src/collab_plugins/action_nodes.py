@@ -10,6 +10,7 @@ from PyQt4.QtCore import *
 import beetree; from beetree import Node
 from instructor_core import NodeGUI
 from instructor_core.instructor_qt import NamedField
+from instructor_core.instructor_qt import NamedComboBox
 # For testing the service node
 from instructor_plugins.srv import *
 
