@@ -1,0 +1,33 @@
+<launch>
+
+  <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
+  <arg name="usetwo" default="true" doc="(bool) Use two WAM arms instead of one"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
+  <arg name="rviz" default="true" doc="(bool) run rviz"/>
+  <arg name="rviz_config" default="$(find lcsr_collab)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
+
+  <!-- load the WAM arm settings, space nav controller, and user interface -->
+  <include file="$(find lcsr_collab)/launch/test7.launch">
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="hand" value="$(arg hand)" />
+    <arg name="log_level" value="$(arg log_level)" />
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rviz_config" value="$(arg rviz_config)" />
+    <arg name="usetwo" value="$(arg usetwo)" />
+  </include>
+
+  <!-- spawn construction square -->
+  <param name="square_description"
+    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square"
+  />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args=" -urdf -model square -param square_description -x 0.50 -y 0.50 -z 0.05"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="square_st_pub" >
+    <remap from="robot_description" to="square_description" />
+    <!--<remap from="/joint_states" to="/square/joint_states" />-->
+  </node>
+
+</launch>

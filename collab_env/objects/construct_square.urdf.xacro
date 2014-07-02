@@ -1,0 +1,81 @@
+<robot name="$(arg name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find lcsr_collab)/objects/construct_common.urdf.xacro"/>
+
+  <!-- root link to the world frame -->
+  <!--<link name="world" />
+  <joint name="world_to_$(arg name)" type="floating">
+    <origin xyz="$(arg xyz)" rpy="$(arg rpy)"/>
+    <parent link="world"/>
+    <child link="$(arg name)/corner1"/>
+  </joint>-->
+
+  <xacro:cs_corner_1child prefix="$(arg name)"
+    id="corner1"
+    child1_id="edge1"
+    xyz="0 ${corner_joint_offset+edge_joint_y_offset} 0"
+    rpy="0 0 0"
+  />
+
+  <xacro:cs_edge_child prefix="$(arg name)"
+    id="edge1"
+    child_id="corner2"
+    xyz="0 ${corner_joint_offset+edge_joint_y_offset} 0"
+    rpy="0 0 0"
+  />
+
+  <xacro:cs_corner_1child prefix="$(arg name)"
+    id="corner2"
+    child1_id="edge2"
+    xyz="${corner_joint_offset+edge_joint_y_offset} 0 0"
+    rpy="0 0 ${-1*PI/2}"
+  />
+
+  <xacro:cs_edge_child prefix="$(arg name)"
+    id="edge2"
+    child_id="corner3"
+    xyz="0 ${corner_joint_offset+edge_joint_y_offset} 0"
+    rpy="0 0 0"
+  />
+
+  <xacro:cs_corner_1child prefix="$(arg name)"
+    id="corner3"
+    child1_id="edge3"
+    xyz="${corner_joint_offset+edge_joint_y_offset} 0 0"
+    rpy="0 0 ${-1*PI/2}"
+  />
+
+  <xacro:cs_edge_child prefix="$(arg name)"
+    id="edge3"
+    child_id="corner4"
+    xyz="0 ${corner_joint_offset+edge_joint_y_offset} 0"
+    rpy="0 0 0"
+  />
+
+  <xacro:cs_corner_1child prefix="$(arg name)"
+    id="corner4"
+    child1_id="edge4"
+    xyz="${corner_joint_offset+edge_joint_y_offset} 0 0"
+    rpy="0 0 ${-1*PI/2}"
+  />
+
+  <xacro:cs_edge prefix="$(arg name)"
+    id="edge4"
+  />
+
+  <gazebo>
+    <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
+      <namespace>/observed</namespace>
+      <reference_frame>/world</reference_frame>
+      <verbosity>2</verbosity>
+      <enable_latch>1</enable_latch>
+      <teleport_latch>0</teleport_latch>
+      <latch_torque>1.0</latch_torque>
+      <latch_force>12.0</latch_force>
+      <latch_distance>0.05</latch_distance>
+      <latch_rotation>1.05</latch_rotation>
+      <updates_per_second>60.0</updates_per_second>
+    </plugin>
+  </gazebo>
+
+
+</robot>

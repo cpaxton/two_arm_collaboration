@@ -1,0 +1,90 @@
+<launch>
+<!--
+   - This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator.
+   -
+   - run with rviz like this for planning demo:
+   - rosrun rviz rviz __ns:=/gazebo /planning_scene:=/gazebo/planning_scene /get_planning_scene:=/gazebo/get_planning_scene
+   -
+   - rostopic pub /gazebo/barrett_manager/hand/cmd oro_barrett_msgs/BHandCmd "{ mode: [3,3,3,3], cmd: [2.5,2.5,2.5,0.0] }"
+   - rostopic pub -r 1 /gazebo/traj_rml/joint_traj_point_cmd trajectory_msgs/JointTrajectoryPoint "{ positions: [0.0,0,0,0.0,0,0,0.0] }"
+   -->
+
+  <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
+  <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
+  <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
+  <arg name="rqt_barrett_arm1" default="false"/>
+  <arg name="rqt_barrett_arm2" default="false"/>
+  <arg name="run_script_arm1" default="true"/>
+  <arg name="run_script_arm2" default="true"/>
+
+  <!--<rosparam>use_sim_time: true</rosparam>-->
+
+  <!-- Gazebo -->
+  <include file="$(find lcsr_collab)/sim/wam7x1_sim_ik.launch">
+    <env name="log_level" value="$(arg log_level)"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="planning" value="$(arg planning_arm1)" />
+    <arg name="hand" value="$(arg hand)" />
+    <arg name="rqt_barrett" value="$(arg rqt_barrett_arm1)" />
+    <arg name="run_script" value="$(arg run_script_arm1)" />
+  </include>
+
+  <!-- Load WAM URDF -->
+  <group ns="gazebo">
+
+    <!-- Load WAM URDF -->
+    <param name="w2barrett_manager/robot_description" 
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
+
+    <!-- Load WAM SRDF -->
+    <param name="w2barrett_manager/robot_description_semantic" 
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam.srdf.xacro' prefix:=wam2" />
+
+    <!-- Load WAM URDF for inverse kinematics -->
+    <param name="w2barrett_manager/ik_robot_description" 
+      command="$(find xacro)/xacro.py '$(find lcsr_collab)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find lcsr_collab)/sim/wam7_arm2_sim_ik.ops' hand:=false component_name:=w2barrett_manager bhand_script:='$(find lcsr_collab)/sim/bhand_arm2_sim.ops'" />
+
+    <!-- Spawn the robot in Gazebo -->
+    <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+      args="-urdf -model wam2 -param w2barrett_manager/robot_description"/>
+  </group>
+
+  <!-- Create nodes in gazebo namespace -->
+  <group ns="gazebo">
+
+    <!-- Barrett Hardwre Config and Orocos Components -->
+    <include file="$(find lcsr_collab)/sim/barrett_manager.launch">
+      <arg name="hand" value="$(arg hand)"/>
+      <arg name="tf_prefix" value="wam2"/>
+      <arg name="oro_prefix" value="w2"/>
+    </include>
+
+    <!-- this is fine; not causing errors. -->
+    <include file="$(find lcsr_collab)/sim/orocos_component_params.launch">
+      <arg name="tf_prefix" value="wam2"/>
+      <arg name="oro_prefix" value="w2"/>
+    </include>
+
+    <group ns="w2barrett_manager">
+      <!-- Moveit -->
+      <include if="$(arg planning_arm2)" file="$(find lcsr_collab)/sim/wam7_planning.launch">
+        <arg name="tf_prefix" value="wam2"/>
+        <arg name="oro_prefix" value="w2"/>
+        <arg name="action_ns" value="/gazebo/"/>
+      </include>
+    </group>
+      
+  </group>
+
+  <node name="arm2_script_runner"
+    pkg="lcsr_collab"
+    type="run_controllers.py"
+    args="/gazebo/wam2__deployer__ $(find lcsr_collab)/sim/enable/arm2_enable_ik.ops world wam2/cmd"
+    if="$(arg run_script_arm2)"
+    output="screen"/>
+
+</launch>

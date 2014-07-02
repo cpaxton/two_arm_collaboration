@@ -1,0 +1,30 @@
+<launch>
+<!--
+   - This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator.
+   -
+   - run with rviz like this for planning demo:
+   - rosrun rviz rviz __ns:=/gazebo /planning_scene:=/gazebo/planning_scene /get_planning_scene:=/gazebo/get_planning_scene
+   -
+   - rostopic pub /gazebo/barrett_manager/hand/cmd oro_barrett_msgs/BHandCmd "{ mode: [3,3,3,3], cmd: [2.5,2.5,2.5,0.0] }"
+   - rostopic pub -r 1 /gazebo/traj_rml/joint_traj_point_cmd trajectory_msgs/JointTrajectoryPoint "{ positions: [0.0,0,0,0.0,0,0,0.0] }"
+   -->
+
+  <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
+  <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
+
+  <param name="use_sim_time" value="true"/>
+
+  <!-- Gazebo -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="headless" value="false"/>
+  </include>
+  <param name="square_description"
+    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
+  />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args=" -urdf -model square -param square_description"/>
+</launch>
