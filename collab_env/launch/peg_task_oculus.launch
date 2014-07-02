@@ -1,5 +1,5 @@
 <launch>
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find lcsr_collab)/config/wam_peg_task_oculus.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find collab_env)/config/wam_peg_task_oculus.rviz" />
 </launch>
 
 

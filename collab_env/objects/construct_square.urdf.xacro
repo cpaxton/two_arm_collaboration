@@ -1,5 +1,5 @@
 <robot name="$(arg name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:include filename="$(find lcsr_collab)/objects/construct_common.urdf.xacro"/>
+  <xacro:include filename="$(find collab_env)/objects/construct_common.urdf.xacro"/>
 
   <!-- root link to the world frame -->
   <!--<link name="world" />
@@ -63,7 +63,7 @@
   />
 
   <gazebo>
-    <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
+    <plugin name="collab_construction_plugin" filename="libcollab_construction_plugin.so" >
       <namespace>/observed</namespace>
       <reference_frame>/world</reference_frame>
       <verbosity>2</verbosity>

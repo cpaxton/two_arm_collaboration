@@ -6,10 +6,10 @@
   <arg name="log_level" default="1" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
-  <arg name="rviz_config" default="$(find lcsr_collab)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rviz_config" default="$(find collab_env)/config/construct_square.rviz" doc="(string) rviz config file for user interface"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find lcsr_collab)/launch/test7.launch">
+  <include file="$(find collab_env)/launch/test7.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />
@@ -21,7 +21,7 @@
 
   <!-- spawn construction square -->
   <param name="square_description"
-    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square"
+    command="$(find xacro)/xacro.py '$(find collab_env)/objects/construct_square.urdf.xacro' name:=square"
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model square -param square_description -x 0.50 -y 0.50 -z 0.05"/>

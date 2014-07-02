@@ -23,7 +23,7 @@
     <arg name="headless" value="false"/>
   </include>
   <param name="square_description"
-    command="$(find xacro)/xacro.py '$(find lcsr_collab)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
+    command="$(find xacro)/xacro.py '$(find collab_env)/objects/construct_square.urdf.xacro' name:=square xyz:='0.50 0.50 0.05' rpy:='0 0 0'"
   />
   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
     args=" -urdf -model square -param square_description"/>

@@ -25,19 +25,19 @@
     <visual>
       <origin rpy="0 0 0 " xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://lcsr_collab/objects/ring.dae"/>
+        <mesh filename="package://collab_env/objects/ring.dae"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0 " xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://lcsr_collab/objects/ring.stl"/>
+        <mesh filename="package://collab_env/objects/ring.stl"/>
       </geometry>
     </collision>
   </link>
 
   <gazebo>
-    <plugin name="lcsr_construction_plugin" filename="liblcsr_construction_plugin.so" >
+    <plugin name="collab_construction_plugin" filename="libcollab_construction_plugin.so" >
       <namespace></namespace>
       <reference_frame>/world</reference_frame>
       <verbosity>1</verbosity>
