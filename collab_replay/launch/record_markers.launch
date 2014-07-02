@@ -1,0 +1,8 @@
+<launch>
+  <arg name="filename" default="markers.bag" doc="(string) name of output file"/>
+
+  <node pkg="lcsr_replay" name="lcsr_replay_recorder" type="rrec" output="screen">
+    <rosparam param="frames">[/marker1, /marker2, /marker1, /marker2]</rosparam>
+    <param name="bag" value="$(find lcsr_replay)/$(arg filename)"/>
+  </node>
+</launch>
