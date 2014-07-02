@@ -1,6 +1,8 @@
 ### ROS imports
-import roslib; roslib.load_manifest('collab_plugins')
+import roslib
 import rospy
+ 
+roslib.load_manifest('collab_plugins')
 
 ### Available Classes for 'from beetree import *'
 __all__ = ['NodeConditionExistsGUI']
