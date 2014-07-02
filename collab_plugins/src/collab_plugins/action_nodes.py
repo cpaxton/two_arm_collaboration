@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('instructor_plugins')
+import roslib; roslib.load_manifest('collab_plugins')
 import rospy 
 from std_msgs.msg import *
 # Qt

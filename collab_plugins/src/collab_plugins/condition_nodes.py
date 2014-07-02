@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('instructor_plugins')
+import roslib; roslib.load_manifest('collab_plugins')
 import rospy 
 from std_msgs.msg import *
 # Qt
@@ -15,39 +15,36 @@ from threading import Thread
 
 from predicator_core.srv import *
 
+entity_types = ['robot','location','object']
+
 # Node Wrappers -----------------------------------------------------------
-class NodeConditionTestPredicateGUI(NodeGUI):
+class NodeConditionExistsGUI(NodeGUI):
     def __init__(self):
-        super(NodeConditionTestPredicateGUI,self).__init__()
-        self.predicate = NamedField('Predicate','')
-        self.param1 = NamedField('Parameter 1','')
-        self.param2 = NamedField('Parameter 2','')
-        self.param3 = NamedField('Parameter 3','')
+        super(NodeConditionExistsGUI,self).__init__()
+        self.predicate = NamedComboBox('Entity Type')
+        self.param1 = NamedComboBox('Identifier')
         self.layout_.addWidget(self.predicate)
         self.layout_.addWidget(self.param1)
-        self.layout_.addWidget(self.param2)
-        self.layout_.addWidget(self.param3)
+
+        self.predicate.add_items(entity_types)
 
     def generate(self,parent=None):
-        if all([self.name.full(),self.label.full(),self.predicate.full()]):
-            return NodeConditionTestPredicate(parent,self.get_name(),self.get_label(),self.predicate.get(),
-                    self.param1.get(),
-                    self.param2.get(),
-                    self.param3.get())
+        idx = int(self.predicate.get())
+        if all([self.name.full(),self.label.full()]):
+            return NodeConditionExists(parent,self.get_name(),self.get_label(),self.predicate.get(),
+                    self.param1.get())
         else:
             return 'ERROR: node not properly defined'
 
 # Nodes -------------------------------------------------------------------
-class NodeConditionTestPredicate(Node):
-    def __init__(self,parent,name,label,predicate_name=None,param1=None,param2=None,param3=None):
+class NodeConditionExists(Node):
+    def __init__(self,parent,name,label,predicate_name=None,param1=None):
         L = '( condition )\\n' + label.upper()
         color = '#FAE364'
-        super(NodeConditionTestPredicate,self).__init__(False,parent,name,L,color,'ellipse')
+        super(NodeConditionExists,self).__init__(False,parent,name,L,color,'ellipse')
         self.service_thread = Thread(target=self.make_service_call)
         self.predicate_ = predicate_name
         self.param1_ = param1
-        self.param2_ = param2
-        self.param3_ = param3
         self.running = False
         self.finished_with_success = None
     def get_node_type(self):
@@ -84,8 +81,6 @@ class NodeConditionTestPredicate(Node):
         req = TestPredicateRequest
         req.statement.predicate = self.predicate
         req.params[0] = self.param1
-        req.params[1] = self.param2
-        req.params[2] = self.param3
         rospy.wait_for_service('predicator/test_predicate')
         try:
             test_service = rospy.ServiceProxy('predicator/test_predicate', TestPredicate)

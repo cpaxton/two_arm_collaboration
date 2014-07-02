@@ -33,13 +33,13 @@
   <export>
 
     <!-- Beetree Query Plugins -->
-    <instructor plugin="collab_plugins.NodeQueryClosestObjectGUI" type="QUERY"
+    <!--<instructor plugin="collab_plugins.NodeQueryClosestObjectGUI" type="QUERY"
       description="Retrieve identifier for the closest object"
-      name="Closest Object Query"/>
+      name="Closest Object Query"/>-->
 
     <!-- Beetree Condition Plugins -->
-    <instructor plugin="collab_plugins.NodeConditionTestPredicateGUI" type="CONDITION"
-      description="Test to see if a given predicate exists and is true"
+    <instructor plugin="collab_plugins.NodeConditionExistsGUI" type="CONDITION"
+      description="Test to see if a given entity exists of a certain type"
       name="Test Predicate Condition"/>
 
 
