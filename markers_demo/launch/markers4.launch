@@ -25,5 +25,5 @@
     <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)" />
     <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
   </include>
-
+  <include file="$(find markers_demo)/launch/markers4_predicator.launch"/>
 </launch>
