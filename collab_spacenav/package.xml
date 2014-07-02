@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>lcsr_spacenav</name>
+  <name>collab_spacenav</name>
   <version>0.0.0</version>
   <description>The lcsr_spacenav package</description>
 
