@@ -42,6 +42,5 @@
       description="Test to see if a given entity exists of a certain type"
       name="Entity Exists Condition"/>
 
-
   </export>
 </package>
