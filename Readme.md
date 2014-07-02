@@ -52,6 +52,18 @@ The Peg Assistance Demo (`peg_assist_demo`) is a package in development *(as of 
 
 The Markers demo is a very simple demo. Up to four markers exist in the world; these are considered to be both objects and locations for interaction.
 
+Launch a demo with two markers:
+
+```
+roslaunch markers_demo markers2.launch
+```
+
+Launch a demo with four markers:
+
+```
+roslaunch markers_demo markers4.launch
+```
+
 ## Other Tools
 
 ### Replay
