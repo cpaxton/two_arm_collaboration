@@ -1,0 +1,167 @@
+<launch>
+
+  <!-- launch the core -->
+  <include file="$(find predicator_bringup)/launch/core.launch"/>
+
+  <!-- ====================================== -->
+  <!-- Launch the modules needed for the task -->
+  <!-- ====================================== -->
+
+  <arg name="output" default="screen"/>
+
+  <node pkg="predicator_collision"
+    name="predicator_robot_interaction_node"
+    type="predicator_robot_interaction_node"
+    output="$(arg output)">
+
+    <rosparam param="description_list">
+      - /gazebo/barrett_manager/robot_description
+      - /gazebo/w2barrett_manager/robot_description
+      - /stage_model
+    </rosparam>
+
+    <rosparam param="joint_state_topic_list">
+      - /gazebo/barrett_manager/joint_states
+      - /gazebo/w2barrett_manager/joint_states
+    </rosparam>
+
+    <param name="verbosity" value="1"/>
+    <param name="world_frame" value="/world"/>
+  </node>
+
+  <node name="predicator_geometry_node"
+    type="predicator_geometry_node.py"
+    pkg="predicator_geometry"
+    output="$(arg output)">
+
+    <param name="height_threshold" value="0.1"/>
+    <param name="rel_x_threshold" value="0.1"/>
+    <param name="rel_y_threshold" value="0.1"/>
+    <param name="rel_z_threshold" value="0.1"/>
+    <param name="near_2D_threshold" value="0.2"/>
+    <param name="near_3D_threshold" value="0.25"/>
+
+    <rosparam param="frames">
+      - wam/shoulder_yaw_link
+      - wam/shoulder_pitch_link
+      - wam/upper_arm_link
+      - wam/forearm_link
+      - wam/wrist_yaw_link
+      - wam/wrist_pitch_link
+      - wam/wrist_palm_link
+      - wam/base_link
+      - wam2/shoulder_yaw_link
+      - wam2/shoulder_pitch_link
+      - wam2/upper_arm_link
+      - wam2/forearm_link
+      - wam2/wrist_yaw_link
+      - wam2/wrist_pitch_link
+      - wam2/wrist_palm_link
+      - wam2/base_link
+      - stage_link
+      - marker1
+      - marker2
+      - marker3
+      - marker4
+    </rosparam>
+  </node>
+
+  <node name="predicator_movement_node"
+    type="predicator_movement.py"
+    pkg="predicator_movement"
+    output="$(arg output)">
+
+    <param name="translation_velocity_threshold" value="0.01"/>
+    <param name="rotation_velocity_threshold" value="0.01"/>
+    <param name="distance_change_threshold" value="0.01"/>
+    <param name="alpha" value="0.50"/>
+
+    <rosparam param="frames">
+      - wam/shoulder_yaw_link
+      - wam/shoulder_pitch_link
+      - wam/upper_arm_link
+      - wam/forearm_link
+      - wam/wrist_yaw_link
+      - wam/wrist_pitch_link
+      - wam/wrist_palm_link
+      - wam/base_link
+      - wam2/shoulder_yaw_link
+      - wam2/shoulder_pitch_link
+      - wam2/upper_arm_link
+      - wam2/forearm_link
+      - wam2/wrist_yaw_link
+      - wam2/wrist_pitch_link
+      - wam2/wrist_palm_link
+      - wam2/base_link
+      - stage_link
+      - marker1
+      - marker2
+      - marker3
+      - marker4
+    </rosparam>
+
+  </node>
+
+  <node name="predicator_fake_class_node"
+    type="fake_classes.py"
+    pkg="predicator_fake_classification"
+    output="$(arg output)">
+
+    <rosparam param="class_info">
+      - name: robot
+        members:
+          - wam
+          - wam2
+      - name: object
+        members:
+          - wam
+          - wam2
+          - stage
+          - marker1
+          - marker2
+          - marker3
+          - marker4
+      - name: marker
+        members:
+          - marker1
+          - marker2
+          - marker3
+          - marker4
+      - name: location
+        members:
+          - marker1
+          - marker2
+          - marker3
+          - marker4
+    </rosparam>
+
+    <rosparam param="param_class_info">
+      - name: component
+        parent: wam
+        members:
+          - wam/shoulder_yaw_link
+          - wam/shoulder_pitch_link
+          - wam/upper_arm_link
+          - wam/forearm_link
+          - wam/wrist_yaw_link
+          - wam/wrist_pitch_link
+          - wam/wrist_palm_link
+      - name: component
+        parent: wam2
+        members:
+          - wam2/shoulder_yaw_link
+          - wam2/shoulder_pitch_link
+          - wam2/upper_arm_link
+          - wam2/forearm_link
+          - wam2/wrist_yaw_link
+          - wam2/wrist_pitch_link
+          - wam2/wrist_palm_link
+      - name: component
+        parent: stage
+        members:
+          - stage_link
+    </rosparam>
+
+
+  </node>
+</launch>
