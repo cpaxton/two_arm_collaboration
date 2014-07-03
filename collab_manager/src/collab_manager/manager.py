@@ -110,11 +110,18 @@ class CollabManager(object):
     def close_grippers(self, goal):
         self.grippers[goal.id] = self.hand_closed
         
+        while (rospy.Time.now() - start).to_sec() < goal.secs:
+            pass
+
         # wait for gripper to close
         res = StoredTaskActionResult()
 
     def open_grippers(self, goal):
         self.grippers[goal.id] = self.hand_opened
+
+        while (rospy.Time.now() - start).to_sec() < goal.secs:
+            pass
+
 
         # wait for gripper to open
         res = StoredTaskActionResult()
@@ -140,8 +147,6 @@ class CollabManager(object):
 
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
-
-
         
         # if it didn't finish, error
         res.result.info = "FAILED"

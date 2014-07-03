@@ -154,4 +154,6 @@
 
 
   </node>
+
+  <include file="$(find predicator_joint_states)/launch/wams.launch"/>
 </launch>
