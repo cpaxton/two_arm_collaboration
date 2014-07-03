@@ -14,6 +14,9 @@ from instructor_core.instructor_qt import NamedComboBox
 # For testing the service node
 from instructor_plugins.srv import *
 
+from predicator_msgs.msg import *
+from predicator_core.srv import *
+
 # Sample Node Wrappers -----------------------------------------------------------
 '''
 class NodeActionSampleGUI(NodeGUI):
@@ -25,17 +28,42 @@ class NodeActionSampleGUI(NodeGUI):
             return beetree.NodeAction(parent,self.get_name(),self.get_label())
         else:
             return 'ERROR: node not properly defined'
+'''
 
-class NodeServiceSampleGUI(NodeGUI):
+get_params = rospy.ServiceProxy('/predicator/get_possible_assignment', GetTypedList)
+
+'''
+Set destination to some frame
+'''
+class NodeSetDestinationGUI(NodeGUI):
     def __init__(self):
-        super(NodeServiceSampleGUI,self).__init__()
+        super(NodeSetDestinationGUI,self).__init__()
+        self.location = NamedComboBox('Destination')
+        self.robot = NamedComboBox('Robot')
+        self.layout_.addWidget(self.robot)
+        self.layout_.addWidget(self.location)
+
+        self.robots_list = get_params(id="robot").data
+        self.locations_list = get_params(id="location").data
+
+        self.robot.add_items(self.robots_list)
+        self.location.add_items(self.locations_list)
 
     def generate(self,parent=None):
+
+        if len(self.robots_list) < 1:
+            return 'ERROR: no robots defined!'
+        elif len(self.locations_list) < 1:
+            return 'ERROR: no locations defined!'
+
+        robot = self.robots_list[int(self.robot.get())]
+        location = self.locations_list[int(self.robot.get())]
+
         if all([self.name.full(),self.label.full()]):
-            return NodeServiceSample(parent,self.get_name(),self.get_label())
+            return NodeSetDestination(parent,self.get_name(),self.get_label(),
+                    robot, location)
         else:
             return 'ERROR: node not properly defined'
-'''
 
 class NodeQueryClosestObjectGUI(NodeGUI):
     def __init__(self):
@@ -63,49 +91,28 @@ class NodeQueryClosestObject(Node):
         print '  -  Node: ' + self.name_ + ' returned status: ' + self.node_status_
         return self.node_status_
 
-'''
-from threading import Thread
-class NodeServiceSample(Node):
-    def __init__(self,parent,name,label):
+
+class NodeSetDestination(Node):
+    def __init__(self,parent,name,label,robot,location):
         super(NodeServiceSample,self).__init__(False,parent,name,label,'#92D665')
-        self.service_thread = Thread(target=self.make_service_call, args=('request',1))
-        self.running = False
         self.finished_with_success = None
+        self.pub_ = rospy.Publisher('predicator/update_param', predicator_msgs.msg.UpdateParam)
+        self.robot_ = robot
+        self.location_ = location
+
     def get_node_type(self):
         return 'SERVICE'
     def get_node_name(self):
         return 'Service'
 
     def execute(self):
-        if not self.running: # Thread is not running
-            if self.finished_with_success == None: # Service was never called
-                try:
-                    self.service_thread.start()
-                    return set_status('RUNNING')
-                    self.running = True
-                except Exception, errtxt:
-                    return set_status('FAILURE')
-                    self.running = False
-        else:
-            # If thread is running
-            if self.service_thread.is_alive():
-                return set_status('RUNNING')
-            else:
-                if self.finished_with_success == True:
-                    return set_status('SUCCESS')
-                    self.running = False
-                else:
-                    return set_status('FAILURE')
-                    self.running = False
+        msg = predicator_msgs.msg.UpdateParam()
+        msg.operation = UpdateParam.PUBLISH_PREDICATE
+        msg.statement.predicate = "destination_frame"
+        msg.statement.num_params = 2
+        msg.statement.params = [self.robot_, self.location_, '']
 
-    def make_service_call(self,request,*args):
-        rospy.wait_for_service('instructor_plugins/test_service')
-        try:
-            test_service = rospy.ServiceProxy('instructor_plugins/test_service', AddTwoInts)
-            self.result = test_service(request)
-            self.finished_with_success = True
-        except rospy.ServiceException, e:
-            print e
-            self.finished_with_success = False
+        self.pub_.publish(msg)
 
-'''
+        return set_status('SUCCESS')
+
