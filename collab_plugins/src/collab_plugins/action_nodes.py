@@ -65,6 +65,35 @@ class NodeSetDestinationGUI(NodeGUI):
         else:
             return 'ERROR: node not properly defined'
 
+'''
+move to destination
+'''
+class NodeMoveToDestinationGUI(NodeGUI):
+    def __init__(self):
+        super(NodeSetDestinationGUI,self).__init__()
+        self.robot = NamedComboBox('Robot')
+        self.layout_.addWidget(self.robot)
+
+        self.robots_list = get_params(id="robot").data
+
+        self.robot.add_items(self.robots_list)
+
+    def generate(self,parent=None):
+
+        if len(self.robots_list) < 1:
+            return 'ERROR: no robots defined!'
+        elif len(self.locations_list) < 1:
+            return 'ERROR: no locations defined!'
+
+        robot = self.robots_list[int(self.robot.get())]
+        location = self.locations_list[int(self.robot.get())]
+
+        if all([self.name.full(),self.label.full()]):
+            return NodeSetDestination(parent,self.get_name(),self.get_label(),
+                    robot, location)
+        else:
+            return 'ERROR: node not properly defined'
+
 class NodeQueryClosestObjectGUI(NodeGUI):
     def __init__(self):
         super(NodeQueryClosestObjectGUI,self).__init__()
