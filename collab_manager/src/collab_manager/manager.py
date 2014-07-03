@@ -112,6 +112,7 @@ class CollabManager(object):
         
         while (rospy.Time.now() - start).to_sec() < goal.secs:
             pass
+            # check for is_closed
 
         # wait for gripper to close
         res = StoredTaskActionResult()
@@ -121,10 +122,12 @@ class CollabManager(object):
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
             pass
+            # check for is_closed
 
 
         # wait for gripper to open
         res = StoredTaskActionResult()
+        return res
 
     def move_to_destination(self, goal):
         start = rospy.Time.now()
