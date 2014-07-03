@@ -87,6 +87,11 @@ class NodeMoveToDestinationGUI(NodeGUI):
 
         self.robot.add_items(self.robots_list)
 
+        self.time = NamedField('Time Limit','0.0')
+        self.tolerance = NamedField('Tolerance','0.1')
+        self.layout_.addWidget(self.time)
+        self.layout_.addWidget(self.tolerance)
+
     def generate(self,parent=None):
 
         if len(self.robots_list) < 1:
@@ -96,9 +101,9 @@ class NodeMoveToDestinationGUI(NodeGUI):
 
         robot = self.robots_list[int(self.robot.get())]
 
-        if all([self.name.full(),self.label.full()]):
+        if all([self.name.full(),self.label.full(), self.time.full(), self.tolerance.full()]):
             return NodeMoveToDestination(parent,self.get_name(),self.get_label(),
-                    robot)
+                    robot,self.time.get(),self.tolerance.get())
         else:
             return 'ERROR: node not properly defined'
 
@@ -119,6 +124,11 @@ class NodeOpenGripperGUI(NodeGUI):
 
         self.robot.add_items(self.robots_list)
 
+        self.time = NamedField('Time Limit','0.0')
+        self.tolerance = NamedField('Tolerance','0.1')
+        self.layout_.addWidget(self.time)
+        self.layout_.addWidget(self.tolerance)
+
     def generate(self,parent=None):
 
         if len(self.robots_list) < 1:
@@ -128,9 +138,9 @@ class NodeOpenGripperGUI(NodeGUI):
 
         robot = self.robots_list[int(self.robot.get())]
 
-        if all([self.name.full(),self.label.full()]):
+        if all([self.name.full(),self.label.full(), self.time.full(), self.tolerance.full()]):
             return NodeOpenGripper(parent,self.get_name(),self.get_label(),
-                    robot)
+                    robot,self.time.get(),self.tolerance.get())
         else:
             return 'ERROR: node not properly defined'
 
@@ -151,6 +161,11 @@ class NodeCloseGripperGUI(NodeGUI):
 
         self.robot.add_items(self.robots_list)
 
+        self.time = NamedField('Time Limit','0.0')
+        self.tolerance = NamedField('Tolerance','0.1')
+        self.layout_.addWidget(self.time)
+        self.layout_.addWidget(self.tolerance)
+
     def generate(self,parent=None):
 
         if len(self.robots_list) < 1:
@@ -160,9 +175,9 @@ class NodeCloseGripperGUI(NodeGUI):
 
         robot = self.robots_list[int(self.robot.get())]
 
-        if all([self.name.full(),self.label.full()]):
+        if all([self.name.full(),self.label.full(), self.time.full(), self.tolerance.full()]):
             return NodeCloseGripper(parent,self.get_name(),self.get_label(),
-                    robot)
+                    robot,self.time.get(),self.tolerance.get())
         else:
             return 'ERROR: node not properly defined'
 

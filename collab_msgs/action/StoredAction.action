@@ -2,7 +2,9 @@
 # actual actions performed by other things
 
 # define the goal
-string id
+string id # robot to move
+float64 secs  # time to act
+float64 tolerance # how close we need to be to consider it a success
 ---
 # define the result
 collab_msgs/Info result
