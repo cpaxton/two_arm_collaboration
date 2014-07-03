@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
+import roslib; roslib.load_manifest('collab_msgs')
 
-from oro_barrett_msgs.msg import *
+from oro_barrett_msgs.msg import BHandCmd
 from collab_msgs.srv import *
 from collab_msgs.msg import *
 import tf
@@ -16,6 +17,16 @@ class CollabManager(object):
     def __init__(self, arms=2):
 
         self.config_ = rospy.get_param('~topic_config')
+        self.hand_opened = BHandCmd()
+        self.hand_closed = BHandCmd()
+        
+        # set up the hand open position
+        self.hand_opened.mode = [3, 3, 3, 3]
+        self.hand_opened.cmd = [0.5, 0.5, 0.5, 0]
+
+        # set up the hand closed position
+        self.hand_closed.mode = [3, 3, 3, 3]
+        self.hand_closed.cmd = [2.0, 2.0, 2.0, 2.0]
 
         if(arms > 2):
             print "More than two arms not supported at this time."
@@ -25,15 +36,19 @@ class CollabManager(object):
             pass
 
         # start up publishers and subscribers for arm 1
-        self.close_server = actionlib.SimpleActionServer('collaboration/close',
-                StoredAction,
-                self.close_grippers,False)
-        self.open_server = actionlib.SimpleActionServer('collaboration/open',
-                StoredAction,
+        self.close_server = actionlib.SimpleActionServer('collab/close',
+                StoredTaskAction,
+                self.close_grippers, False)
+        self.open_server = actionlib.SimpleActionServer('collab/open',
+                StoredTaskAction,
                 self.open_grippers, False)
-        self.move_server = actionlib.SimpleActionServer('collaboration/move_to_destination',
-                StoredAction,
+        self.move_server = actionlib.SimpleActionServer('collab/move_to_destination',
+                StoredTaskAction,
                 self.move_to_destination, False)
+
+        self.close_server.start()
+        self.open_server.start()
+        self.move_server.start()
 
     '''
     tick()
