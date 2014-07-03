@@ -10,9 +10,11 @@
       - id: wam
         gripper_cmd: /gazebo/barrett_manager/hand/cmd
         ik_cmd: /wam/cmd
+        base_link: /wam/base_link
       - id: wam2
         gripper_cmd: /gazebo/w2barrett_manager/hand/cmd
         ik_cmd: /wam2/cmd
+        base_link: /wam2/base_link
     </rosparam>
   </node>
 

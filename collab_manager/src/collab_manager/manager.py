@@ -2,6 +2,7 @@
 
 import rospy
 import roslib; roslib.load_manifest('collab_msgs')
+import math
 
 from oro_barrett_msgs.msg import BHandCmd
 from collab_msgs.srv import *
@@ -17,6 +18,32 @@ class CollabManager(object):
     def __init__(self, arms=2):
 
         self.config_ = rospy.get_param('~topic_config')
+
+        self.gripper_topics = {}
+        self.ik_topics = {}
+        self.gripper_pubs = {}
+        self.ik_pubs = {}
+
+        self.grippers = {}
+        self.ik = {}
+
+        self.robots = []
+
+        self.bases = {}
+
+        for elem in self.config_:
+
+            robot = elem['id']
+
+            self.robots.append(robot)
+            self.gripper_topics[robot] = elem['gripper_cmd']
+            self.ik_topics[robot] = elem['ik_cmd']
+            self.gripper_pubs[robot] = rospy.Publisher(elem['gripper_cmd'], BHandCmd)
+            self.bases[robot] = elem['base_link']
+
+        print self.gripper_topics
+        print self.ik_topics
+
         self.hand_opened = BHandCmd()
         self.hand_closed = BHandCmd()
         
@@ -27,6 +54,10 @@ class CollabManager(object):
         # set up the hand closed position
         self.hand_closed.mode = [3, 3, 3, 3]
         self.hand_closed.cmd = [2.0, 2.0, 2.0, 2.0]
+
+        #self.home = {}
+        #for robot in self.robots:
+        #    home[robot] = ((0.8, 0.46, 1.0), 
 
         if(arms > 2):
             print "More than two arms not supported at this time."
@@ -52,16 +83,36 @@ class CollabManager(object):
 
     '''
     tick()
-    publish command messages for the 
+    publish command messages for the arms
     '''
     def tick(self):
-        pass
+        br = tf.TransformBroadcaster()
+        for robot in self.robots:
+            if robot in self.grippers:
+                if self.grippers[robot] == 0:
+                    self.gripper_pubs.publish(self.hand_closed)
+                else:
+                    self.gripper_pubs.publish(self.hand_opened)
+            if robot in self.ik:
+                pass
+            else:
+                # publish default transform
+                br.sendTransform((-0.50, 0, 0.8), 
+                        tf.transformations.quaternion_from_euler(0.0, 0.0, 0.0),
+                        rospy.Time.now(),
+                        self.ik_topics[robot],
+                        self.bases[robot])
+                
 
     def close_grippers(self, goal):
-        pass
+        self.grippers[goal.id] = self.hand_closed
+        
+        # wait for gripper to close
 
     def open_grippers(self, goal):
-        pass
+        self.grippers[goal.id] = self.hand_opened
+
+        # wait for gripper to open
 
     def move_to_destination(self, goal):
         pass
@@ -81,7 +132,7 @@ if __name__ == "__main__":
         cm = CollabManager(arms)
 
         while not rospy.is_shutdown():
-
+            cm.tick()
             rate.sleep()
 
     except rospy.ROSInterruptException: pass
