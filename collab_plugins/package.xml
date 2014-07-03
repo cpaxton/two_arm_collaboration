@@ -42,9 +42,25 @@
       description="Test to see if a given entity exists of a certain type"
       name="Entity Exists Condition"/>
 
+    <!-- Queries -->
     <instructor plugin="collab_plugins.NodeSetDestinationGUI" type="QUERY"
       description="Set the destination TF frame for a robot"
       name="Set Destination Frame"/>
+
+    <!-- Actions -->
+    <instructor plugin="collab_plugins.NodeMoveToDestinationGUI" type="ACTION"
+      description="Move to stored destination"
+      name="Move to Destination Action"/>
+
+    <instructor plugin="collab_plugins.NodeOpenGripperGUI" type="ACTION"
+      description="Perform a preconfigured open-gripper action"
+      name="Open Gripper Action"/>
+
+    <instructor plugin="collab_plugins.NodeCloseGripperGUI" type="ACTION"
+      description="Perform a preconfigured close-gripper action"
+      name="Close Gripper Action"/>
+
+
 
   </export>
 </package>

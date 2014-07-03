@@ -33,7 +33,12 @@ class NodeActionSampleGUI(NodeGUI):
 get_params = rospy.ServiceProxy('/predicator/get_possible_assignment', GetTypedList)
 
 '''
+NodeSetDestinationGUI()
+choose a robot
+choose a location
 Set destination to some frame
+
+written 2014/07/03
 '''
 class NodeSetDestinationGUI(NodeGUI):
     def __init__(self):
@@ -66,11 +71,15 @@ class NodeSetDestinationGUI(NodeGUI):
             return 'ERROR: node not properly defined'
 
 '''
+NodeMoveToDestinationGUI()
+choose a robot
 move to destination
+
+written 2014/07/03
 '''
 class NodeMoveToDestinationGUI(NodeGUI):
     def __init__(self):
-        super(NodeSetDestinationGUI,self).__init__()
+        super(NodeMoveToDestinationGUI,self).__init__()
         self.robot = NamedComboBox('Robot')
         self.layout_.addWidget(self.robot)
 
@@ -86,11 +95,74 @@ class NodeMoveToDestinationGUI(NodeGUI):
             return 'ERROR: no locations defined!'
 
         robot = self.robots_list[int(self.robot.get())]
-        location = self.locations_list[int(self.robot.get())]
 
         if all([self.name.full(),self.label.full()]):
-            return NodeSetDestination(parent,self.get_name(),self.get_label(),
-                    robot, location)
+            return NodeMoveToDestination(parent,self.get_name(),self.get_label(),
+                    robot)
+        else:
+            return 'ERROR: node not properly defined'
+
+'''
+NodeOpenGripperGUI
+Choose a robot
+Open gripper
+
+written 2014/07/03
+'''
+class NodeOpenGripperGUI(NodeGUI):
+    def __init__(self):
+        super(NodeOpenGripperGUI,self).__init__()
+        self.robot = NamedComboBox('Robot')
+        self.layout_.addWidget(self.robot)
+
+        self.robots_list = get_params(id="robot").data
+
+        self.robot.add_items(self.robots_list)
+
+    def generate(self,parent=None):
+
+        if len(self.robots_list) < 1:
+            return 'ERROR: no robots defined!'
+        elif len(self.locations_list) < 1:
+            return 'ERROR: no locations defined!'
+
+        robot = self.robots_list[int(self.robot.get())]
+
+        if all([self.name.full(),self.label.full()]):
+            return NodeOpenGripper(parent,self.get_name(),self.get_label(),
+                    robot)
+        else:
+            return 'ERROR: node not properly defined'
+
+'''
+NodeCloseGripperGUI()
+Choose a robot
+Close gripper
+
+written 2014/07/03
+'''
+class NodeCloseGripperGUI(NodeGUI):
+    def __init__(self):
+        super(NodeCloseGripperGUI,self).__init__()
+        self.robot = NamedComboBox('Robot')
+        self.layout_.addWidget(self.robot)
+
+        self.robots_list = get_params(id="robot").data
+
+        self.robot.add_items(self.robots_list)
+
+    def generate(self,parent=None):
+
+        if len(self.robots_list) < 1:
+            return 'ERROR: no robots defined!'
+        elif len(self.locations_list) < 1:
+            return 'ERROR: no locations defined!'
+
+        robot = self.robots_list[int(self.robot.get())]
+
+        if all([self.name.full(),self.label.full()]):
+            return NodeCloseGripper(parent,self.get_name(),self.get_label(),
+                    robot)
         else:
             return 'ERROR: node not properly defined'
 
@@ -121,10 +193,55 @@ class NodeQueryClosestObject(Node):
         return self.node_status_
 
 
+class NodeMoveToDestination(Node):
+    def __init__(self,parent,name,label,robot,location):
+        super(NodeServiceSample,self).__init__(False,parent,name,label,'#92D665')
+        self.robot_ = robot
+
+    def get_node_type(self):
+        return 'SERVICE'
+    def get_node_name(self):
+        return 'Service'
+
+    def execute(self):
+        return set_status('SUCCESS')
+
+class NodeOpenGripper(Node):
+    def __init__(self,parent,name,label,robot,location):
+        super(NodeServiceSample,self).__init__(False,parent,name,label,'#92D665')
+        self.robot_ = robot
+
+    def get_node_type(self):
+        return 'SERVICE'
+    def get_node_name(self):
+        return 'Service'
+
+    def execute(self):
+        return set_status('SUCCESS')
+
+class NodeCloseGripper(Node):
+    def __init__(self,parent,name,label,robot,location):
+        super(NodeServiceSample,self).__init__(False,parent,name,label,'#92D665')
+        self.robot_ = robot
+
+    def get_node_type(self):
+        return 'SERVICE'
+    def get_node_name(self):
+        return 'Service'
+
+    def execute(self):
+        return set_status('SUCCESS')
+
+'''
+NodeSetDestination()
+store location to predicate server
+that's it
+
+written 2014/07/03
+'''
 class NodeSetDestination(Node):
     def __init__(self,parent,name,label,robot,location):
         super(NodeServiceSample,self).__init__(False,parent,name,label,'#92D665')
-        self.finished_with_success = None
         self.pub_ = rospy.Publisher('predicator/update_param', predicator_msgs.msg.UpdateParam)
         self.robot_ = robot
         self.location_ = location

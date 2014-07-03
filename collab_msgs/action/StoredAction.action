@@ -1,7 +1,13 @@
+# action using something stored on predicator
+# actual actions performed by other things
+
+# define the goal
 string id
 ---
+# define the result
 collab_msgs/Info result
 ---
+# define the feedback message
 byte step
 byte STARTING=0
 byte RETRIEVING_PARAMS=1

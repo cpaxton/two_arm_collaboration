@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   oro_barrett_msgs
   std_msgs
+  actionlib_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -63,10 +64,13 @@ add_action_files(
 )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   cartesian_trajectory_msgs#   oro_barrett_msgs#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  cartesian_trajectory_msgs
+  oro_barrett_msgs
+  std_msgs
+  actionlib_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
