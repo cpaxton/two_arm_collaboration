@@ -94,7 +94,10 @@ class CollabManager(object):
                 else:
                     self.gripper_pubs.publish(self.hand_opened)
             if robot in self.ik:
-                pass
+                (trans, rot) = self.ik[robot]
+                br.sendTransform(trans, rot, rospy.Time.now(),
+                        self.ik_topics[robot],
+                        self.bases[robot])
             else:
                 # publish default transform
                 br.sendTransform((-0.50, 0, 0.8), 
@@ -108,14 +111,43 @@ class CollabManager(object):
         self.grippers[goal.id] = self.hand_closed
         
         # wait for gripper to close
+        res = StoredTaskActionResult()
 
     def open_grippers(self, goal):
         self.grippers[goal.id] = self.hand_opened
 
         # wait for gripper to open
+        res = StoredTaskActionResult()
 
     def move_to_destination(self, goal):
-        pass
+        start = rospy.Time.now()
+
+        res = StoredTaskActionResult()
+        feedback = StoredTaskActionFeedback()
+
+        feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+
+        while (rospy.Time.now() - start).to_sec() < goal.secs:
+
+            feedback.step = StoredTaskActionFeedback.MOVING
+            self.move_server.publish_feedback(feedback)
+
+            try:
+                pass
+
+                # get the transform
+                # publish it as wam/cmd or whatever
+
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+
+        
+        # if it didn't finish, error
+        res.result.info = "FAILED"
+
+        return res
+        
 
 if __name__ == "__main__":
 
