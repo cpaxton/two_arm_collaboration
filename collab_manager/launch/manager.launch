@@ -1,0 +1,19 @@
+<launch>
+  <arg name="output" default="screen"/>
+
+  <node name="collaboration_arm_manager"
+    pkg="collab_manager"
+    type="manager.py"
+    output="$(arg output)">
+
+    <rosparam param="topic_config">
+      - id: wam
+        gripper_cmd: /gazebo/barrett_manager/hand/cmd
+        ik_cmd: /wam/cmd
+      - id: wam2
+        gripper_cmd: /gazebo/w2barrett_manager/hand/cmd
+        ik_cmd: /wam2/cmd
+    </rosparam>
+  </node>
+
+</launch>

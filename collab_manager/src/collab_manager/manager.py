@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+import rospy
 
 from oro_barrett_msgs.msg import *
 from collab_msgs.srv import *
@@ -10,9 +13,9 @@ Publish the current gripper/IK commands to the arms
 '''
 class CollabManager(object):
 
-    __init__(self, arms=2):
+    def __init__(self, arms=2):
 
-        
+        self.config_ = rospy.get_param('~topic_config')
 
         if(arms > 2):
             print "More than two arms not supported at this time."
@@ -22,11 +25,15 @@ class CollabManager(object):
             pass
 
         # start up publishers and subscribers for arm 1
-        self.close_server = actionlib.SimpleActionServer('collaboration/close',StoredAction,self.close_grippers, False)
+        self.close_server = actionlib.SimpleActionServer('collaboration/close',
+                StoredAction,
+                self.close_grippers,False)
         self.open_server = actionlib.SimpleActionServer('collaboration/open',
-                StoredAction,self.open_grippers, False)
+                StoredAction,
+                self.open_grippers, False)
         self.move_server = actionlib.SimpleActionServer('collaboration/move_to_destination',
-                StoredAction,self.move_to_destination, False)
+                StoredAction,
+                self.move_to_destination, False)
 
     '''
     tick()
