@@ -58,12 +58,14 @@ class CollabManager(object):
         self.open_server.start()
         self.move_server.start()
 
+        self.br = tf.TransformBroadcaster()
+
     '''
     send_default_transform()
     helper function that 
     '''
     def send_default_transform(self):
-        br.sendTransform((-0.50, 0, 0.8), 
+        self.br.sendTransform((-0.50, 0, 0.8), 
                 tf.transformations.quaternion_from_euler(0.0, 0.0, 0.0),
                 rospy.Time.now(),
                 self.ik_topic,
@@ -74,7 +76,6 @@ class CollabManager(object):
     publish command messages for the arms
     '''
     def tick(self):
-        br = tf.TransformBroadcaster()
 
         if self.gripper_state == 0:
             self.gripper_pub.publish(self.hand_closed)
