@@ -19,30 +19,11 @@ class CollabManager(object):
 
         self.config_ = rospy.get_param('~topic_config')
 
-        self.gripper_topics = {}
-        self.ik_topics = {}
-        self.gripper_pubs = {}
-        self.ik_pubs = {}
-
-        self.grippers = {}
-        self.ik = {}
-
-        self.robots = []
-
-        self.bases = {}
-
-        for elem in self.config_:
-
-            robot = elem['id']
-
-            self.robots.append(robot)
-            self.gripper_topics[robot] = elem['gripper_cmd']
-            self.ik_topics[robot] = elem['ik_cmd']
-            self.gripper_pubs[robot] = rospy.Publisher(elem['gripper_cmd'], BHandCmd)
-            self.bases[robot] = elem['base_link']
-
-        print self.gripper_topics
-        print self.ik_topics
+        self.id_ = self.config_['id']
+        self.gripper_topic = self.config_['gripper_cmd']
+        self.ik_topic = self.config_['ik_cmd']
+        self.gripper_pub = rospy.Publisher(self.config_['gripper_cmd'], BHandCmd)
+        self.base_link = self.config_['base_link']
 
         self.hand_opened = BHandCmd()
         self.hand_closed = BHandCmd()
@@ -55,25 +36,21 @@ class CollabManager(object):
         self.hand_closed.mode = [3, 3, 3, 3]
         self.hand_closed.cmd = [2.0, 2.0, 2.0, 2.0]
 
-        #self.home = {}
-        #for robot in self.robots:
-        #    home[robot] = ((0.8, 0.46, 1.0), 
-
-        if(arms > 2):
-            print "More than two arms not supported at this time."
-
-        if (arms == 2):
-            # start up publishers and subscribers for arm 2
-            pass
+        # what frame should we be following?
+        self.destination_frame = ''
+        self.ik = ((-0.50, 0, 0.8), tf.transformations.quaternion_from_euler(0.0, 0.0, 0.0))
+        
+        # what is the present state of the gripper?
+        self.gripper_state = 0
 
         # start up publishers and subscribers for arm 1
-        self.close_server = actionlib.SimpleActionServer('collab/close',
+        self.close_server = actionlib.SimpleActionServer('collab/' + self.id_ + '/close',
                 StoredTaskAction,
                 self.close_grippers, False)
-        self.open_server = actionlib.SimpleActionServer('collab/open',
+        self.open_server = actionlib.SimpleActionServer('collab/' + self.id_ + '/open',
                 StoredTaskAction,
                 self.open_grippers, False)
-        self.move_server = actionlib.SimpleActionServer('collab/move_to_destination',
+        self.move_server = actionlib.SimpleActionServer('collab/' + self.id_ + '/move_to_destination',
                 StoredTaskAction,
                 self.move_to_destination, False)
 
@@ -82,33 +59,42 @@ class CollabManager(object):
         self.move_server.start()
 
     '''
+    send_default_transform()
+    helper function that 
+    '''
+    def send_default_transform(self):
+        br.sendTransform((-0.50, 0, 0.8), 
+                tf.transformations.quaternion_from_euler(0.0, 0.0, 0.0),
+                rospy.Time.now(),
+                self.ik_topic,
+                self.base_link)
+
+    '''
     tick()
     publish command messages for the arms
     '''
     def tick(self):
         br = tf.TransformBroadcaster()
-        for robot in self.robots:
-            if robot in self.grippers:
-                if self.grippers[robot] == 0:
-                    self.gripper_pubs.publish(self.hand_closed)
-                else:
-                    self.gripper_pubs.publish(self.hand_opened)
-            if robot in self.ik:
-                (trans, rot) = self.ik[robot]
-                br.sendTransform(trans, rot, rospy.Time.now(),
-                        self.ik_topics[robot],
-                        self.bases[robot])
-            else:
-                # publish default transform
-                br.sendTransform((-0.50, 0, 0.8), 
-                        tf.transformations.quaternion_from_euler(0.0, 0.0, 0.0),
-                        rospy.Time.now(),
-                        self.ik_topics[robot],
-                        self.bases[robot])
+
+        if self.gripper_state == 0:
+            self.gripper_pub.publish(self.hand_closed)
+        else:
+            self.gripper_pub.publish(self.hand_opened)
+
+
+        if len(self.destination_frame) == 0:
+            # publish default transform
+            self.send_default_transform()
+        else:
+            # publish a new transform leading to whatever location
+            (trans, rot) = self.ik
+            br.sendTransform(trans, rot, rospy.Time.now(),
+                self.ik_topic,
+                self.base_link)
                 
 
     def close_grippers(self, goal):
-        self.grippers[goal.id] = self.hand_closed
+        self.gripper_state = self.hand_closed
         
         while (rospy.Time.now() - start).to_sec() < goal.secs:
             pass
@@ -118,7 +104,7 @@ class CollabManager(object):
         res = StoredTaskActionResult()
 
     def open_grippers(self, goal):
-        self.grippers[goal.id] = self.hand_opened
+        self.gripper_state = self.hand_opened
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
             pass
