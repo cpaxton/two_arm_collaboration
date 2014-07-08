@@ -112,12 +112,12 @@ class CollabManager(object):
         res = StoredTaskActionResult()
         feedback = StoredTaskActionFeedback()
 
-        feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+        feedback.step = StoredTaskActionFeedback.update.STARTING
         self.close_server.publish_feedback(feedback)
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.step = StoredTaskActionFeedback.MOVING
+            feedback.step = StoredTaskActionFeedback.update.MOVING
             self.close_server.publish_feedback(feedback)
 
             pass
@@ -140,12 +140,12 @@ class CollabManager(object):
         res = StoredTaskActionResult()
         feedback = StoredTaskActionFeedback()
 
-        feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+        feedback.step = StoredTaskActionFeedback.update.STARTING
         self.open_server.publish_feedback(feedback)
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.step = StoredTaskActionFeedback.MOVING
+            feedback.step = StoredTaskActionFeedback.update.MOVING
             self.open_server.publish_feedback(feedback)
 
             pass
@@ -164,14 +164,14 @@ class CollabManager(object):
         res = StoredTaskActionResult()
         feedback = StoredTaskActionFeedback()
 
-        feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+        feedback.step = StoredTaskActionFeedback.update.RETRIEVING_PARAMS
         self.move_server.publish_feedback(feedback)
 
         listener = tf.TransformListener()
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.step = StoredTaskActionFeedback.MOVING
+            feedback.step = StoredTaskActionFeedback.update.MOVING
             self.move_server.publish_feedback(feedback)
 
             if found_transform == False:
