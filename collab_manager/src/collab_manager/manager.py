@@ -10,20 +10,27 @@ from collab_msgs.msg import *
 import tf
 import actionlib
 
+from predicator_core.srv import *
+
 '''
 Publish the current gripper/IK commands to the arms
 '''
 class CollabManager(object):
 
-    def __init__(self, arms=2):
+    def __init__(self):
 
         self.config_ = rospy.get_param('~topic_config')
+        self.world_frame = rospy.get_param('~world_frame','/world')
 
         self.id_ = self.config_['id']
         self.gripper_topic = self.config_['gripper_cmd']
         self.ik_topic = self.config_['ik_cmd']
         self.gripper_pub = rospy.Publisher(self.config_['gripper_cmd'], BHandCmd)
         self.base_link = self.config_['base_link']
+
+        print "starting multi-arm collaboration manager for arm \"%s\""%(self.id_)
+
+        self.test_predicate = rospy.ServiceProxy('predicator/test_predicate', TestPredicate)
 
         self.hand_opened = BHandCmd()
         self.hand_closed = BHandCmd()
@@ -74,6 +81,7 @@ class CollabManager(object):
     '''
     tick()
     publish command messages for the arms
+    tick is in a separate thread from the actions that actually change these things
     '''
     def tick(self):
 
@@ -83,17 +91,21 @@ class CollabManager(object):
             self.gripper_pub.publish(self.hand_opened)
 
 
-        if len(self.destination_frame) == 0:
-            # publish default transform
-            self.send_default_transform()
-        else:
-            # publish a new transform leading to whatever location
-            (trans, rot) = self.ik
-            br.sendTransform(trans, rot, rospy.Time.now(),
-                self.ik_topic,
-                self.base_link)
+        #if len(self.destination_frame) == 0:
+        #    # publish default transform
+        #    self.send_default_transform()
+        #else:
+        # publish a new transform leading to whatever location
+        (trans, rot) = self.ik
+        self.br.sendTransform(trans, rot, rospy.Time.now(),
+            self.ik_topic,
+            self.base_link)
                 
-
+    '''
+    close_grippers()
+    publish a message telling the grippers to close
+    check to see if it closed
+    '''
     def close_grippers(self, goal):
         self.gripper_state = self.hand_closed
         
@@ -104,6 +116,11 @@ class CollabManager(object):
         # wait for gripper to close
         res = StoredTaskActionResult()
 
+    '''
+    open_grippers()
+    change gripper_state to open
+    check to see if it opened
+    '''
     def open_grippers(self, goal):
         self.gripper_state = self.hand_opened
 
@@ -124,19 +141,22 @@ class CollabManager(object):
 
         feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
 
+        listener = tf.TransformListener()
+
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
             feedback.step = StoredTaskActionFeedback.MOVING
             self.move_server.publish_feedback(feedback)
 
-            try:
-                pass
+            if found_transform == False:
+                try:
 
-                # get the transform
-                # publish it as wam/cmd or whatever
+                    # get the transform
+                    self.ik = listener.lookupTransform(self.ik_topic, self.world_frame, rospy.Time.now())
+                    
 
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
+                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                    continue
         
         # if it didn't finish, error
         res.result.info = "FAILED"
@@ -149,14 +169,11 @@ if __name__ == "__main__":
     rospy.init_node('collaboration_arm_manager')
 
     spin_rate = rospy.get_param('rate',10)
-    arms = int(rospy.get_param('arms', 2))
     rate = rospy.Rate(spin_rate)
-
-    print "starting multi-arm collaboration manager"
 
     try:
 
-        cm = CollabManager(arms)
+        cm = CollabManager()
 
         while not rospy.is_shutdown():
             cm.tick()
