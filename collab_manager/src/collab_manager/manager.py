@@ -32,6 +32,9 @@ class CollabManager(object):
 
         self.test_predicate = rospy.ServiceProxy('predicator/test_predicate', TestPredicate)
 
+        # do we actually care to check if the predicates become true?
+        self.run_tests = rospy.get_param('~test_predicates', 0) == 1
+
         self.hand_opened = BHandCmd()
         self.hand_closed = BHandCmd()
         
