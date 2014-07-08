@@ -108,13 +108,26 @@ class CollabManager(object):
     '''
     def close_grippers(self, goal):
         self.gripper_state = self.hand_closed
-        
+
+        res = StoredTaskActionResult()
+        feedback = StoredTaskActionFeedback()
+
+        feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+        self.close_server.publish_feedback(feedback)
+
         while (rospy.Time.now() - start).to_sec() < goal.secs:
+
+            feedback.step = StoredTaskActionFeedback.MOVING
+            self.close_server.publish_feedback(feedback)
+
             pass
             # check for is_closed
 
         # wait for gripper to close
         res = StoredTaskActionResult()
+        self.open_server.set_succeeded()
+
+        return res
 
     '''
     open_grippers()
@@ -124,13 +137,25 @@ class CollabManager(object):
     def open_grippers(self, goal):
         self.gripper_state = self.hand_opened
 
+        res = StoredTaskActionResult()
+        feedback = StoredTaskActionFeedback()
+
+        feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+        self.open_server.publish_feedback(feedback)
+
         while (rospy.Time.now() - start).to_sec() < goal.secs:
+
+            feedback.step = StoredTaskActionFeedback.MOVING
+            self.open_server.publish_feedback(feedback)
+
             pass
             # check for is_closed
 
 
         # wait for gripper to open
         res = StoredTaskActionResult()
+        self.close_server.set_succeeded()
+
         return res
 
     def move_to_destination(self, goal):
@@ -140,6 +165,7 @@ class CollabManager(object):
         feedback = StoredTaskActionFeedback()
 
         feedback.step = StoredTaskActionFeedback.RETRIEVING_PARAMS
+        self.move_server.publish_feedback(feedback)
 
         listener = tf.TransformListener()
 
@@ -153,16 +179,17 @@ class CollabManager(object):
 
                     # get the transform
                     self.ik = listener.lookupTransform(self.ik_topic, self.world_frame, rospy.Time.now())
-                    
+                    found_transform = True
 
                 except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                     continue
         
         # if it didn't finish, error
-        res.result.info = "FAILED"
-
-        return res
+        # else, success
+        res.result.info = "Unknown"
+        self.move_server.set_succeeded()
         
+        return res
 
 if __name__ == "__main__":
 
