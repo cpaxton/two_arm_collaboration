@@ -30,7 +30,7 @@
 
     <!-- Load WAM SRDF -->
     <param name="barrett_manager/robot_description_semantic" 
-      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam.srdf.xacro' prefix:=wam" />
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/collab.srdf.xacro'" />
 
     <!-- Load WAM URDF for inverse kinematics -->
     <param name="barrett_manager/ik_robot_description" 
@@ -38,7 +38,7 @@
 
     <!-- Spawn the robot in Gazebo -->
     <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-      args="-urdf -model wam -param barrett_manager/robot_description"/>
+      args="-urdf -model collab -param barrett_manager/robot_description"/>
   </group>
 
 </launch>
