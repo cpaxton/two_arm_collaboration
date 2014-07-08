@@ -124,7 +124,7 @@ class CollabManager(object):
 
         # wait for gripper to close
         res = StoredTaskResult()
-        self.open_server.set_succeeded()
+        self.close_server.set_succeeded()
 
         return res
 
@@ -162,7 +162,7 @@ class CollabManager(object):
         res = StoredTaskResult()
         feedback = StoredTaskFeedback()
 
-        feedback.update.step = Step.RETRIEVING_PARAMS
+        feedback.update.step = Step.STARTING
         self.move_server.publish_feedback(feedback)
 
         listener = tf.TransformListener()
@@ -170,7 +170,7 @@ class CollabManager(object):
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.update.step = Step.MOVING
+            feedback.update.step = Step.RETRIEVING_PARAMS
             self.move_server.publish_feedback(feedback)
 
             if found_transform == False:
@@ -186,8 +186,14 @@ class CollabManager(object):
         
         # if it didn't finish, error
         # else, success
-        res.result.info = "Unknown"
-        self.move_server.set_succeeded()
+        if found_transform == True:
+            res.result.info = "Set TF frame for movement"
+            res.result.final = Step.FINISHED_SUCCESS
+            self.move_server.set_succeeded()
+        else:
+            res.result.info = "Failed to look up transform!"
+            res.result.final = Step.RETRIEVING_PARAMS
+            self.move_server.set_aborted()
         
         return res
 
