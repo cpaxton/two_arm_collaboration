@@ -2,6 +2,7 @@
   <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
   <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
 
   <!-- Gazebo -->
   <include file="$(find rtt_gazebo_examples)/test/empty_world.launch">
@@ -22,5 +23,22 @@
   <node name="stage_pose_broadcaster" pkg="tf" type="static_transform_publisher"
     args="0 0 0 0 0 0 /world /stage_link 50"/>
 
+  <!-- Load WAM URDF -->
+  <group ns="gazebo">
+    <param name="barrett_manager/robot_description" 
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/collab.urdf.xacro' arm1_prefix:=wam arm2_prefix:=wam2 component_name:=barrett_manager arm1_xyz:='0.04 0.46 1.0' arm2_xyz:='0.04 -0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_sim_ik.ops' bhand_script:='$(find collab_env)/sim/bhand_sim.ops' hand:=$(arg hand)" />
+
+    <!-- Load WAM SRDF -->
+    <param name="barrett_manager/robot_description_semantic" 
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam.srdf.xacro' prefix:=wam" />
+
+    <!-- Load WAM URDF for inverse kinematics -->
+    <param name="barrett_manager/ik_robot_description" 
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/collab.urdf.xacro' arm1_prefix:=wam arm2_prefix:=wam2 component_name:=barrett_manager arm1_xyz:='0.04 0.46 1.0' arm2_xyz:='0.04 -0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_sim_ik.ops' bhand_script:='$(find collab_env)/sim/bhand_sim.ops' hand:=false" />
+
+    <!-- Spawn the robot in Gazebo -->
+    <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+      args="-urdf -model wam -param barrett_manager/robot_description"/>
+  </group>
 
 </launch>

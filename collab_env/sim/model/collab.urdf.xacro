@@ -41,11 +41,11 @@
     </plugin>
     <!-- plugin to include Gazebo environment in MoveIt -->
     <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
-      <topicName>$(arg prefix)/planning_scene</topicName>
+      <topicName>/planning_scene</topicName>
       <sceneName>gazebo</sceneName>
-      <robotName>$(arg prefix)</robotName>
-      <robotNamespace>/gazebo/$(arg prefix)</robotNamespace>
-      <updatePeriod>0.5</updatePeriod>
+      <robotName>collab</robotName>
+      <robotNamespace>/gazebo/</robotNamespace>
+      <updatePeriod>0.05</updatePeriod>
     </plugin>
   </gazebo>
 
@@ -64,3 +64,4 @@
   <xacro:if value="$(arg hand)">
     <xacro:bhand prefix="$(arg arm2_prefix)/hand" parent_link="$(arg arm2_prefix)/wrist_palm_link" xyz="0.0 0.0 0.06" rpy="0 0 0"/>
   </xacro:if>
+</robot>
