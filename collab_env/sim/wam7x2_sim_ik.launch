@@ -74,7 +74,7 @@
       <include if="$(arg planning_arm2)" file="$(find collab_env)/sim/wam7_planning.launch">
         <arg name="tf_prefix" value="wam2"/>
         <arg name="oro_prefix" value="w2"/>
-        <arg name="action_ns" value="/gazebo/w2barrett_manager"/>
+        <arg name="action_ns" value="/gazebo/w2barrett_manager/"/>
       </include>
     </group>
       
