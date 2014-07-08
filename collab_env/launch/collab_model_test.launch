@@ -1,0 +1,26 @@
+<launch>
+  <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
+  <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
+  <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
+
+  <!-- Gazebo -->
+  <include file="$(find rtt_gazebo_examples)/test/empty_world.launch">
+    <env name="ORO_LOGLEVEL" value="$(arg log_level)"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="world_name" value="$(find lcsr_barrett)/sim/wam.world"/>
+    <arg name="debug" value="$(arg debug)" />
+  </include>
+
+    <!-- Spawn the lcsr stage in Gazebo -->
+  <param name="stage_model" 
+    command="$(find xacro)/xacro.py '$(find lcsr_barrett)/models/stage.urdf.xacro'" />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args="-urdf -model stage -param stage_model"/>
+  <node name="stage_pose_broadcaster" pkg="tf" type="static_transform_publisher"
+    args="0 0 0 0 0 0 /world /stage_link 50"/>
+
+
+</launch>
