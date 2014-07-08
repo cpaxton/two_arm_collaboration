@@ -41,7 +41,7 @@ class CollabManager(object):
 
         # set up the hand closed position
         self.hand_closed.mode = [3, 3, 3, 3]
-        self.hand_closed.cmd = [2.0, 2.0, 2.0, 2.0]
+        self.hand_closed.cmd = [2.0, 2.0, 2.0, 0]
 
         # what frame should we be following?
         self.destination_frame = ''
@@ -109,22 +109,21 @@ class CollabManager(object):
     def close_grippers(self, goal):
         self.gripper_state = self.hand_closed
 
-        res = StoredTaskActionResult()
-        feedback = StoredTaskActionFeedback()
+        res = StoredTaskResult()
+        feedback = StoredTaskFeedback()
 
-        feedback.step = StoredTaskActionFeedback.update.STARTING
+        feedback.update.step = Step.STARTING
         self.close_server.publish_feedback(feedback)
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.step = StoredTaskActionFeedback.update.MOVING
+            feedback.update.step = Step.MOVING
             self.close_server.publish_feedback(feedback)
-
-            pass
+            break # remove this when we have something to check the condition
             # check for is_closed
 
         # wait for gripper to close
-        res = StoredTaskActionResult()
+        res = StoredTaskResult()
         self.open_server.set_succeeded()
 
         return res
@@ -137,23 +136,22 @@ class CollabManager(object):
     def open_grippers(self, goal):
         self.gripper_state = self.hand_opened
 
-        res = StoredTaskActionResult()
-        feedback = StoredTaskActionFeedback()
+        res = StoredTaskResult()
+        feedback = StoredTaskFeedback()
 
-        feedback.step = StoredTaskActionFeedback.update.STARTING
+        feedback.update.step = Step.STARTING
         self.open_server.publish_feedback(feedback)
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.step = StoredTaskActionFeedback.update.MOVING
+            feedback.update.step = Step.MOVING
             self.open_server.publish_feedback(feedback)
-
-            pass
+            break # remove this when we have something to check the condition
             # check for is_closed
 
 
         # wait for gripper to open
-        res = StoredTaskActionResult()
+        res = StoredTaskResult()
         self.close_server.set_succeeded()
 
         return res
@@ -161,25 +159,27 @@ class CollabManager(object):
     def move_to_destination(self, goal):
         start = rospy.Time.now()
 
-        res = StoredTaskActionResult()
-        feedback = StoredTaskActionFeedback()
+        res = StoredTaskResult()
+        feedback = StoredTaskFeedback()
 
-        feedback.step = StoredTaskActionFeedback.update.RETRIEVING_PARAMS
+        feedback.update.step = Step.RETRIEVING_PARAMS
         self.move_server.publish_feedback(feedback)
 
         listener = tf.TransformListener()
+        found_transform = False
 
         while (rospy.Time.now() - start).to_sec() < goal.secs:
 
-            feedback.step = StoredTaskActionFeedback.update.MOVING
+            feedback.update.step = Step.MOVING
             self.move_server.publish_feedback(feedback)
 
             if found_transform == False:
                 try:
 
                     # get the transform
-                    self.ik = listener.lookupTransform(self.ik_topic, self.world_frame, rospy.Time.now())
+                    self.ik = listener.lookupTransform(self.base_link, goal.id, rospy.Time.now())
                     found_transform = True
+                    break # remove this when we have something to check the condition
 
                 except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                     continue
@@ -206,4 +206,8 @@ if __name__ == "__main__":
             cm.tick()
             rate.sleep()
 
-    except rospy.ROSInterruptException: pass
+    except rospy.ROSInterruptException:
+        cm.close_server.need_to_terminate = True
+        cm.open_server.need_to_terminate = True
+        cm.move_server.need_to_terminate = True
+
