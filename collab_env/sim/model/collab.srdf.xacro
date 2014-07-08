@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="collab">
+  <xacro:include filename="$(find collab_env)/sim/model/wam_7dof_arm.srdf.xacro"/>
+
+  <xacro:wam_7dof_arm prefix="wam" arm_name="arm1"/>
+  <xacro:wam_7dof_arm prefix="wam2" arm_name="arm2"/>
+</robot>
