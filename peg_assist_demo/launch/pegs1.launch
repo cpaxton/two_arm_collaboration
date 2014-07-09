@@ -117,12 +117,11 @@
   <arg     if="$(arg config)" name="command_args" value="-d $(find barrett_wam_moveit_config)/launch/moveit.rviz" />
   -->
 
-  <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group/"/>
-
   <!-- launch rviz with remapping for the moveit display -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
     <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene"/>  
     <rosparam command="load" file="$(find barrett_wam_moveit_config)/config/kinematics.yaml"/>
+    <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group"/>
   </node>
 
 </launch>

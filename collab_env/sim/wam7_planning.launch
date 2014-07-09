@@ -3,12 +3,12 @@
   <arg name="tf_prefix" default="wam" doc="This prefix is used for TF frames"/>
   <arg name="action_ns" default="" doc="Prefix used for actions"/>
 
-  <include file="$(find collab_env)/sim/moveit/launch/move_group.launch">
+  <include file="$(find collab_env)/sim/moveit/$(arg tf_prefix)/launch/move_group.launch">
     <param name="allow_trajectory_execution" value="true"/>
     <arg name="info" value="true"/>
   </include>
 
-  <include file="$(find collab_env)/sim/moveit/launch/planning_context.launch">
+  <include file="$(find collab_env)/sim/moveit/$(arg tf_prefix)/launch/planning_context.launch">
     <arg name="load_robot_description" value="false"/>
     <arg name="load_robot_description_semantic" value="false"/>
     <arg name="robot_description" value="/robot_description"/>
