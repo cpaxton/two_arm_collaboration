@@ -72,7 +72,7 @@
       <include if="$(arg planning)" file="$(find collab_env)/sim/wam7_planning.launch">
         <arg name="tf_prefix" value="wam"/>
         <arg name="oro_prefix" value=""/>
-        <arg name="action_ns" value="/gazebo/barrett_manager/"/>
+        <arg name="action_ns" value="/gazebo/"/>
       </include>
     </group>
 

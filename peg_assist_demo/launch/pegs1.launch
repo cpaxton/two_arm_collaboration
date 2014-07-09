@@ -76,6 +76,13 @@
     type="smach_viewer.py" />
 
 
+  <!-- publish planning information -->
+  <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py">
+    <param name="wait_for" value="/gazebo/w2barrett_manager/get_planning_scene"/>
+    <param name="service" value="/gazebo/wam2/wam2/publish_planning_scene"/>
+    <param name="wait_time" value="5.0"/>
+  </node>
+
   <!-- =================================================================================
                         Launch Predicator
        ================================================================================= -->
