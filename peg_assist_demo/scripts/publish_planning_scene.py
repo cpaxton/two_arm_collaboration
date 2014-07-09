@@ -19,5 +19,7 @@ if __name__ == '__main__':
 
     service = rospy.ServiceProxy(service_name, std_srvs.srv.Empty)
 
+    service.wait_for_service()
+
     service()
 

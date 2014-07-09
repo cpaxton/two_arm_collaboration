@@ -7,17 +7,17 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="(find collab_env)/config/tf.rviz" doc="(string) rviz config file for user interface" />
-  <arg name="rqt_barrett_arm1" default="false"/>
-  <arg name="rqt_barrett_arm2" default="false"/>
-  <arg name="run_script_arm1" default="true"/>
-  <arg name="run_script_arm2" default="true"/>
-  <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
-  <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="rqt_barrett_arm1"/>
+  <arg name="rqt_barrett_arm2"/>
+  <arg name="run_script_arm1"/>
+  <arg name="run_script_arm2"/>
+  <arg name="planning_arm1" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="planning_arm2" doc="(bool) Launch the motion planing pipeline"/>
 
   <!--
     This launchfile brings up one-two 7-DOF WAM robots in the gazebo simulator from the lcsr_barrett package.
     -->
-  <include unless="$(arg usetwo)" file="$(find lcsr_barrett)/sim/wam7_sim_ik.launch" >
+  <include unless="$(arg usetwo)" file="$(find collab_env)/sim/wam7x1_sim_ik.launch" >
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
     <arg name="log_level" value="$(arg log_level)" />

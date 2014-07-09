@@ -15,10 +15,10 @@
   <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
-  <arg name="rqt_barrett_arm1" default="false"/>
-  <arg name="rqt_barrett_arm2" default="false"/>
-  <arg name="run_script_arm1" default="true"/>
-  <arg name="run_script_arm2" default="true"/>
+  <arg name="rqt_barrett_arm1"/>
+  <arg name="rqt_barrett_arm2"/>
+  <arg name="run_script_arm1"/>
+  <arg name="run_script_arm2"/>
 
   <!--<rosparam>use_sim_time: true</rosparam>-->
 
