@@ -51,19 +51,21 @@ if __name__ == "__main__":
 
     rospy.init_node('run_controllers_script_node')
 
+    rospy.loginfo("Running controller bringup script")
+
     # sleep for a bit
     rospy.sleep(5.)
 
-    if len(sys.argv) >= 5:
+    if len(sys.argv) >= 3:
         conname = sys.argv[1]
         filename = sys.argv[2]
         #world = sys.argv[3]
         #target = sys.argv[4]
-        print "Starting %s script %s"%(conname, filename)
+        rospy.loginfo("Starting %s script %s", conname, filename)
         res = start_controllers(conname, filename)
-        print "Success: %s"%res
-    else:
+        rospy.loginfo("Success: %s", res)
+
+    if len(sys.argv) <= 5:
         print "RUN_CONTROLLERS.PY"
-        print "Usage:"
-        print usage()
+        rospy.logwarn("Usage: %s", usage())
         sys.exit(-1);

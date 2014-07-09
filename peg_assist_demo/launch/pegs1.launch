@@ -29,10 +29,12 @@
   </include>
 
   <node name="arm2_joint_script_runner"
-    pkg="collab_collab"
+    pkg="collab_env"
     type="run_controllers.py"
     args="/gazebo/wam2__deployer__ $(find collab_env)/sim/enable/arm2_enable_joint.ops"
-    output="screen"/>
+    output="screen">
+
+  </node>
 
   <!-- =================================================================================
                         Launch Task Management Stuff
