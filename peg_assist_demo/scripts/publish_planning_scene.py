@@ -12,8 +12,13 @@ After that, it simply calls the ros service
 
 if __name__ == '__main__':
     rospy.init_node('publish_planning_scene_node')
-    wait_time = rospy.get_param('wait_time', 10.0)
-    service_name = rospy.get_param('service')
+    wait_time = rospy.get_param('~wait_time', 10.0)
+    trigger = rospy.get_param('~wait_for')
+
+    service_name = rospy.get_param('~service')
 
     service = rospy.ServiceProxy(service_name, std_srvs.srv.Empty)
+
+    service()
+
 

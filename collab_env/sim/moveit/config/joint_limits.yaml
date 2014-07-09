@@ -1,0 +1,47 @@
+#note: absolute max joint velocity: 2.0 rad/s
+#note: safe joint velocity: 0.5 rad/s
+joint_limits:
+  wam/base_yaw_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+  wam/shoulder_pitch_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+  wam/shoulder_yaw_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+  wam/elbow_pitch_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+  wam/wrist_yaw_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+  wam/wrist_pitch_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+  wam/palm_yaw_joint:
+    max_velocity: 1.0
+    max_acceleration: 1.5
+
+joint_limits:
+  wam/base_yaw_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true
+  wam/shoulder_pitch_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true
+  wam/shoulder_yaw_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true
+  wam/elbow_pitch_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true 
+  wam/wrist_yaw_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true
+  wam/wrist_pitch_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true 
+  wam/palm_yaw_joint:
+    has_velocity_limits: true
+    has_acceleration_limits: true
