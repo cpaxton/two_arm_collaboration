@@ -70,6 +70,7 @@
     </include>
 
     <group ns="w2barrett_manager">
+      <remap from="/gazebo/w2barrett_manager/planning_scene" to="/gazebo/wam2/wam2/planning_scene"/>
       <!-- Moveit -->
       <include if="$(arg planning_arm2)" file="$(find collab_env)/sim/wam7_planning.launch">
         <arg name="tf_prefix" value="wam2"/>
