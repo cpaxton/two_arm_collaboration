@@ -726,7 +726,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-        Loop Animation: true
+        Loop Animation: false
         Robot Alpha: 0.5
         Show Robot Collision: false
         Show Robot Visual: true
@@ -752,11 +752,11 @@ Visualization Manager:
         Show Workspace: false
         Start State Alpha: 0.6
         Start State Color: 0; 255; 0
-      Planning Scene Topic: /gazebo/wam2/wam2/planning_scene
+      Planning Scene Topic: /gazebo/w2barrett_manager/move_group/monitored_planning_scene
       Robot Description: /gazebo/w2barrett_manager/robot_description
       Scene Geometry:
         Scene Alpha: 0.9
-        Scene Color: 50; 230; 50
+        Scene Color: 85; 85; 127
         Scene Display Time: 0.2
         Show Scene Geometry: true
         Voxel Coloring: Z-Axis
@@ -886,7 +886,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.10295
+      Distance: 1.74567
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -898,10 +898,10 @@ Visualization Manager:
         Z: 0.626646
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.460203
+      Pitch: 0.550204
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.64895
+      Yaw: 0.25578
     Saved: ~
 Window Geometry:
   Displays:
