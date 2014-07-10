@@ -45,7 +45,7 @@
       <sceneName>gazebo</sceneName>
       <robotName>$(arg prefix)</robotName>
       <robotNamespace>/gazebo/$(arg prefix)</robotNamespace>
-      <updatePeriod>0.5</updatePeriod>
+      <updatePeriod>0.05</updatePeriod>
     </plugin>
   </gazebo>
 
