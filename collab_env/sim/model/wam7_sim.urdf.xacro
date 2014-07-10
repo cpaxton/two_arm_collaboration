@@ -3,21 +3,22 @@
 
   <!-- Gazebo Plugin -->
   <gazebo>
-    <plugin name="rtt_gazebo" filename="librtt_gazebo_deployer.so">
-      <isolated/>
-      <component>
-        <package>oro_barrett_sim</package>
-        <type>oro_barrett_sim::BarrettSimManager</type>
-        <!--<xacro:if value="$(arg use_man_prefix)">
+    <xacro:if value="$(arg use_rtt)">
+      <plugin name="rtt_gazebo" filename="librtt_gazebo_deployer.so">
+        <isolated/>
+        <component>
+          <package>oro_barrett_sim</package>
+          <type>oro_barrett_sim::BarrettSimManager</type>
+          <!--<xacro:if value="$(arg use_man_prefix)">
           <name>$(arg man_prefix)barrett_manager</name>
         </xacro:if>
         <xacro:unless value="$(arg use_man_prefix)">-->
         <name>$(arg component_name)</name>
         <!--</xacro:unless>-->
 
-      </component>
-      <orocosScript><filename>$(arg ops_script)</filename></orocosScript>
-      <!--
+    </component>
+    <orocosScript><filename>$(arg ops_script)</filename></orocosScript>
+    <!--
          -<orocosScript>
          -  <inline>
          -    barrett_manager.wam.initialize();
@@ -39,17 +40,18 @@
            -->
       </xacro:if>
     </plugin>
-    <!-- plugin to include Gazebo environment in MoveIt -->
-    <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
-      <topicName>$(arg prefix)/planning_scene</topicName>
-      <sceneName>gazebo</sceneName>
-      <robotName>$(arg prefix)</robotName>
-      <robotNamespace>/gazebo/$(arg prefix)</robotNamespace>
-      <updatePeriod>0.05</updatePeriod>
-    </plugin>
-  </gazebo>
+  </xacro:if>
+  <!-- plugin to include Gazebo environment in MoveIt -->
+  <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
+    <topicName>$(arg prefix)/planning_scene</topicName>
+    <sceneName>gazebo</sceneName>
+    <robotName>$(arg prefix)</robotName>
+    <robotNamespace>/gazebo/$(arg prefix)</robotNamespace>
+    <updatePeriod>0.05</updatePeriod>
+  </plugin>
+</gazebo>
 
-  <!-- Includea all the WAM stuff -->
+<!-- Includea all the WAM stuff -->
   <xacro:include filename="$(find barrett_model)/models/wam_top.urdf.xacro"/>
 
   <!-- Root link is in the world frame-->

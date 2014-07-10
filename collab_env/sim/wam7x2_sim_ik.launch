@@ -38,7 +38,7 @@
 
     <!-- Load WAM URDF -->
     <param name="w2barrett_manager/robot_description" 
-      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find collab_env)/sim/bhand_arm2_sim.ops'" />
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' use_rtt:=true prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_arm2_sim_ik.ops' hand:=$(arg hand) component_name:=w2barrett_manager bhand_script:='$(find collab_env)/sim/bhand_arm2_sim.ops'" />
 
     <!-- Load WAM SRDF -->
     <param name="w2barrett_manager/robot_description_semantic" 
@@ -46,7 +46,7 @@
 
     <!-- Load WAM URDF for inverse kinematics -->
     <param name="w2barrett_manager/ik_robot_description" 
-      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_arm2_sim_ik.ops' hand:=false component_name:=w2barrett_manager bhand_script:='$(find collab_env)/sim/bhand_arm2_sim.ops'" />
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' use_rtt:=false prefix:=wam2 xyz:='0.04 -0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_arm2_sim_ik.ops' hand:=false component_name:=w2barrett_manager bhand_script:='$(find collab_env)/sim/bhand_arm2_sim.ops'" />
 
     <!-- Spawn the robot in Gazebo -->
     <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
