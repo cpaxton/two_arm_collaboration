@@ -13,13 +13,27 @@ After that, it simply calls the ros service
 if __name__ == '__main__':
     rospy.init_node('publish_planning_scene_node')
     wait_time = rospy.get_param('~wait_time', 10.0)
-    trigger = rospy.get_param('~wait_for')
+    #trigger = rospy.get_param('~wait_for')
+    spin_rate = rospy.get_param('~rate', 1)
 
-    service_name = rospy.get_param('~service')
+    try:
+        service_name = rospy.get_param('~service')
+        service = rospy.ServiceProxy(service_name, std_srvs.srv.Empty)
 
-    service = rospy.ServiceProxy(service_name, std_srvs.srv.Empty)
+        service.wait_for_service()
 
-    service.wait_for_service()
+        rospy.loginfo("Starting service for %f seconds", wait_time)
 
-    service()
+        start = rospy.Time.now()
+        end = start + rospy.Duration(wait_time)
+        rate = rospy.Rate(spin_rate)
+
+        while rospy.Time.now() < end:
+
+            rospy.loginfo("trying to publish scene information...")
+
+            service()
+            rate.sleep()
+
+    except rospy.ROSInterruptException: pass
 

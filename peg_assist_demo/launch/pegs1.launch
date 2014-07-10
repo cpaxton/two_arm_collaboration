@@ -9,6 +9,11 @@
   <arg name="rviz_config" default="$(find peg_assist_demo)/config/peg1.rviz" doc="(string) rviz config file for user interface"/>
   <arg name="rqt_barrett_arm1" default="false" doc="(bool) show rqt barrett UI for user-controlled arm" />
   <arg name="rqt_barrett_arm2" default="false" doc="(bool) show rqt barrett UI for algorithm-controlled arm" />
+  <arg name="console" default="false" doc="(bool) bring up the rqt console"/>
+
+  <node if="$(arg console)"
+    name="rqt_console" type="rqt_console" pkg="rqt_console">
+  </node>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find collab_spacenav)/launch/spacenav_rostopics.launch">
@@ -79,10 +84,11 @@
 
 
   <!-- publish planning information -->
-  <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py">
-    <param name="wait_for" value="/gazebo/w2barrett_manager/get_planning_scene"/>
+  <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen">
+    <!--<param name="wait_for" value="/gazebo/w2barrett_manager/get_planning_scene"/>-->
     <param name="service" value="/gazebo/wam2/wam2/publish_planning_scene"/>
-    <param name="wait_time" value="5.0"/>
+    <param name="wait_time" value="10.0"/>
+    <param name="rate" value="1.0"/>
   </node>
 
   <!-- =================================================================================
@@ -131,9 +137,9 @@
     <group ns="w2barrett_manager">
       <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
         <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene"/>  
-        <!--<rosparam command="load" file="$(find barrett_wam_moveit_config)/config/kinematics.yaml"/>-->
         <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/kinematics.yaml"/>
         <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/ompl_planning.yaml"/>
+        <!--<rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/joint_limits.yaml"/>-->
         <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group"/>
       </node>
     </group>
