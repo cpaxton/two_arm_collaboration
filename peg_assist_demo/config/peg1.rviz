@@ -726,7 +726,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-        Loop Animation: false
+        Loop Animation: true
         Robot Alpha: 0.5
         Show Robot Collision: false
         Show Robot Visual: true
@@ -742,15 +742,15 @@ Visualization Manager:
         TextHeight: 0.08
       Planning Request:
         Colliding Link Color: 255; 0; 0
-        Goal State Alpha: 1
+        Goal State Alpha: 0.6
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
         Planning Group: arm
         Query Goal State: true
-        Query Start State: true
-        Show Workspace: true
-        Start State Alpha: 1
+        Query Start State: false
+        Show Workspace: false
+        Start State Alpha: 0.6
         Start State Color: 0; 255; 0
       Planning Scene Topic: /gazebo/wam2/wam2/planning_scene
       Robot Description: /gazebo/w2barrett_manager/robot_description
@@ -886,7 +886,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.60635
+      Distance: 2.10295
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -898,10 +898,10 @@ Visualization Manager:
         Z: 0.626646
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.335203
+      Pitch: 0.460203
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.0607733
+      Yaw: 5.64895
     Saved: ~
 Window Geometry:
   Displays:
@@ -921,5 +921,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1920
-  X: -4
+  X: 0
   Y: 25

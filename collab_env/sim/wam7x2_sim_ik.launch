@@ -56,7 +56,7 @@
   <!-- Create nodes in gazebo namespace -->
   <group ns="gazebo">
 
-    <!-- Barrett Hardwre Config and Orocos Components -->
+    <!-- Barrett Hardware Config and Orocos Components -->
     <include file="$(find collab_env)/sim/barrett_manager.launch">
       <arg name="hand" value="$(arg hand)"/>
       <arg name="tf_prefix" value="wam2"/>
