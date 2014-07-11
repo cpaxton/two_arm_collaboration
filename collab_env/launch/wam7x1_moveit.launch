@@ -1,0 +1,80 @@
+<launch>
+<!--
+   - This launchfile brings up a single 7-DOF WAM robot in the gazebo simulator.
+   -
+   - run with rviz like this for planning demo:
+   - rosrun rviz rviz __ns:=/gazebo/barrett_manager /planning_scene:=/gazebo/barrett_manager/planning_scene /get_planning_scene:=/gazebo/barrett_manager/get_planning_scene
+   -
+   - rostopic pub /gazebo/barrett_manager/hand/cmd oro_barrett_msgs/BHandCmd "{ mode: [3,3,3,3], cmd: [2.5,2.5,2.5,0.0] }"
+   - rostopic pub -r 1 /gazebo/traj_rml/joint_traj_point_cmd trajectory_msgs/JointTrajectoryPoint "{ positions: [0.0,0,0,0.0,0,0,0.0] }"
+   -->
+
+  <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
+  <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
+  <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="planning" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
+  <arg name="rqt_barrett" default="true" doc="(bool) Launch the rqt_barrett joint manager"/>
+  <arg name="run_script" default="true" doc="(bool) Run script to start IK controller"/>
+  <arg name="initial_group" default="joint_control" doc="(string) Initial active controller group"/>
+
+  <param name="use_sim_time" value="true"/>
+
+  <!-- Gazebo -->
+  <include file="$(find rtt_gazebo_examples)/test/empty_world.launch">
+    <env name="ORO_LOGLEVEL" value="$(arg log_level)"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="world_name" value="$(find lcsr_barrett)/sim/wam.world"/>
+    <arg name="debug" value="$(arg debug)" />
+  </include>
+
+  <!-- Spawn the lcsr stage in Gazebo -->
+  <param name="stage_model" 
+    command="$(find xacro)/xacro.py '$(find lcsr_barrett)/models/stage.urdf.xacro'" />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args="-urdf -model stage -param stage_model"/>
+  <node name="stage_pose_broadcaster" pkg="tf" type="static_transform_publisher"
+    args="0 0 0 0 0 0 /world /stage_link 50"/>
+
+  <!-- Load WAM URDF -->
+  <param name="robot_description" 
+    command="$(find xacro)/xacro.py '$(find lcsr_barrett)/sim/wam7_sim.urdf.xacro' prefix:=wam ops_script:='$(find lcsr_barrett)/sim/wam7_sim.ops' hand:=$(arg hand) initial_group:=$(arg initial_group)" />
+  <!--command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam7_sim.urdf.xacro' prefix:=wam component_name:=barrett_manager xyz:='0.04 0.46 1.0' ops_script:='$(find collab_env)/sim/wam7_sim_ik.ops' bhand_script:='$(find collab_env)/sim/bhand_sim.ops' hand:=$(arg hand)" />-->
+
+<!-- Load WAM SRDF -->
+    <param name="barrett_manager/robot_description_semantic" 
+      command="$(find xacro)/xacro.py '$(find collab_env)/sim/model/wam.srdf.xacro' prefix:=wam" />
+
+    <!-- Spawn the robot in Gazebo -->
+    <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model"
+      respawn="false" output="screen" 
+      args="-urdf -model wam -param robot_description"/>
+
+    <!-- Create nodes in gazebo namespace -->
+    <group ns="gazebo">
+
+      <!-- RTT Component parameters -->
+      <include file="$(find collab_env)/sim/orocos_component_params.launch"/>
+
+      <group ns="barrett_manager">
+        <!-- Moveit -->
+        <include if="$(arg planning)" file="$(find collab_env)/sim/wam7_planning.launch">
+          <arg name="tf_prefix" value="wam"/>
+          <arg name="oro_prefix" value=""/>
+          <arg name="action_ns" value="/gazebo/"/>
+        </include>
+      </group>
+
+    </group>
+
+    <node name="arm1_rqt_barrett" pkg="rqt_barrett" type="rqt_barrett" if="$(arg rqt_barrett)">
+      <remap from="joint_states" to="/gazebo/barrett_manager/wam/joint_states"/>
+      <remap from="robot_description" to="/gazebo/barrett_manager/robot_description"/>
+    </node>
+
+    <node name="run_gazebo_script" pkg="collab_env" type="run_gazebo.py" output="screen"/>
+
+  </launch>
