@@ -89,8 +89,8 @@
   <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen">
     <param name="wait_for" value="/gazebo/w2barrett_manager/move_group"/>
     <param name="service" value="/gazebo/wam2/publish_planning_scene"/>
-    <param name="wait_time" value="10.0"/>
-    <param name="rate" value="1.0"/>
+    <param name="wait_time" value="1.0"/>
+    <param name="rate" value="0.1"/>
   </node>
 
   <!-- =================================================================================

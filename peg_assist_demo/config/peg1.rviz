@@ -6,12 +6,14 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /TF1
         - /WAM2_MOTION_PLANNING1
         - /WAM2_MOTION_PLANNING1/Scene Geometry1
         - /WAM2_MOTION_PLANNING1/Scene Robot1
         - /WAM2_MOTION_PLANNING1/Planning Request1
         - /WAM2_MOTION_PLANNING1/Planning Metrics1
         - /WAM2_MOTION_PLANNING1/Planned Path1
+        - /CONTROL1
       Splitter Ratio: 0.5
     Tree Height: 307
   - Class: rviz/Selection
@@ -55,197 +57,19 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        ik/wam/base_link:
-          Value: true
-        ik/wam/forearm_link:
-          Value: true
-        ik/wam/hand/bhand_palm_link:
-          Value: true
-        ik/wam/shoulder_pitch_link:
-          Value: true
-        ik/wam/shoulder_yaw_link:
-          Value: true
-        ik/wam/upper_arm_link:
-          Value: true
-        ik/wam/wrist_palm_link:
-          Value: true
-        ik/wam/wrist_pitch_link:
-          Value: true
-        ik/wam/wrist_yaw_link:
-          Value: true
-        ik/wam2/base_link:
-          Value: true
-        ik/wam2/hand/bhand_palm_link:
-          Value: true
-        ik/wam2/wrist_palm_link:
-          Value: true
-        ik/world:
-          Value: true
-        peg1/base_link:
-          Value: true
-        peg1/peg_link:
-          Value: true
-        peg2/base_link:
-          Value: true
-        peg2/peg_link:
-          Value: true
-        ring1:
-          Value: true
-        ring1/ring_link:
-          Value: true
-        stage_link:
-          Value: true
-        wam/base_link:
-          Value: true
-        wam/cmd:
-          Value: true
-        wam/forearm_link:
-          Value: true
-        wam/hand/bhand_palm_link:
-          Value: true
-        wam/hand/finger_1/dist_link:
-          Value: true
-        wam/hand/finger_1/med_link:
-          Value: true
-        wam/hand/finger_1/prox_link:
-          Value: true
-        wam/hand/finger_2/dist_link:
-          Value: true
-        wam/hand/finger_2/med_link:
-          Value: true
-        wam/hand/finger_2/prox_link:
-          Value: true
-        wam/hand/finger_3/dist_link:
-          Value: true
-        wam/hand/finger_3/med_link:
-          Value: true
-        wam/shoulder_pitch_link:
-          Value: true
-        wam/shoulder_yaw_link:
-          Value: true
-        wam/upper_arm_link:
-          Value: true
-        wam/wrist_palm_link:
-          Value: true
-        wam/wrist_pitch_link:
-          Value: true
-        wam/wrist_yaw_link:
-          Value: true
-        wam2/base_link:
-          Value: true
-        wam2/forearm_link:
-          Value: true
-        wam2/hand/bhand_palm_link:
-          Value: true
-        wam2/hand/finger_1/dist_link:
-          Value: true
-        wam2/hand/finger_1/med_link:
-          Value: true
-        wam2/hand/finger_1/prox_link:
-          Value: true
-        wam2/hand/finger_2/dist_link:
-          Value: true
-        wam2/hand/finger_2/med_link:
-          Value: true
-        wam2/hand/finger_2/prox_link:
-          Value: true
-        wam2/hand/finger_3/dist_link:
-          Value: true
-        wam2/hand/finger_3/med_link:
-          Value: true
-        wam2/shoulder_pitch_link:
-          Value: true
-        wam2/shoulder_yaw_link:
-          Value: true
-        wam2/upper_arm_link:
-          Value: true
-        wam2/wrist_palm_link:
-          Value: true
-        wam2/wrist_pitch_link:
-          Value: true
-        wam2/wrist_yaw_link:
-          Value: true
-        world:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
-      Show Axes: false
+      Show Axes: true
       Show Names: false
       Tree:
-        world:
-          ik/world:
-            ik/wam/base_link:
-              ik/wam/shoulder_yaw_link:
-                ik/wam/shoulder_pitch_link:
-                  ik/wam/upper_arm_link:
-                    ik/wam/forearm_link:
-                      ik/wam/wrist_yaw_link:
-                        ik/wam/wrist_pitch_link:
-                          ik/wam/wrist_palm_link:
-                            ik/wam/hand/bhand_palm_link:
-                              {}
-            ik/wam2/base_link:
-              {}
-          peg1/base_link:
-            peg1/peg_link:
-              {}
-          peg2/base_link:
-            peg2/peg_link:
-              {}
-          ring1:
-            ring1/ring_link:
-              {}
-          stage_link:
-            {}
-          wam/base_link:
-            wam/shoulder_yaw_link:
-              wam/shoulder_pitch_link:
-                wam/upper_arm_link:
-                  wam/forearm_link:
-                    wam/wrist_yaw_link:
-                      wam/wrist_pitch_link:
-                        wam/wrist_palm_link:
-                          wam/hand/bhand_palm_link:
-                            wam/hand/finger_1/prox_link:
-                              wam/hand/finger_1/med_link:
-                                wam/hand/finger_1/dist_link:
-                                  {}
-                            wam/hand/finger_2/prox_link:
-                              wam/hand/finger_2/med_link:
-                                wam/hand/finger_2/dist_link:
-                                  {}
-                            wam/hand/finger_3/med_link:
-                              wam/hand/finger_3/dist_link:
-                                {}
-          wam/cmd:
-            {}
-          wam2/base_link:
-            wam2/shoulder_yaw_link:
-              wam2/shoulder_pitch_link:
-                wam2/upper_arm_link:
-                  wam2/forearm_link:
-                    wam2/wrist_yaw_link:
-                      wam2/wrist_pitch_link:
-                        wam2/wrist_palm_link:
-                          wam2/hand/bhand_palm_link:
-                            wam2/hand/finger_1/prox_link:
-                              wam2/hand/finger_1/med_link:
-                                wam2/hand/finger_1/dist_link:
-                                  {}
-                            wam2/hand/finger_2/prox_link:
-                              wam2/hand/finger_2/med_link:
-                                wam2/hand/finger_2/dist_link:
-                                  {}
-                            wam2/hand/finger_3/med_link:
-                              wam2/hand/finger_3/dist_link:
-                                {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
@@ -758,7 +582,7 @@ Visualization Manager:
         Scene Alpha: 0.9
         Scene Color: 85; 85; 127
         Scene Display Time: 0.2
-        Show Scene Geometry: true
+        Show Scene Geometry: false
         Voxel Coloring: Z-Axis
         Voxel Rendering: Occupied Voxels
       Scene Robot:
@@ -862,6 +686,13 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: false
       Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 0.1
+      Name: CONTROL
+      Radius: 0.01
+      Reference Frame: wam/cmd
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -886,7 +717,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.74567
+      Distance: 2.66831
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -898,10 +729,10 @@ Visualization Manager:
         Z: 0.626646
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.550204
+      Pitch: 0.430204
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.25578
+      Yaw: 6.27896
     Saved: ~
 Window Geometry:
   Displays:
