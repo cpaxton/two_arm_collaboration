@@ -68,7 +68,7 @@
     <include file="$(find collab_env)/sim/orocos_component_params.launch"/>
 
     <group ns="barrett_manager">
-      <remap from="/gazebo/barrett_manager/planning_scene" to="/gazebo/wam2/wam2/planning_scene"/>
+      <remap from="/gazebo/barrett_manager/planning_scene" to="/gazebo/wam/wam/planning_scene"/>
       <!-- Moveit -->
       <include if="$(arg planning)" file="$(find collab_env)/sim/wam7_planning.launch">
         <arg name="tf_prefix" value="wam"/>
