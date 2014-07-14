@@ -2,26 +2,26 @@
 #note: safe joint velocity: 1.0 rad/s
 joint_limits:
   wam2/base_yaw_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
   wam2/shoulder_pitch_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
   wam2/shoulder_yaw_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
   wam2/elbow_pitch_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
   wam2/wrist_yaw_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
   wam2/wrist_pitch_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
   wam2/palm_yaw_joint:
-    max_velocity: 1.0
-    max_acceleration: 1.5
+    max_velocity: 0.1
+    max_acceleration: 0.15
 
 joint_limits:
   wam2/base_yaw_joint:

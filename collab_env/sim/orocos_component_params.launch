@@ -87,7 +87,7 @@
       <remap from="joint_states" to="joint_state_desired"/>
       <param name="publish_frequency" value="50"/>
       <param name="tf_prefix" value="ik"/>
-      <remap from="robot_description" to="/gazebo/$(arg oro_prefix)barrett_manager/robot_description"/>
+      <remap from="robot_description" to="/gazebo/$(arg oro_prefix)barrett_manager/ik_robot_description"/>
     </node>
   </group>
 

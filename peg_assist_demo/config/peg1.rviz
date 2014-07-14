@@ -6,15 +6,12 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /TF1
         - /WAM2_MOTION_PLANNING1
         - /WAM2_MOTION_PLANNING1/Scene Geometry1
         - /WAM2_MOTION_PLANNING1/Scene Robot1
         - /WAM2_MOTION_PLANNING1/Planning Request1
         - /WAM2_MOTION_PLANNING1/Planning Metrics1
         - /WAM2_MOTION_PLANNING1/Planned Path1
-        - /CONTROL1
-        - /WAM_2_CONTACTS1
       Splitter Ratio: 0.5
     Tree Height: 307
   - Class: rviz/Selection
@@ -728,7 +725,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.45187
+      Distance: 2.64312
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -740,10 +737,10 @@ Visualization Manager:
         Z: 0.626646
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.090205
+      Pitch: 0.540204
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.22897
+      Yaw: 0.0257811
     Saved: ~
 Window Geometry:
   Displays:
