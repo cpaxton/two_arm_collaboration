@@ -10,7 +10,6 @@ Panels:
         - /WAM2_MOTION_PLANNING1/Scene Geometry1
         - /WAM2_MOTION_PLANNING1/Scene Robot1
         - /WAM2_MOTION_PLANNING1/Planning Request1
-        - /WAM2_MOTION_PLANNING1/Planning Metrics1
         - /WAM2_MOTION_PLANNING1/Planned Path1
       Splitter Ratio: 0.5
     Tree Height: 307
@@ -447,7 +446,7 @@ Visualization Manager:
     - Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
       Move Group Namespace: /gazebo/w2barrett_manager
-      MoveIt_Goal_Tolerance: 0
+      MoveIt_Goal_Tolerance: 0.1
       MoveIt_Planning_Attempts: 10
       MoveIt_Planning_Time: 5
       MoveIt_Use_Constraint_Aware_IK: true
@@ -558,7 +557,7 @@ Visualization Manager:
         State Display Time: 0.05 s
         Trajectory Topic: /gazebo/w2barrett_manager/move_group/display_planned_path
       Planning Metrics:
-        Payload: 1
+        Payload: 0
         Show Joint Torques: false
         Show Manipulability: false
         Show Manipulability Index: false
@@ -684,7 +683,7 @@ Visualization Manager:
             Show Trail: false
         Robot Alpha: 0.5
         Show Robot Collision: false
-        Show Robot Visual: false
+        Show Robot Visual: true
       Value: true
     - Class: rviz/Axes
       Enabled: true
@@ -698,7 +697,9 @@ Visualization Manager:
       Marker Topic: /gazebo/w2barrett_manager/move_group/display_contacts
       Name: WAM_2_CONTACTS
       Namespaces:
-        stage=wam2/upper_arm_link: true
+        wam2/hand/finger_1/dist_link=peg2: true
+        wam2/hand/finger_1/med_link=peg2: true
+        wam2/hand/finger_2/dist_link=peg2: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -725,7 +726,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.64312
+      Distance: 2.14372
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -737,10 +738,10 @@ Visualization Manager:
         Z: 0.626646
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.540204
+      Pitch: 0.369797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.0257811
+      Yaw: 6.17394
     Saved: ~
 Window Geometry:
   Displays:
