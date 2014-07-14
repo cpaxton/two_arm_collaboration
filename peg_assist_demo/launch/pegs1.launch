@@ -84,12 +84,11 @@
     pkg="smach_viewer"
     type="smach_viewer.py" />
 
-
   <!-- publish planning information -->
   <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen">
     <param name="wait_for" value="/gazebo/w2barrett_manager/move_group"/>
     <param name="service" value="/gazebo/wam2/publish_planning_scene"/>
-    <param name="wait_time" value="1.0"/>
+    <param name="wait_time" value="0.0"/>
     <param name="rate" value="0.1"/>
   </node>
 
@@ -138,11 +137,11 @@
   <group ns="gazebo">
     <group ns="w2barrett_manager">
       <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
-        <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene"/>  
+        <!--<remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene"/> -->
         <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/kinematics.yaml"/>
         <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/ompl_planning.yaml"/>
         <!--<rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/joint_limits.yaml"/>-->
-        <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group"/>
+        <!--<remap from="/move_group" to="/gazebo/w2barrett_manager/move_group"/>-->
       </node>
     </group>
   </group>

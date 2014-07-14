@@ -4,6 +4,15 @@ This is a package for creating and analyzing simulations of tasks performed by t
 
 ## About
 
+## Requirements
+
+As of 2014-07-14, there are a couple of non-standard versions of standard ROS packages you should have.
+
+- You need an updated version of the MoveIt RVIZ plugin, with the option for namespacing the `move_group` node
+- You need an updated version of the Gazebo ROS Plugins
+
+Both of these are available on the LCSR forks github page.
+
 ## Launching a Demo
 
 The `collab_env` package contains demos and the launch files to bring them up.
