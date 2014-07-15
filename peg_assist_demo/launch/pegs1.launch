@@ -40,7 +40,6 @@
     type="run_controllers.py"
     args="/gazebo/wam2__deployer__ $(find collab_env)/sim/enable/arm2_enable_joint.ops"
     output="screen">
-
   </node>
 
   <!-- =================================================================================
@@ -139,9 +138,6 @@
     <group ns="w2barrett_manager">
       <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
         <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene" unless="$(arg rviz_moveit_namespace)"/>
-        <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/kinematics.yaml"/>
-        <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/ompl_planning.yaml"/>
-        <rosparam command="load" file="$(find collab_env)/sim/moveit/wam2/config/joint_limits.yaml"/>
         <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group" unless="$(arg rviz_moveit_namespace)"/>
       </node>
     </group>
