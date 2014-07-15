@@ -11,7 +11,7 @@
   <include file="$(find collab_env)/sim/moveit/$(arg tf_prefix)/launch/planning_context.launch">
     <arg name="load_robot_description" value="false"/>
     <arg name="load_robot_description_semantic" value="false"/>
-    <arg name="robot_description" value="/robot_description"/>
+    <!--<arg name="robot_description" value="/robot_description"/>-->
   </include>
 
   <group ns="move_group">
