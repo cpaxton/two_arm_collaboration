@@ -20,7 +20,8 @@ topic2 = "/gazebo/w2traj_rml/joint_traj_point_cmd"
 try:
 
     pt = JointTrajectoryPoint()
-    pt.positions = [0, 3.1415, 0, -1.5707, 0, -1.5707, 0]
+    #pt.positions = [0, 3.1415, 0, -1.5707, 0, -1.5707, 0]
+    pt.positions = [0, -1.5707, 0, 3.1415, 0, -1.5705, 0]
     #pt.positions = [0, 0, 0, 0, 0, 0, 0]
 
     #pub1 = rospy.Publisher(topic1)
@@ -38,7 +39,7 @@ try:
 
     print pt
 
-    for i in range(1,5):
+    for i in range(1,30):
         rospy.loginfo("trying to publish point")
         pub2.publish(pt)
         rospy.sleep(0.5)
