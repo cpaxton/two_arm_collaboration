@@ -47,7 +47,8 @@ scheme.start();
 
 /* Set of initially running blocks */
 scheme.enableBlock("devices",true);
-scheme.enableBlock("w2ik_control",true);
+scheme.enableBlock("w2joint_control", true);
+//scheme.enableBlock("w2ik_control",true);
 
 stream("w2ik.trajectories_out",ros.topic("wam1/ik/trajectories_out"))
 

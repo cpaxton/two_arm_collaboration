@@ -28,6 +28,7 @@ scheme.start();
 
 /* Set of initially running blocks */
 scheme.enableBlock("devices",true);
+scheme.enableBlock("joint_control", true);
 //scheme.enableBlock("ik_control",true);
 
 // stream("ik.trajectories_out",ros.topic("wam/ik/trajectories_out"))

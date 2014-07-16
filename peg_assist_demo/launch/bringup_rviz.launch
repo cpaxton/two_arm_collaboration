@@ -1,0 +1,34 @@
+<launch>
+
+
+  <!-- =================================================================================
+                        Launch Visualization
+       ================================================================================= -->
+
+  <arg name="debug" doc="(bool) in debug mode"/>
+  <arg name="rviz_config" doc="(string) rviz config file for user interface"/>
+  <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
+
+  <!-- NOTE: this section is based on barrett_wam_moveit_config/launch/moveit_rviz.launch -->
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+  <!--
+  <arg name="config" default="false" />
+  <arg unless="$(arg config)" name="command_args" value="" />
+  <arg     if="$(arg config)" name="command_args" value="-d $(find barrett_wam_moveit_config)/launch/moveit.rviz" />
+  -->
+
+  <!-- launch rviz with remapping for the moveit display -->
+  <group ns="gazebo">
+    <group ns="w2barrett_manager">
+      <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
+        <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene" unless="$(arg rviz_moveit_namespace)"/>
+        <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group" unless="$(arg rviz_moveit_namespace)"/>
+      </node>
+    </group>
+  </group>
+
+
+
+</launch>

@@ -35,112 +35,29 @@
     <arg name="run_script_arm2" value="false" />
   </include>
 
+  <!--
   <node name="arm2_joint_script_runner"
     pkg="collab_env"
     type="run_controllers.py"
     args="/gazebo/wam2__deployer__ $(find collab_env)/sim/enable/arm2_enable_joint.ops"
     output="screen">
   </node>
-
-  <!-- =================================================================================
-                        Launch Task Management Stuff
-       ================================================================================= -->
-
-
-  <!-- node for moving ring to destination peg -->
-  <node name="move_ring_motion"
-    pkg="dmp_action"
-    type="dmp_motion_server.py" />
-
-  <!-- node for reaching towards ring -->
-  <node name="reach_ring_motion"
-    pkg="dmp_action"
-    type="dmp_motion_server.py" />
-
-  <!-- wait for the ring to be in range with this action -->
-  <node name="wait_for_ring"
-    pkg="peg_assist_demo"
-    type="WaitForRing.py" />
-
-  <!-- startup script to make sure the arms are running the right controllers -->
-  <node name="peg_demo_startup"
-    pkg="peg_assist_demo"
-    type="startup.py" />
-
-  <!-- node for running the plan -->
-  <node name="execution_task" pkg="peg_assist_demo" type="task.py" output="screen">
-    <param name="move_ring_file" value="($find peg_assist_demo)/data/move_ring.yaml"/>
-    <param name="grab_ring_file" value="($find peg_assist_demo)/data/grab_ring.yaml"/>
-  </node>
-
-  <!-- service node for controlling the robot arm, interfaces with MoveIt and orocos -->
-  <node name="Arm2Commander" pkg="peg_assist_demo" type="ArmCommander.py">
-    <param name="hand_topic" value="/gazebo/w2barrett_manager/hand/cmd"/>
-  </node>
-
-  <!-- view execution progress -->
-  <node if="$(arg smach_viewer)"
-    name="smach_viewer"
-    pkg="smach_viewer"
-    type="smach_viewer.py" />
-
-  <!-- publish planning information -->
-  <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen">
-    <param name="wait_for" value="/gazebo/w2barrett_manager/move_group"/>
-    <param name="service" value="/gazebo/wam2/publish_planning_scene"/>
-    <param name="wait_time" value="0.0"/>
-    <param name="rate" value="0.1"/>
-  </node>
-
-  <!-- =================================================================================
-                        Launch Predicator
-       ================================================================================= -->
-
-  <!-- touching, etc. -->
-  <include file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch">
-    <arg name="output" value="log"/>
-  </include>
-
-  <!-- left, right, up, down, etc. -->
-  <include file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
-    <arg name="output" value="log"/>
-  </include>
-
-  <include file="$(find predicator_fake_classification)/launch/pegs_classification_predicates_test.launch">
-    <arg name="output" value="log"/>
-  </include>
-
-  <include file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
-    <arg name="output" value="log"/>
-  </include>
-
-
-
-  <!-- predicator core: test to determine if something has happened -->
-  <node name="predicator_core" pkg="predicator_core" type="core.py"/>
-
-  <!-- =================================================================================
-                        Launch Visualization
-       ================================================================================= -->
-
-  <!-- NOTE: this section is based on barrett_wam_moveit_config/launch/moveit_rviz.launch -->
-  <arg unless="$(arg debug)" name="launch_prefix" value="" />
-  <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
-
-  <!--
-  <arg name="config" default="false" />
-  <arg unless="$(arg config)" name="command_args" value="" />
-  <arg     if="$(arg config)" name="command_args" value="-d $(find barrett_wam_moveit_config)/launch/moveit.rviz" />
   -->
 
-  <!-- launch rviz with remapping for the moveit display -->
-  <group ns="gazebo">
-    <group ns="w2barrett_manager">
-      <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
-        <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene" unless="$(arg rviz_moveit_namespace)"/>
-        <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group" unless="$(arg rviz_moveit_namespace)"/>
-      </node>
-    </group>
-  </group>
+  <!-- TASK MODEL STUFF -->
+  <include file="$(find peg_assist_demo)/launch/bringup_task.launch">
+    <arg name="smach_viewer" value="$(arg smach_viewer)"/>
+  </include>
+
+  <!-- PREDICATOR STUFF HERE -->
+  <include file="$(find peg_assist_demo)/launch/bringup_predicator.launch">
+    <arg name="output" value="log"/>
+  </include>
+
+  <include file="$(find peg_assist_demo)/launch/bringup_rviz.launch">
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz_config" value="$(arg rviz_config)"/>
+    <arg name="rviz_moveit_namespace" value="$(arg rviz_moveit_namespace)"/>
+  </include>
 
 </launch>
