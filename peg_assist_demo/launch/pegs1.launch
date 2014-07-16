@@ -44,6 +44,11 @@
   </node>
   -->
 
+  <node name="startup_demo"
+    pkg="peg_assist_demo"
+    type="startup.py"
+    output="screen"/>
+
   <!-- TASK MODEL STUFF -->
   <include file="$(find peg_assist_demo)/launch/bringup_task.launch">
     <arg name="smach_viewer" value="$(arg smach_viewer)"/>
