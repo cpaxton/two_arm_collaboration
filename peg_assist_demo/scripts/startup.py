@@ -39,7 +39,7 @@ try:
 
     print pt
 
-    for i in range(1,30):
+    for i in range(1,10):
         rospy.loginfo("trying to publish point")
         pub2.publish(pt)
         rospy.sleep(0.5)
