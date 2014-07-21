@@ -5,6 +5,7 @@
        ================================================================================= -->
 
   <arg name="smach_viewer" doc="(bool) bring up the smach viewer"/>
+  <arg name="bringup_arm1" doc="(bool) launch arm1"/>
 
   <!-- node for moving ring to destination peg -->
   <node name="move_ring_motion"
@@ -51,4 +52,11 @@
     <param name="rate" value="0.1"/>
   </node>
 
+  <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen"
+    if="$(arg bringup_arm1)">
+    <param name="wait_for" value="/gazebo/barrett_manager/move_group"/>
+    <param name="service" value="/gazebo/wam/publish_planning_scene"/>
+    <param name="wait_time" value="0.0"/>
+    <param name="rate" value="0.1"/>
+  </node>
 </launch>
