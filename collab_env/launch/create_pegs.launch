@@ -1,0 +1,34 @@
+<!--
+This launch file is just for pegs.
+Useful for other things I guess, like the assistance demo.
+-->
+<launch>
+
+  <!-- spawn peg 1 -->
+  <param name="peg1_description"
+    command="$(find xacro)/xacro.py '$(find collab_env)/objects/peg.urdf.xacro' name:=peg1 xx:=0.75 yy:=0.75"
+    />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args=" -urdf -model peg1 -param peg1_description"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="peg1_st_pub" >
+    <remap from="robot_description" to="peg1_description" />
+  </node>
+  <!--<node pkg="joint_state_publisher" type="joint_state_publisher" name="peg1_js_pub" >
+    <remap from="robot_description" to="peg1_description" />
+  </node>-->
+
+  <!-- spawn peg 2 -->
+  <param name="peg2_description"
+    command="$(find xacro)/xacro.py '$(find collab_env)/objects/peg.urdf.xacro' name:=peg2 xx:=0.75 yy:=-0.75"
+    />
+  <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+    args=" -urdf -model peg2 -param peg2_description"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="peg2_st_pub" >
+    <remap from="robot_description" to="peg2_description" />
+  </node>
+  <!--<node pkg="joint_state_publisher" type="joint_state_publisher" name="peg2_js_pub" >
+    <remap from="robot_description" to="peg2_description" />
+  </node>-->
+
+
+</launch>
