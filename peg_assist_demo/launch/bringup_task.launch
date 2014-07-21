@@ -52,7 +52,7 @@
     <param name="rate" value="0.1"/>
   </node>
 
-  <node name="planning_scene_script" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen"
+  <node name="planning_scene_script_arm1" pkg="peg_assist_demo" type="publish_planning_scene.py" output="screen"
     if="$(arg bringup_arm1)">
     <param name="wait_for" value="/gazebo/barrett_manager/move_group"/>
     <param name="service" value="/gazebo/wam/publish_planning_scene"/>
