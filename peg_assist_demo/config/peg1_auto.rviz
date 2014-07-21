@@ -4,13 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Status1
-        - /WAM2_MOTION_PLANNING1
-        - /WAM2_MOTION_PLANNING1/Scene Geometry1
-        - /WAM2_MOTION_PLANNING1/Scene Robot1
-        - /WAM2_MOTION_PLANNING1/Planning Request1
-        - /WAM2_MOTION_PLANNING1/Planned Path1
+        - /WAM_MOTION_PLANNING1
+        - /WAM_MOTION_PLANNING1/Scene Robot1
+        - /WAM_MOTION_PLANNING1/Planning Request1
       Splitter Ratio: 0.5
     Tree Height: 841
   - Class: rviz/Selection
@@ -385,14 +381,14 @@ Visualization Manager:
       Visual Enabled: true
     - Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
-      Move Group Namespace: /gazebo/w2barrett_manager
+      Move Group Namespace: /gazebo/barrett_manager
       MoveIt_Goal_Tolerance: 0.1
       MoveIt_Planning_Attempts: 10
       MoveIt_Planning_Time: 5
       MoveIt_Use_Constraint_Aware_IK: true
       MoveIt_Warehouse_Host: 127.0.0.1
       MoveIt_Warehouse_Port: 33829
-      Name: WAM2_MOTION_PLANNING
+      Name: WAM_MOTION_PLANNING
       Planned Path:
         Links:
           All Links Enabled: true
@@ -400,87 +396,87 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          wam2/base_link:
+          wam/base_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/forearm_link:
+          wam/forearm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/bhand_palm_link:
+          wam/hand/bhand_palm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_1/dist_link:
+          wam/hand/finger_1/dist_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_1/med_link:
+          wam/hand/finger_1/med_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_1/prox_link:
+          wam/hand/finger_1/prox_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_2/dist_link:
+          wam/hand/finger_2/dist_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_2/med_link:
+          wam/hand/finger_2/med_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_2/prox_link:
+          wam/hand/finger_2/prox_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_3/dist_link:
+          wam/hand/finger_3/dist_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_3/med_link:
+          wam/hand/finger_3/med_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/shoulder_pitch_link:
+          wam/shoulder_pitch_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/shoulder_yaw_link:
+          wam/shoulder_yaw_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/upper_arm_link:
+          wam/upper_arm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/wrist_palm_link:
+          wam/wrist_palm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/wrist_pitch_link:
+          wam/wrist_pitch_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/wrist_yaw_link:
+          wam/wrist_yaw_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -495,7 +491,7 @@ Visualization Manager:
         Show Robot Visual: true
         Show Trail: false
         State Display Time: 0.05 s
-        Trajectory Topic: /gazebo/w2barrett_manager/move_group/display_planned_path
+        Trajectory Topic: /gazebo/barrett_manager/move_group/display_planned_path
       Planning Metrics:
         Payload: 0
         Show Joint Torques: false
@@ -515,8 +511,8 @@ Visualization Manager:
         Show Workspace: false
         Start State Alpha: 0.6
         Start State Color: 0; 255; 0
-      Planning Scene Topic: /gazebo/w2barrett_manager/move_group/monitored_planning_scene
-      Robot Description: /gazebo/w2barrett_manager/robot_description
+      Planning Scene Topic: /gazebo/barrett_manager/move_group/monitored_planning_scene
+      Robot Description: /gazebo/barrett_manager/robot_description
       Scene Geometry:
         Scene Alpha: 0.9
         Scene Color: 85; 85; 127
@@ -532,87 +528,87 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          wam2/base_link:
+          wam/base_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/forearm_link:
+          wam/forearm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/bhand_palm_link:
+          wam/hand/bhand_palm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_1/dist_link:
+          wam/hand/finger_1/dist_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_1/med_link:
+          wam/hand/finger_1/med_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_1/prox_link:
+          wam/hand/finger_1/prox_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_2/dist_link:
+          wam/hand/finger_2/dist_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_2/med_link:
+          wam/hand/finger_2/med_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_2/prox_link:
+          wam/hand/finger_2/prox_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_3/dist_link:
+          wam/hand/finger_3/dist_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/hand/finger_3/med_link:
+          wam/hand/finger_3/med_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/shoulder_pitch_link:
+          wam/shoulder_pitch_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/shoulder_yaw_link:
+          wam/shoulder_yaw_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/upper_arm_link:
+          wam/upper_arm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/wrist_palm_link:
+          wam/wrist_palm_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/wrist_pitch_link:
+          wam/wrist_pitch_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          wam2/wrist_yaw_link:
+          wam/wrist_yaw_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -625,17 +621,18 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: false
       Value: true
-    - Class: rviz/Axes
-      Enabled: true
-      Length: 0.1
-      Name: CONTROL
-      Radius: 0.01
-      Reference Frame: wam/cmd
-      Value: true
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /gazebo/w2barrett_manager/move_group/display_contacts
       Name: WAM_2_CONTACTS
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /gazebo/barrett_manager/move_group/display_contacts
+      Name: WAM_1_CONTACTS
       Namespaces:
         {}
       Queue Size: 100
@@ -676,10 +673,10 @@ Visualization Manager:
         Z: 0.626646
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.0547972
+      Pitch: 0.529797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.73394
+      Yaw: 0.345759
     Saved: ~
 Window Geometry:
   Displays:
@@ -689,7 +686,7 @@ Window Geometry:
   Hide Right Dock: true
   Motion Planning:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000002af000003a8fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc00000043000003a8000001950100001dfa000000010100000002fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000000ffffffff0000029800fffffffb000000100044006900730070006c0061007900730100000000000002af0000010f00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002abfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000043000002ab000000ba00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005550000003efc0100000002fb0000000800540069006d00650000000000000005550000028200fffffffb0000000800540069006d00650100000000000004500000000000000000000004cb000003a800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000002af000003a8fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc00000043000003a8000001950100001dfa000000000100000002fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000000ffffffff000002af00fffffffb000000100044006900730070006c0061007900730100000000000002af0000010f00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002abfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000043000002ab000000ba00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005550000003efc0100000002fb0000000800540069006d00650000000000000005550000028200fffffffb0000000800540069006d00650100000000000004500000000000000000000004cb000003a800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
