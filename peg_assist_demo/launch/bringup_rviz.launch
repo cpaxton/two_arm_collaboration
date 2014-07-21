@@ -20,14 +20,14 @@
   -->
 
   <!-- launch rviz with remapping for the moveit display -->
-  <group ns="gazebo">
-    <group ns="w2barrett_manager">
+  <!--<group ns="gazebo">
+    <group ns="w2barrett_manager">-->
       <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" launch-prefix="$(arg launch_prefix)" >
         <remap from="/get_planning_scene" to="/gazebo/w2barrett_manager/get_planning_scene" unless="$(arg rviz_moveit_namespace)"/>
         <remap from="/move_group" to="/gazebo/w2barrett_manager/move_group" unless="$(arg rviz_moveit_namespace)"/>
       </node>
-    </group>
-  </group>
+      <!--</group>
+  </group>-->
 
 
 
