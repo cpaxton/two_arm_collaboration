@@ -57,6 +57,22 @@ roslaunch collab_hydra pegs1.launch
 
 The Peg Assistance Demo (`peg_assist_demo`) is a package in development *(as of 07/02)* that should integrate a number of different tools. There is a task execution plan (currently a SMACH placeholder, but will be replaced with CoSTAR Instructor), predicates, and MoveIt to control an automated arm while a human operator controls a primary arm.
 
+As of *(07/22)* I am also adding a second part to the peg assistance demo: an all-automatic launch file. You can run this with:
+
+```
+roslaunch peg_assist_demo pegs1_auto.launch
+```
+
+#### Options
+
+*Console*: You can bring up the RQT console to debug by setting `console:=true` from roslaunch.
+
+#### Known Issues
+
+- The controllers don't always work right. Sometimes, you run into issues because position error is too high. If so, just replan a path.
+- RViz crashes a lot on my NVidia graphics card.
+- There may be a memory leak that shows up with RViz and the MoveIt motion planning plugin.
+
 ### Markers Demo
 
 The Markers demo is a very simple demo. Up to four markers exist in the world; these are considered to be both objects and locations for interaction.
