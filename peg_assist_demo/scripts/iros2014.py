@@ -36,13 +36,17 @@ if __name__ == '__main__':
     sis = smach_ros.IntrospectionServer('peg_task_introspection_server', sm, '/SM_ROOT')
     sis.start()
 
+    # wait for necessary services
+    rospy.loginfo("TASK >>> waiting for services")
+    rospy.wait_for_service("/predicator/get_assignment")
+
     # execute the state machine
     outcome = sm.execute()
 
-    print "TASK >>> Done state machine?"
+    rospy.loginfo("TASK >>> Done state machine?")
 
     rospy.spin()
     sis.stop()
 
-    print outcome
+    rospy.loginfo("Outcome = %s", outcome)
 

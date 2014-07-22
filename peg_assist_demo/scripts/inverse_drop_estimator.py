@@ -17,6 +17,8 @@ if __name__ == "__main__":
 
     rospy.sleep(wait_time)
 
+    tfl = tf.TransformListener()
+
     # spin and write out a file
     for i in range(0,frames_to_capture):
 
