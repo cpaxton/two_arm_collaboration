@@ -5,7 +5,7 @@ import smach_ros
 
 # import predicator to let us see what's going on
 import predicator_core.srv as pcs
-from predicator_msgs import *
+from predicator_msgs.msg import *
 
 from oro_barrett_msgs.msg import BHandCmd
 
@@ -33,8 +33,8 @@ class CloseGripperNode(smach.State):
         ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
         statement = PredicateStatement()
         statement.predicate = "gripper_topic"
-        statement.params[0] = robot
-        statement.params[1] = "*"
+        statement.params[1] = robot
+        statement.params[0] = "*"
         resp = ga(statement)
 
         if resp.found:
@@ -63,8 +63,8 @@ class OpenGripperNode(smach.State):
         ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
         statement = PredicateStatement()
         statement.predicate = "gripper_topic"
-        statement.params[0] = robot
-        statement.params[1] = "*"
+        statement.params[1] = robot
+        statement.params[0] = "*"
         resp = ga(statement)
 
         if resp.found:
