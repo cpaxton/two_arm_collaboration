@@ -29,18 +29,17 @@
           - peg2
       - name: ring
         members:
-        - ring1
+          - ring1
       - name: location
         members:
-        - location1
-        - location2
-        - location3
-        - location4
-        - location5
-      - name:grasp_point
+          - location1
+          - location2
+          - location3
+          - location4
+          - location5
+      - name: grasp_point
         members:
-        - ring1/grasp1
-
+          - ring1/grasp1
     </rosparam>
 
     <rosparam param="param_class_info">
