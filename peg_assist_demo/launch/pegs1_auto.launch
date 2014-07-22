@@ -53,7 +53,7 @@
     output="screen"/>
 
   <!-- TASK MODEL STUFF -->
-  <include file="$(find peg_assist_demo)/launch/bringup_task.launch">
+  <include file="$(find peg_assist_demo)/launch/bringup_auto_task.launch">
     <arg name="smach_viewer" value="$(arg smach_viewer)"/>
     <arg name="bringup_arm1" value="true"/>
   </include>

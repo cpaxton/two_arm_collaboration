@@ -3,7 +3,7 @@ import roslib; roslib.load_manifest("collab_smach")
 import smach
 import smach_ros
 
-from trajectory_msgs import JointTrajectoryPoint
+from trajectory_msgs.msg import JointTrajectoryPoint
 
 # import predicator to let us see what's going on
 import predicator_core.srv as pcs

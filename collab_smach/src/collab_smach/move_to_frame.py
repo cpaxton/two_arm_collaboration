@@ -30,9 +30,9 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToObjectFrameNode(smach.State):
-    def __init__(self,robot,frame):
+    def __init__(self,robot,obj):
         self.robot = robot
-        self.frame = frame
+        self.obj = obj
 
     def execute(self):
         return 'success'

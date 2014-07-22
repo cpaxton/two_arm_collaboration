@@ -66,6 +66,7 @@ roslaunch peg_assist_demo pegs1_auto.launch
 #### Options
 
 *Console*: You can bring up the RQT console to debug by setting `console:=true` from roslaunch.
+*Smach Viewer*: You can bring up the smach viewer by setting `smach_viewer:=true` from roslaunch.
 
 #### Known Issues
 
