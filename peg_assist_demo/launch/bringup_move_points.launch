@@ -1,0 +1,47 @@
+<!--
+Create static transforms to possible points in space that arms might be able to reach
+
+- Translation: [0.831, 0.018, 0.793]
+- Rotation: in Quaternion [0.511, -0.387, 0.635, 0.432]
+            in RPY [-0.273, -1.384, 2.173]
+
+- Translation: [0.758, 0.475, 0.416]
+- Rotation: in Quaternion [0.783, -0.394, 0.385, 0.290]
+            in RPY [2.869, -0.980, -0.787]
+
+- Translation: [0.851, 0.380, 1.085]
+- Rotation: in Quaternion [0.770, -0.418, 0.375, 0.301]
+            in RPY [2.869, -0.980, -0.849]
+
+# this should be above peg1
+- Translation: [0.561, 0.822, 0.860]
+- Rotation: in Quaternion [0.680, -0.599, 0.323, -0.272]
+            in RPY [-2.275, -0.115, -1.498]
+
+# this is the actual dropoff location for a ring
+- Translation: [0.571, 0.106, 0.640]
+- Rotation: in Quaternion [0.251, -0.626, 0.712, -0.194]
+            in RPY [-1.481, -0.115, -2.505]
+
+
+-->
+<launch>
+
+  <node name="arm1_place1_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 100"/>
+
+  <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.758 0.475 0.416 0.783 -0.394 0.385 0.290 /world /location2 100"/>
+
+  <node name="arm1_place3_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.851 0.380 1.085 0.770 -0.418 0.375 0.301 /world /location3 100"/>
+
+  <node name="arm1_place4_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.561 0.822 0.860 0.680 -0.599 0.323 -0.272 /world /location4 100"/>
+
+  <node name="arm1_place5_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location5 100"/>
+
+</launch>
+
+
