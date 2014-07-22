@@ -39,7 +39,7 @@ class CloseGripperNode(smach.State):
 
         if resp.found:
             self.topic_set = True
-            self.pub = rospy.Publisher(resp.values[0].params[1])
+            self.pub = rospy.Publisher(resp.values[0].params[1], BHandCmd)
         else:
             self.topic_set = False
 
@@ -69,7 +69,7 @@ class OpenGripperNode(smach.State):
 
         if resp.found:
             self.topic_set = True
-            self.pub = rospy.Publisher(resp.values[0].params[1])
+            self.pub = rospy.Publisher(resp.values[0].params[1], BHandCmd)
         else:
             self.topic_set = False
 
