@@ -60,6 +60,7 @@
 
   <!-- WORLD STUFF -->
   <include file="$(find peg_assist_demo)/launch/bringup_grasp_points.launch"/>
+  <include file="$(find peg_assist_demo)/launch/bringup_move_points.launch"/>
 
   <!-- PREDICATOR STUFF HERE -->
   <include file="$(find peg_assist_demo)/launch/bringup_predicator.launch">
