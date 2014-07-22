@@ -40,7 +40,7 @@ try:
     print pt
 
     for i in range(1,10):
-        rospy.loginfo("trying to publish point")
+        rospy.loginfo("trying to publish point for arm2")
         pub2.publish(pt)
         rospy.sleep(0.5)
 
