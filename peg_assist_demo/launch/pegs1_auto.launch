@@ -16,10 +16,7 @@
     name="rqt_console" type="rqt_console" pkg="rqt_console">
   </node>
 
-  <!-- load the WAM arm settings, space nav controller, and user interface -->
-  <include file="$(find collab_spacenav)/launch/spacenav_rostopics.launch">
-    <arg name="usetwo" value="false"/>
-  </include>
+  <!-- load the WAM arm settings and environment -->
   <include file="$(find collab_env)/launch/test7_pegs.launch">
     <arg name="gui" value="$(arg gui)" />
     <arg name="hand" value="$(arg hand)" />
