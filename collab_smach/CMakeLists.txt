@@ -87,7 +87,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES collab_smach
-  CATKIN_DEPENDS actionlib actionlib_msgs collab_env lcsr_barrett message_runtime smach smach_msgs tf
+  CATKIN_DEPENDS actionlib actionlib_msgs collab_env lcsr_barrett message_runtime smach smach_msgs smach_ros tf trajectory_msgs
 #  DEPENDS system_lib
 )
 
