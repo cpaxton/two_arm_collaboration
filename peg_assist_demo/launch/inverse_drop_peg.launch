@@ -3,4 +3,17 @@
   <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
   <include file="$(find collab_env)/launch/create_pegs.launch"/>
 
+  <!-- spawn ring 1 -->
+  <param name="ring1_description"
+    command="$(find xacro)/xacro.py '$(find collab_env)/objects/ring.urdf.xacro' name:=ring1"/>
+  <param name="ring1_description_semantic"
+    command="$(find xacro)/xacro.py '$(find collab_env)/objects/ring.srdf.xacro' name:=ring1"/>
+   <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args=" -urdf -model ring1 -param ring1_description -x 0.75 -y -0.75 -z 0.25"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="ring1_st_pub" >
+    <remap from="robot_description" to="ring1_description" />
+  </node>
+
+  <node name="inverse_drop_estimator" type="inverse_drop_estimator.py" pkg="peg_assist_demo"/>
+
 </launch>
