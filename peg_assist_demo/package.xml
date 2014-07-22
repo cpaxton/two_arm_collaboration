@@ -25,6 +25,7 @@
   <build_depend>smach</build_depend>
   <build_depend>smach_viewer</build_depend>
   <build_depend>dmp_action</build_depend>
+  <build_depend>collab_smach</build_depend>
 
   <run_depend>actionlib</run_depend>
   <run_depend>actionlib_msgs</run_depend>
@@ -37,6 +38,7 @@
   <run_depend>predicator_core</run_depend>
   <run_depend>predicator_collision</run_depend>
   <run_depend>predicator_msgs</run_depend>
+  <run_depend>collab_smach</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
