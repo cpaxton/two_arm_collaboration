@@ -13,6 +13,7 @@ home_pt.positions = [0, -1.5707, 0, 3.1415, 0, -1.5705, 0]
 
 class ResetPoseNode(smach.State):
     def __init__(self,topic,pt=home_pt):
+        smach.State.__init__(self, outcomes=['success','failure'])
         self.pt = pt
         self.pub = rospy.Publisher(topic, JointTrajectoryPoint)
 

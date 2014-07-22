@@ -11,7 +11,7 @@ import collab_smach
 if __name__ == '__main__':
     rospy.init_node('smach_peg_task_iros2014')
 
-    sm = smach.StateMachine(outcomes=['DONE'])
+    sm = smach.StateMachine(outcomes=['DONE','ERROR'])
 
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
@@ -25,8 +25,12 @@ if __name__ == '__main__':
         smach.StateMachine.add('MoveToRing', collab_smach.MoveToObjectFrameNode('wam','ring1'),
                 transitions={
                     'success': 'GrabRing',
-                    'moveit_error': 'MovetoRing'})
-
+                    'moveit_error': 'MoveToRing',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam'),
+                transitions={
+                    'success': 'DONE',
+                    'failure': 'ERROR'})
 
     # Create SMACH introspection server
     sis = smach_ros.IntrospectionServer('peg_task_introspection_server', sm, '/SM_ROOT')

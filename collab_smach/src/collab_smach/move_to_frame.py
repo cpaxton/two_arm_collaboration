@@ -14,6 +14,7 @@ Robot movement parameters need to be set up correctly -- it will use MoveGroup t
 '''
 class MoveToFrameNode(smach.State):
     def __init__(self,robot,frame):
+        smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
         self.robot = robot
         self.frame = frame
 
@@ -31,6 +32,7 @@ disabiling collisions with whatever object we might run into because we want to 
 '''
 class MoveToObjectFrameNode(smach.State):
     def __init__(self,robot,obj):
+        smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
         self.robot = robot
         self.obj = obj
 
