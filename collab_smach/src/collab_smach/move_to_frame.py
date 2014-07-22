@@ -18,7 +18,7 @@ class MoveToFrameNode(smach.State):
         self.robot = robot
         self.frame = frame
 
-    def execute(self):
+    def execute(self, userdata):
         return 'success'
 
 
@@ -36,5 +36,5 @@ class MoveToObjectFrameNode(smach.State):
         self.robot = robot
         self.obj = obj
 
-    def execute(self):
+    def execute(self, userdata):
         return 'success'

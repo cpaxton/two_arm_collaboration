@@ -37,12 +37,21 @@
           - location3
           - location4
           - location5
-      - name: grasp_point
-        members:
-          - ring1/grasp1
     </rosparam>
 
     <rosparam param="param_class_info">
+      - name: gripper_topic
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/hand/cmd
+      - name: gripper_topic
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/hand/cmd
+      - name: grasp_point
+        parent: ring1
+        members:
+          - ring1/grasp1
       - name: component
         parent: wam
         members:

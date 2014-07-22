@@ -29,7 +29,7 @@ class CloseGripperNode(smach.State):
 
         #self.pub = rospy.Publisher()
 
-    def execute(self):
+    def execute(self, userdata):
         return 'success'
 
 '''
@@ -42,5 +42,5 @@ class OpenGripperNode(smach.State):
 
         #self.pub = rospy.Publisher()
 
-    def execute(self):
+    def execute(self, userdata):
         return 'success'

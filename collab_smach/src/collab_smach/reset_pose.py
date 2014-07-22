@@ -17,7 +17,7 @@ class ResetPoseNode(smach.State):
         self.pt = pt
         self.pub = rospy.Publisher(topic, JointTrajectoryPoint)
 
-    def execute(self):
+    def execute(self, userdata):
         self.pub.publish(pt)
         return 'success'
 
