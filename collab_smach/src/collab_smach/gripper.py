@@ -29,10 +29,26 @@ class CloseGripperNode(smach.State):
         self.robot = robot
         self.obj = obj
 
-        #self.pub = rospy.Publisher()
+        # use predicator to load settings
+        ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
+        statement = PredicateStatement()
+        statement.predicate = "gripper_topic"
+        statement.params[0] = robot
+        statement.params[1] = "*"
+        resp = ga(statement)
+
+        if resp.found:
+            self.topic_set = True
+            self.pub = rospy.Publisher(resp.values[0].params[1])
+        else:
+            self.topic_set = False
 
     def execute(self, userdata):
-        return 'success'
+        if self.topic_set == True:
+            self.pub(hand_closed)
+            return 'success'
+        else:
+            return 'failure'
 
 '''
 OpenGripperNode
