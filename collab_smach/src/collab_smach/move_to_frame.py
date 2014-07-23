@@ -23,11 +23,11 @@ from moveit_msgs.srv import *
 getConstraints()
 Helper function to generate goal constraints from a position
 '''
-def getConstraints(ee_link, frame):
+def getConstraints(ee_link, frame, js):
     tfl = tf.TransformListener()
+    #srv = rospy.ServiceProxy(
 
     goal = Constraints()
-    goal.name = "goal"
 
     position = PositionConstraint()
     orientation = OrientationConstraint()
@@ -36,15 +36,27 @@ def getConstraints(ee_link, frame):
     position.constraint_region = BoundingVolume()
     position.weight = 1.0
     position.link_name = ee_link
+    position.header.frame_id = "/world"
 
-    print ee_link
-    print frame
+    for i in range(0,len(js.name)):
+        print js.name[i]
+        print js.position[i]
+        joint = JointConstraint()
+        joint.joint_name = js.name[i]
+        joint.position = 0
+        joint.tolerance_below = 0.0001
+        joint.tolerance_above = 0.0001
+        joint.weight = 1.0
+        goal.joint_constraints.append(joint)
+
+    print "End effector: " + ee_link
+    print "Target frame: " + frame
     #tfl.waitForTransform(ee_link, frame, rospy.Time(0), rospy.Time(2.0))
     tf_done = False
 
     while not tf_done:
         try:
-            (trans, rot) = tfl.lookupTransform(ee_link, frame, rospy.Time(0))
+            (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
             tf_done = True
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
@@ -99,7 +111,24 @@ class MoveToFrameNode(smach.State):
 
         rospy.loginfo("Move group location: %s", self.ns)
 
-        self.client = actionlib.SimpleActionClient(self.ns, MoveGroupAction)
+        statement = PredicateStatement()
+        statement.predicate = "robot_namespace"
+        statement.params[1] = robot
+        statement.params[0] = "*"
+        resp = ga(statement)
+
+        self.js_sub = rospy.Subscriber(resp.values[0].params[0] + "/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
+
+
+        rospy.loginfo("Move group location: %s", self.ns)
+        rospy.loginfo("Joints topic: %s", resp.values[0].params[0] + "/joint_states")
+
+    '''
+    joint_state_cb()
+    keep up to date data on joints
+    '''
+    def joint_state_cb(self, msg):
+        self.js = msg
 
     def execute(self, userdata):
 
@@ -135,7 +164,24 @@ class MoveToObjectFrameNode(smach.State):
             # default namespace
             self.ns = "/move_group"
 
+        statement = PredicateStatement()
+        statement.predicate = "robot_namespace"
+        statement.params[1] = robot
+        statement.params[0] = "*"
+        resp = ga(statement)
+
+        self.js_sub = rospy.Subscriber(resp.values[0].params[0] + "/wam/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
+
+
         rospy.loginfo("Move group location: %s", self.ns)
+        rospy.loginfo("Joints topic: %s", resp.values[0].params[0] + "/wam/joint_states")
+
+    '''
+    joint_state_cb()
+    keep up to date data on joints
+    '''
+    def joint_state_cb(self, msg):
+        self.js = msg
 
     def execute(self, userdata):
 
@@ -143,13 +189,13 @@ class MoveToObjectFrameNode(smach.State):
 
         planning_options = PlanningOptions()
         planning_options.plan_only = False
-        planning_options.replan = True
+        planning_options.replan = False
         planning_options.replan_attempts = 5
-        planning_options.replan_delay = 1.0
+        planning_options.replan_delay = 2.0
 
         motion_req = MotionPlanRequest()
-        
-        motion_req.allowed_planning_time = 5.0
+
+        motion_req.start_state.joint_state = self.js
         motion_req.workspace_parameters.header.frame_id = "world"
         motion_req.workspace_parameters.max_corner.x = 2.0
         motion_req.workspace_parameters.max_corner.y = 2.0
@@ -159,11 +205,19 @@ class MoveToObjectFrameNode(smach.State):
         motion_req.workspace_parameters.min_corner.z = -2.0
 
         # create the goal constraints
-        motion_req.goal_constraints.append(getConstraints("wam2/wrist_palm_link","location1"))
+        motion_req.goal_constraints.append(getConstraints(self.robot + "/wrist_palm_link","location1", self.js))
+        motion_req.group_name = "arm"
+        motion_req.num_planning_attempts = 10
+        motion_req.allowed_planning_time = 5.0
+        motion_req.planner_id = "RTTstarkConfigDefault"
         
         self.goal = MoveGroupGoal()
         self.goal.planning_options = planning_options
         self.goal.request = motion_req
+
+        print self.goal
+
+        print "Sending request..."
 
         self.client.send_goal(self.goal)
         self.client.wait_for_result()

@@ -48,6 +48,14 @@
         parent: wam2
         members:
           - /gazebo/w2barrett_manager/hand/cmd
+      - name: robot_namespace
+        parent: wam
+        members:
+          - /gazebo/barrett_manager
+      - name: robot_namespace
+        parent: wam2
+        members:
+        - /gazebo/w2barrett_manager
       - name: move_group_namespace
         parent: wam
         members:
@@ -56,6 +64,14 @@
         parent: wam2
         members:
           - /gazebo/w2barrett_manager/move_group
+      - name: joint_states_topic
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/wam/joint_states
+      - name: joint_states_topic
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/wam/joint_states
       - name: grasp_point
         parent: ring1
         members:

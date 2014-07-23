@@ -63,6 +63,12 @@ As of *(07/22)* I am also adding a second part to the peg assistance demo: an al
 roslaunch peg_assist_demo pegs1_auto.launch
 ```
 
+There's another file as well, which does not bring up the RViz motion planning interface:
+
+```
+roslaunch peg_assist_demo iros2014.launch
+```
+
 #### Options
 
 *Console*: You can bring up the RQT console to debug by setting `console:=true` from roslaunch.
