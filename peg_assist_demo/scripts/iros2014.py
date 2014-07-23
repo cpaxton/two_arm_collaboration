@@ -18,11 +18,11 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'Open2',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Open2', collab_smach.OpenGripperNode('wam'),
+        smach.StateMachine.add('Open2', collab_smach.OpenGripperNode('wam2'),
                 transitions={
                     'success': 'MoveToRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','location2'),
+        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','location2', obj='ring1'),
                 transitions={
                     'success': 'GrabRing',
                     'moveit_error': 'MoveToRing',

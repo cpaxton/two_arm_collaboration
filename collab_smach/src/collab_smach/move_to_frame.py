@@ -37,12 +37,12 @@ class MoveToFrameNode(smach.State):
         rospy.loginfo("Initializing move to frame node")
 
         # use predicator to load settings
-        ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
+        self.ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
         statement = PredicateStatement()
         statement.predicate = "move_group_namespace"
         statement.params[1] = robot
         statement.params[0] = "*"
-        resp = ga(statement)
+        resp = self.ga(statement)
 
         if resp.found:
             self.ns = resp.values[0].params[0]
@@ -54,7 +54,7 @@ class MoveToFrameNode(smach.State):
         statement.predicate = "robot_namespace"
         statement.params[1] = robot
         statement.params[0] = "*"
-        resp = ga(statement)
+        resp = self.ga(statement)
 
         self.robot_ns = resp.values[0].params[0]
         self.js_sub = rospy.Subscriber(self.robot_ns + "/wam/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
@@ -79,6 +79,9 @@ class MoveToFrameNode(smach.State):
         planning_options.replan = False
         planning_options.replan_attempts = 5
         planning_options.replan_delay = 2.0
+
+        print self.update_collision_matrix(self.obj)
+        
 
         motion_req = MotionPlanRequest()
 
@@ -128,7 +131,7 @@ class MoveToFrameNode(smach.State):
         # compute ik for this position
         srv = rospy.ServiceProxy(self.robot_ns + "/compute_ik", moveit_msgs.srv.GetPositionIK)
 
-        print "Target frame: " + frame
+        print "Target frame: " + frame + ", getting transform..."
         tf_done = False
 
         while not tf_done:
@@ -156,6 +159,7 @@ class MoveToFrameNode(smach.State):
         ik_req.group_name = "arm"
         ik_req.pose_stamped = p
 
+        print "Getting IK position..."
         ik_resp = srv(ik_req)
 
         ###############################
@@ -175,3 +179,52 @@ class MoveToFrameNode(smach.State):
             goal.joint_constraints.append(joint)
 
         return goal
+
+
+    '''
+    update_collision_matrix()
+    look at the allowed collision matrix between object and robot
+    '''
+    def update_collision_matrix(self, obj, enable=True):
+
+        ps = moveit_msgs.msg.PlanningScene()
+        ps.is_diff = True
+
+        print "updating"
+        print obj
+
+        if not obj == None:
+
+            entry = moveit_msgs.msg.AllowedCollisionEntry()
+            entry.enabled = enable
+
+            comps_robot_req = PredicateStatement()
+            comps_robot_req.predicate = "hand_component"
+            comps_robot_req.params[1] = self.robot
+            comps_robot_req.params[0] = "*"
+
+            comps_obj_req = PredicateStatement()
+            comps_obj_req.predicate = "component"
+            comps_obj_req.params[1] = obj
+            comps_obj_req.params[0] = "*"
+
+            robot_comps = self.ga(comps_robot_req)
+            obj_comps = self.ga(comps_obj_req)
+
+            print robot_comps
+            print obj_comps
+
+            for i in range(0, len(robot_comps.values)):
+                for j in range (0, len(obj_comps.values)):
+                    print "adding (%s, %s) to allowed collisions"%(robot_comps.values[i].params[0],obj_comps.values[j].params[0])
+
+            for i in range(0, len(robot_comps.values)):
+                ps.allowed_collision_matrix.entry_names.append(robot_comps.values[i].params[0])
+            for i in range(0, len(obj_comps.values)):
+                ps.allowed_collision_matrix.entry_names.append(obj_comps.values[i].params[0])
+
+            for elem in ps.allowed_collision_matrix.entry_names:
+                for elem2 in ps.allowed_collision_matrix.entry_names:
+                    ps.allowed_collision_matrix.entry_values.append(entry)
+
+        return ps

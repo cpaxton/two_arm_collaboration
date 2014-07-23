@@ -96,6 +96,28 @@
           - wam2/wrist_yaw_link
           - wam2/wrist_pitch_link
           - wam2/wrist_palm_link
+      - name: hand_component
+        parent: wam
+        members:
+          - wam/hand/finger_1/prox_joint
+          - wam/hand/finger_2/prox_joint
+          - wam/hand/finger_1/med_joint
+          - wam/hand/finger_2/med_joint
+          - wam/hand/finger_3/med_joint
+          - wam/hand/finger_1/dist_joint
+          - wam/hand/finger_2/dist_joint
+          - wam/hand/finger_3/dist_joint
+      - name: hand_component
+        parent: wam2
+        members:
+          - wam2/hand/finger_1/prox_joint
+          - wam2/hand/finger_2/prox_joint
+          - wam2/hand/finger_1/med_joint
+          - wam2/hand/finger_2/med_joint
+          - wam2/hand/finger_3/med_joint
+          - wam2/hand/finger_1/dist_joint
+          - wam2/hand/finger_2/dist_joint
+          - wam2/hand/finger_3/dist_joint
       - name: component
         parent: peg1
         members:
