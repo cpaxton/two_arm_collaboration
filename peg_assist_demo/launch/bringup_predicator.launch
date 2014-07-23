@@ -72,6 +72,14 @@
         parent: wam2
         members:
           - /gazebo/w2barrett_manager/wam/joint_states
+      - name: planning_scene_topic
+        parent: wam
+        members:
+          - /gazebo/wam/wam/planning_scene
+      - name: planning_scene_topic
+        parent: wam2
+        members:
+          - /gazebo/wam2/wam2/planning_scene
       - name: grasp_point
         parent: ring1
         members:

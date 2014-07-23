@@ -59,7 +59,15 @@ class MoveToFrameNode(smach.State):
         self.robot_ns = resp.values[0].params[0]
         self.js_sub = rospy.Subscriber(self.robot_ns + "/wam/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
 
+        statement = PredicateStatement()
+        statement.predicate = "planning_scene_topic"
+        statement.params[1] = robot
+        statement.params[0] = "*"
+        resp = self.ga(statement)
 
+        self.ps_pub = rospy.Publisher(resp.values[0].params[0], moveit_msgs.msg.PlanningScene)
+
+        rospy.loginfo("Planning scene topic: %s", resp.values[0].params[0])
         rospy.loginfo("Move group location: %s", self.ns)
         rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
 
@@ -80,8 +88,7 @@ class MoveToFrameNode(smach.State):
         planning_options.replan_attempts = 5
         planning_options.replan_delay = 2.0
 
-        print self.update_collision_matrix(self.obj)
-        
+        self.update_collision_matrix(obj=self.obj, enable=True)
 
         motion_req = MotionPlanRequest()
 
@@ -190,9 +197,6 @@ class MoveToFrameNode(smach.State):
         ps = moveit_msgs.msg.PlanningScene()
         ps.is_diff = True
 
-        print "updating"
-        print obj
-
         if not obj == None:
 
             entry = moveit_msgs.msg.AllowedCollisionEntry()
@@ -210,9 +214,6 @@ class MoveToFrameNode(smach.State):
 
             robot_comps = self.ga(comps_robot_req)
             obj_comps = self.ga(comps_obj_req)
-
-            print robot_comps
-            print obj_comps
 
             for i in range(0, len(robot_comps.values)):
                 for j in range (0, len(obj_comps.values)):
