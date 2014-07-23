@@ -153,9 +153,9 @@
   </include>
 
   <!-- left, right, up, down, etc. -->
-  <include file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
+  <!--<include file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>
-  </include>
+  </include>-->
 
   <include file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>

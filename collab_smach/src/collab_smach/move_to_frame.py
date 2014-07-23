@@ -4,6 +4,7 @@ import smach
 import smach_ros
 import actionlib
 import tf
+import copy
 
 # import predicator to let us see what's going on
 import predicator_core.srv as pcs
@@ -18,6 +19,7 @@ from geometry_msgs.msg import Pose
 # import moveit messages
 from moveit_msgs.msg import *
 from moveit_msgs.srv import *
+
 
 '''
 MoveToFrameNode
@@ -82,13 +84,21 @@ class MoveToFrameNode(smach.State):
 
         self.client = actionlib.SimpleActionClient(self.ns, MoveGroupAction)
 
+        ps_proxy = rospy.ServiceProxy(self.robot_ns + "/get_planning_scene", moveit_msgs.srv.GetPlanningScene)
+
         planning_options = PlanningOptions()
         planning_options.plan_only = False
         planning_options.replan = False
         planning_options.replan_attempts = 5
         planning_options.replan_delay = 2.0
 
-        self.update_collision_matrix(obj=self.obj, enable=True)
+        ps_req = PlanningSceneComponents()
+        ps_req.components = moveit_msgs.msg.PlanningSceneComponents.ALLOWED_COLLISION_MATRIX
+        ps = ps_proxy(components=ps_req).scene
+        ps_new_acm = self.update_collision_matrix(obj=self.obj, cm=copy.deepcopy(ps.allowed_collision_matrix))
+
+        print ps_new_acm
+        self.ps_pub.publish(ps_new_acm)
 
         motion_req = MotionPlanRequest()
 
@@ -120,6 +130,12 @@ class MoveToFrameNode(smach.State):
         res = self.client.get_result()
 
         print "Done: " + str(res.error_code.val)
+
+        print "Reverting planning scene/allowed collision matrix"
+        ps.is_diff = True
+
+        #print ps
+        self.ps_pub.publish(ps)
 
         if res.error_code.val == moveit_msgs.msg.MoveItErrorCodes.SUCCESS:
             return 'success'
@@ -192,40 +208,63 @@ class MoveToFrameNode(smach.State):
     update_collision_matrix()
     look at the allowed collision matrix between object and robot
     '''
-    def update_collision_matrix(self, obj, enable=True):
+    def update_collision_matrix(self, obj, cm):
 
         ps = moveit_msgs.msg.PlanningScene()
         ps.is_diff = True
+        ps.allowed_collision_matrix = cm
 
         if not obj == None:
 
-            entry = moveit_msgs.msg.AllowedCollisionEntry()
-            entry.enabled = enable
-
-            comps_robot_req = PredicateStatement()
-            comps_robot_req.predicate = "hand_component"
-            comps_robot_req.params[1] = self.robot
-            comps_robot_req.params[0] = "*"
+            #comps_robot_req = PredicateStatement()
+            #comps_robot_req.predicate = "hand_component"
+            #comps_robot_req.params[1] = self.robot
+            #comps_robot_req.params[0] = "*"
 
             comps_obj_req = PredicateStatement()
             comps_obj_req.predicate = "component"
             comps_obj_req.params[1] = obj
             comps_obj_req.params[0] = "*"
 
-            robot_comps = self.ga(comps_robot_req)
+            #robot_comps = self.ga(comps_robot_req)
             obj_comps = self.ga(comps_obj_req)
 
-            for i in range(0, len(robot_comps.values)):
-                for j in range (0, len(obj_comps.values)):
-                    print "adding (%s, %s) to allowed collisions"%(robot_comps.values[i].params[0],obj_comps.values[j].params[0])
+            #for i in range(0, len(robot_comps.values)):
+            #    for j in range (0, len(obj_comps.values)):
+            #        print "adding (%s, %s) to allowed collisions"%(robot_comps.values[i].params[0],obj_comps.values[j].params[0])
 
-            for i in range(0, len(robot_comps.values)):
-                ps.allowed_collision_matrix.entry_names.append(robot_comps.values[i].params[0])
+            old_len = len(ps.allowed_collision_matrix.entry_names)
+            #for i in range(0, len(robot_comps.values)):
+            #    ps.allowed_collision_matrix.entry_names.append(robot_comps.values[i].params[0])
             for i in range(0, len(obj_comps.values)):
                 ps.allowed_collision_matrix.entry_names.append(obj_comps.values[i].params[0])
 
-            for elem in ps.allowed_collision_matrix.entry_names:
-                for elem2 in ps.allowed_collision_matrix.entry_names:
-                    ps.allowed_collision_matrix.entry_values.append(entry)
+            new_len = len(ps.allowed_collision_matrix.entry_names)
+
+            print ps.allowed_collision_matrix.entry_names
+            print old_len
+            print new_len
+
+            # add new rows
+            for i in range(old_len, new_len):
+                entry = moveit_msgs.msg.AllowedCollisionEntry()
+                for j in range(0, new_len):
+                    entry.enabled.append(False)
+
+            # add to old rows
+            for i in range(0, old_len):
+                for j in range(old_len, new_len):
+                    ps.allowed_collision_matrix.entry_values[i].enabled.append(False)
+
+            # loop over all names
+            # add the appropriate collision enabling/disabling
+            #for elem in ps.allowed_collision_matrix.entry_names:
+            #    for i in range(0, len(robot_comps.values)):
+            #        entry.enabled.append(False)
+            #    for j in range (0, len(obj_comps.values)):
+            #        entry.enabled.append(enable)
+            #    ps.allowed_collision_matrix.entry_values.append(entry)
+
+            #print ps.allowed_collision_matrix.entry_values
 
         return ps
