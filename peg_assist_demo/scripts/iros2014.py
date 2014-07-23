@@ -22,7 +22,7 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveToRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','ring1'),
+        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','location2'),
                 transitions={
                     'success': 'GrabRing',
                     'moveit_error': 'MoveToRing',
@@ -31,12 +31,12 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveRingToReachable',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location'),
+        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location1'),
                 transitions={
                     'success': 'Arm2MoveToRing',
                     'moveit_error': 'MoveRingToReachable',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToRing', collab_smach.MoveToFrameNode('wam2','ring1'),
+        smach.StateMachine.add('Arm2MoveToRing', collab_smach.MoveToFrameNode('wam2','ring1/grasp1'),
                 transitions={
                     'success': 'Arm2GrabRing',
                     'moveit_error': 'Arm2MoveToRing',

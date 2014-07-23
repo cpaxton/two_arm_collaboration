@@ -92,7 +92,7 @@ class MoveToFrameNode(smach.State):
         motion_req.workspace_parameters.min_corner.z = -2.0
 
         # create the goal constraints
-        motion_req.goal_constraints.append(self.getConstraints(self.robot + "/wrist_palm_link","location1"))
+        motion_req.goal_constraints.append(self.getConstraints(self.frame))
         motion_req.group_name = "arm"
         motion_req.num_planning_attempts = 10
         motion_req.allowed_planning_time = 5.0
@@ -102,15 +102,14 @@ class MoveToFrameNode(smach.State):
         self.goal.planning_options = planning_options
         self.goal.request = motion_req
 
-        print self.goal
-
+        #print self.goal
         print "Sending request..."
 
         self.client.send_goal(self.goal)
         self.client.wait_for_result()
         res = self.client.get_result()
 
-        print res.error_code
+        print "Done: " + str(res.error_code.val)
 
         if res.error_code.val == moveit_msgs.msg.MoveItErrorCodes.SUCCESS:
             return 'success'
@@ -123,34 +122,12 @@ class MoveToFrameNode(smach.State):
     getConstraints()
     Helper function to generate goal constraints from a position
     '''
-    def getConstraints(self, ee_link, frame):
+    def getConstraints(self, frame):
         tfl = tf.TransformListener()
         
         # compute ik for this position
         srv = rospy.ServiceProxy(self.robot_ns + "/compute_ik", moveit_msgs.srv.GetPositionIK)
 
-        goal = Constraints()
-
-        position = PositionConstraint()
-        orientation = OrientationConstraint()
-
-        position.constraint_region = BoundingVolume()
-        position.weight = 1.0
-        position.link_name = ee_link
-        position.header.frame_id = "/world"
-
-        for i in range(0,len(self.js.name)):
-            print self.js.name[i]
-            print self.js.position[i]
-            joint = JointConstraint()
-            joint.joint_name = self.js.name[i]
-            joint.position = 0
-            joint.tolerance_below = 0.001
-            joint.tolerance_above = 0.001
-            joint.weight = 1.0
-            goal.joint_constraints.append(joint)
-
-        #print "End effector: " + ee_link
         print "Target frame: " + frame
         tf_done = False
 
@@ -161,20 +138,40 @@ class MoveToFrameNode(smach.State):
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
 
-        print (trans, rot)
+        p = geometry_msgs.msg.PoseStamped()
+        p.pose.position.x = trans[0]
+        p.pose.position.y = trans[1]
+        p.pose.position.z = trans[2]
+        p.pose.orientation.x = rot[0]
+        p.pose.orientation.y = rot[1]
+        p.pose.orientation.z = rot[2]
+        p.pose.orientation.w = rot[3]
+        p.header.frame_id = "/world"
 
-        p = geometry_msgs.msg.Pose()
-        p.position.x = trans[0]
-        p.position.y = trans[1]
-        p.position.z = trans[2]
+        ik_req = moveit_msgs.msg.PositionIKRequest()
+        ik_req.robot_state.joint_state = self.js
+        ik_req.avoid_collisions = True
+        ik_req.timeout = rospy.Duration(3.0)
+        ik_req.attempts = 5
+        ik_req.group_name = "arm"
+        ik_req.pose_stamped = p
 
-        region = shape_msgs.msg.SolidPrimitive()
-        region.type = shape_msgs.msg.SolidPrimitive.SPHERE
-        region.dimensions.append(0.1)
+        ik_resp = srv(ik_req)
 
-        position.constraint_region.primitive_poses.append(p)
+        ###############################
+        # now create the goal based on inverse kinematics
 
-        #goal.position_constraints.append(position)
-        #goal.orientation_constraints.append(orientation)
+        goal = Constraints()
+
+        for i in range(0,len(ik_resp.solution.joint_state.name)):
+            print ik_resp.solution.joint_state.name[i]
+            print ik_resp.solution.joint_state.position[i]
+            joint = JointConstraint()
+            joint.joint_name = ik_resp.solution.joint_state.name[i]
+            joint.position = ik_resp.solution.joint_state.position[i] 
+            joint.tolerance_below = 0.001
+            joint.tolerance_above = 0.001
+            joint.weight = 1.0
+            goal.joint_constraints.append(joint)
 
         return goal
