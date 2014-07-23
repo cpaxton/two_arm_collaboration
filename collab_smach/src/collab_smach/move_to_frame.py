@@ -20,132 +20,18 @@ from moveit_msgs.msg import *
 from moveit_msgs.srv import *
 
 '''
-getConstraints()
-Helper function to generate goal constraints from a position
-'''
-def getConstraints(ee_link, frame, js):
-    tfl = tf.TransformListener()
-    #srv = rospy.ServiceProxy(
-
-    goal = Constraints()
-
-    position = PositionConstraint()
-    orientation = OrientationConstraint()
-    joint0 = JointConstraint()
-
-    position.constraint_region = BoundingVolume()
-    position.weight = 1.0
-    position.link_name = ee_link
-    position.header.frame_id = "/world"
-
-    for i in range(0,len(js.name)):
-        print js.name[i]
-        print js.position[i]
-        joint = JointConstraint()
-        joint.joint_name = js.name[i]
-        joint.position = 0
-        joint.tolerance_below = 0.0001
-        joint.tolerance_above = 0.0001
-        joint.weight = 1.0
-        goal.joint_constraints.append(joint)
-
-    print "End effector: " + ee_link
-    print "Target frame: " + frame
-    #tfl.waitForTransform(ee_link, frame, rospy.Time(0), rospy.Time(2.0))
-    tf_done = False
-
-    while not tf_done:
-        try:
-            (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
-            tf_done = True
-        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            continue
-
-    print (trans, rot)
-
-    p = geometry_msgs.msg.Pose()
-    p.position.x = trans[0]
-    p.position.y = trans[1]
-    p.position.z = trans[2]
-
-    region = shape_msgs.msg.SolidPrimitive()
-    region.type = shape_msgs.msg.SolidPrimitive.SPHERE
-    region.dimensions.append(0.1)
-
-    position.constraint_region.primitive_poses.append(p)
-
-    #goal.position_constraints.append(position)
-    #goal.orientation_constraints.append(orientation)
-
-    return goal
-        
-
-'''
 MoveToFrameNode
-
-This is a simple SMACH node that tells a certain robot to move to a frame.
-Robot movement parameters need to be set up correctly -- it will use MoveGroup to do motion planning.
-'''
-class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame):
-        smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
-        self.robot = robot
-        self.frame = frame
-
-        rospy.loginfo("Initializing move to frame node")
-
-        # use predicator to load settings
-        ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
-        statement = PredicateStatement()
-        statement.predicate = "move_group_namespace"
-        statement.params[1] = robot
-        statement.params[0] = "*"
-        resp = ga(statement)
-
-        if resp.found:
-            self.ns = resp.values[0].params[0]
-        else:
-            # default namespace
-            self.ns = "/move_group"
-
-
-        rospy.loginfo("Move group location: %s", self.ns)
-
-        statement = PredicateStatement()
-        statement.predicate = "robot_namespace"
-        statement.params[1] = robot
-        statement.params[0] = "*"
-        resp = ga(statement)
-
-        self.js_sub = rospy.Subscriber(resp.values[0].params[0] + "/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
-
-
-        rospy.loginfo("Move group location: %s", self.ns)
-        rospy.loginfo("Joints topic: %s", resp.values[0].params[0] + "/joint_states")
-
-    '''
-    joint_state_cb()
-    keep up to date data on joints
-    '''
-    def joint_state_cb(self, msg):
-        self.js = msg
-
-    def execute(self, userdata):
-
-        return 'success'
-
-'''
-MoveToObjectFrameNode
 
 This is a simple SMACH node that tells a certain robot to move to a frame.
 Robot movement parameters need to be set up correctly -- it will use MoveGroup to do motion planning.
 The difference between this node and the above is that this node will alter the allowed collisions matrix,
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
-class MoveToObjectFrameNode(smach.State):
-    def __init__(self,robot,obj):
+class MoveToFrameNode(smach.State):
+    def __init__(self,robot,frame,obj=None):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
         self.robot = robot
+        self.frame = frame
         self.obj = obj
 
         rospy.loginfo("Initializing move to frame node")
@@ -170,11 +56,12 @@ class MoveToObjectFrameNode(smach.State):
         statement.params[0] = "*"
         resp = ga(statement)
 
-        self.js_sub = rospy.Subscriber(resp.values[0].params[0] + "/wam/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
+        self.robot_ns = resp.values[0].params[0]
+        self.js_sub = rospy.Subscriber(self.robot_ns + "/wam/joint_states", sensor_msgs.msg.JointState, self.joint_state_cb)
 
 
         rospy.loginfo("Move group location: %s", self.ns)
-        rospy.loginfo("Joints topic: %s", resp.values[0].params[0] + "/wam/joint_states")
+        rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
 
     '''
     joint_state_cb()
@@ -205,7 +92,7 @@ class MoveToObjectFrameNode(smach.State):
         motion_req.workspace_parameters.min_corner.z = -2.0
 
         # create the goal constraints
-        motion_req.goal_constraints.append(getConstraints(self.robot + "/wrist_palm_link","location1", self.js))
+        motion_req.goal_constraints.append(self.getConstraints(self.robot + "/wrist_palm_link","location1"))
         motion_req.group_name = "arm"
         motion_req.num_planning_attempts = 10
         motion_req.allowed_planning_time = 5.0
@@ -221,7 +108,73 @@ class MoveToObjectFrameNode(smach.State):
 
         self.client.send_goal(self.goal)
         self.client.wait_for_result()
-        
-        print self.client.get_result()
+        res = self.client.get_result()
 
-        return 'success'
+        print res.error_code
+
+        if res.error_code.val == moveit_msgs.msg.MoveItErrorCodes.SUCCESS:
+            return 'success'
+        elif res.error_code.val >= -4:
+            return 'moveit_error'
+        else:
+            return 'failure'
+
+    '''
+    getConstraints()
+    Helper function to generate goal constraints from a position
+    '''
+    def getConstraints(self, ee_link, frame):
+        tfl = tf.TransformListener()
+        
+        # compute ik for this position
+        srv = rospy.ServiceProxy(self.robot_ns + "/compute_ik", moveit_msgs.srv.GetPositionIK)
+
+        goal = Constraints()
+
+        position = PositionConstraint()
+        orientation = OrientationConstraint()
+
+        position.constraint_region = BoundingVolume()
+        position.weight = 1.0
+        position.link_name = ee_link
+        position.header.frame_id = "/world"
+
+        for i in range(0,len(self.js.name)):
+            print self.js.name[i]
+            print self.js.position[i]
+            joint = JointConstraint()
+            joint.joint_name = self.js.name[i]
+            joint.position = 0
+            joint.tolerance_below = 0.001
+            joint.tolerance_above = 0.001
+            joint.weight = 1.0
+            goal.joint_constraints.append(joint)
+
+        #print "End effector: " + ee_link
+        print "Target frame: " + frame
+        tf_done = False
+
+        while not tf_done:
+            try:
+                (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
+                tf_done = True
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+        print (trans, rot)
+
+        p = geometry_msgs.msg.Pose()
+        p.position.x = trans[0]
+        p.position.y = trans[1]
+        p.position.z = trans[2]
+
+        region = shape_msgs.msg.SolidPrimitive()
+        region.type = shape_msgs.msg.SolidPrimitive.SPHERE
+        region.dimensions.append(0.1)
+
+        position.constraint_region.primitive_poses.append(p)
+
+        #goal.position_constraints.append(position)
+        #goal.orientation_constraints.append(orientation)
+
+        return goal

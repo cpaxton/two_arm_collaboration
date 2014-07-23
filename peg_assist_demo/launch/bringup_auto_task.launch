@@ -34,5 +34,5 @@
   <param name="rate" value="0.1"/>
 </node>
 
-<node name="task_script" type="iros2014.py" pkg="peg_assist_demo"/>
+<!--<node name="task_script" type="iros2014.py" pkg="peg_assist_demo"/>-->
 </launch>
