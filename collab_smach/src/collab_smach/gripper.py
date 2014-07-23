@@ -45,7 +45,7 @@ class CloseGripperNode(smach.State):
 
     def execute(self, userdata):
         if self.topic_set == True:
-            self.pub(hand_closed)
+            self.pub.publish(hand_closed)
             return 'success'
         else:
             return 'failure'
@@ -75,7 +75,7 @@ class OpenGripperNode(smach.State):
 
     def execute(self, userdata):
         if self.topic_set == True:
-            self.pub(hand_opened)
+            self.pub.publish(hand_opened)
             return 'success'
         else:
             return 'failure'

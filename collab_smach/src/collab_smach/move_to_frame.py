@@ -2,6 +2,7 @@ import rospy
 import roslib; roslib.load_manifest("collab_smach")
 import smach
 import smach_ros
+import actionlib
 
 # import predicator to let us see what's going on
 import predicator_core.srv as pcs
@@ -17,6 +18,20 @@ class MoveToFrameNode(smach.State):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
         self.robot = robot
         self.frame = frame
+
+        # use predicator to load settings
+        ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
+        statement = PredicateStatement()
+        statement.predicate = "move_group_namespace"
+        statement.params[1] = robot
+        statement.params[0] = "*"
+        resp = ga(statement)
+
+        if resp.found:
+            self.ns = resp.values[0].params[1]
+        else:
+            # default namespace
+            self.ns = "/move_group"
 
     def execute(self, userdata):
         return 'success'

@@ -66,7 +66,10 @@ roslaunch peg_assist_demo pegs1_auto.launch
 #### Options
 
 *Console*: You can bring up the RQT console to debug by setting `console:=true` from roslaunch.
+
 *Smach Viewer*: You can bring up the smach viewer by setting `smach_viewer:=true` from roslaunch.
+
+*Barrett Joint GUI*: Bring up a GUI showing a Barrett Arm's joint positions with `rqt_barrett_arm1:=true` for the leftmost arm and `rqt_barrett_arm2:=true` for the rightmost arm.
 
 #### Known Issues
 

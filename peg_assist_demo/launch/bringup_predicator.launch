@@ -48,6 +48,14 @@
         parent: wam2
         members:
           - /gazebo/w2barrett_manager/hand/cmd
+      - name: move_group_namespace
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/move_group
+      - name: move_group_namespace
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/move_group
       - name: grasp_point
         parent: ring1
         members:
