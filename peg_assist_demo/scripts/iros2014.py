@@ -29,6 +29,20 @@ if __name__ == '__main__':
                     'failure': 'ERROR'})
         smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam'),
                 transitions={
+                    'success': 'MoveRingToReachable',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location'),
+                transitions={
+                    'success': 'Arm2MoveToRing',
+                    'moveit_error': 'MoveRingToReachable',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm2MoveToRing', collab_smach.MoveToObjectFrameNode('wam2','ring1'),
+                transitions={
+                    'success': 'Arm2GrabRing',
+                    'moveit_error': 'Arm2MoveToRing',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm2GrabRing', collab_smach.CloseGripperNode('wam2'),
+                transitions={
                     'success': 'DONE',
                     'failure': 'ERROR'})
 
@@ -41,12 +55,13 @@ if __name__ == '__main__':
     rospy.wait_for_service("/predicator/get_assignment")
 
     # execute the state machine
-    outcome = sm.execute()
+    try:
+        outcome = sm.execute()
+    except smach.exceptions.InvalidUserCodeError, e:
+        outcome = "ERROR"
+        print e
 
     rospy.loginfo("TASK >>> Done state machine?")
-
-    rospy.spin()
-    sis.stop()
-
     rospy.loginfo("Outcome = %s", outcome)
 
+    sis.stop()

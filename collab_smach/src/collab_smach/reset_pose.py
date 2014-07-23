@@ -11,6 +11,10 @@ import predicator_core.srv as pcs
 home_pt = JointTrajectoryPoint()
 home_pt.positions = [0, -1.5707, 0, 3.1415, 0, -1.5705, 0]
 
+'''
+ResetPoseNode
+This is a forced reset -- no motion planning, just tell it to go there
+'''
 class ResetPoseNode(smach.State):
     def __init__(self,topic,pt=home_pt):
         smach.State.__init__(self, outcomes=['success','failure'])

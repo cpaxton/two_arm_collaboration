@@ -39,13 +39,14 @@ class CloseGripperNode(smach.State):
 
         if resp.found:
             self.topic_set = True
-            self.pub = rospy.Publisher(resp.values[0].params[1], BHandCmd)
+            self.pub = rospy.Publisher(resp.values[0].params[0], BHandCmd)
         else:
             self.topic_set = False
 
     def execute(self, userdata):
         if self.topic_set == True:
             self.pub.publish(hand_closed)
+            rospy.sleep(0.5)
             return 'success'
         else:
             return 'failure'
@@ -69,13 +70,14 @@ class OpenGripperNode(smach.State):
 
         if resp.found:
             self.topic_set = True
-            self.pub = rospy.Publisher(resp.values[0].params[1], BHandCmd)
+            self.pub = rospy.Publisher(resp.values[0].params[0], BHandCmd)
         else:
             self.topic_set = False
 
     def execute(self, userdata):
         if self.topic_set == True:
             self.pub.publish(hand_opened)
+            rospy.sleep(0.5)
             return 'success'
         else:
             return 'failure'
