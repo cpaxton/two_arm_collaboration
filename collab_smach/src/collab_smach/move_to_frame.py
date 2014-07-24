@@ -216,33 +216,25 @@ class MoveToFrameNode(smach.State):
         ps.is_diff = True
         ps.allowed_collision_matrix = cm
 
-        #if not obj == None:
         for obj in objs:
-
-            #comps_robot_req = PredicateStatement()
-            #comps_robot_req.predicate = "hand_component"
-            #comps_robot_req.params[1] = self.robot
-            #comps_robot_req.params[0] = "*"
 
             comps_obj_req = PredicateStatement()
             comps_obj_req.predicate = "component"
             comps_obj_req.params[1] = obj
             comps_obj_req.params[0] = "*"
 
-            #robot_comps = self.ga(comps_robot_req)
             obj_comps = self.ga(comps_obj_req)
-
-            #for i in range(0, len(robot_comps.values)):
-            #    for j in range (0, len(obj_comps.values)):
-            #        print "adding (%s, %s) to allowed collisions"%(robot_comps.values[i].params[0],obj_comps.values[j].params[0])
-
             old_len = len(ps.allowed_collision_matrix.entry_names)
-            #for i in range(0, len(robot_comps.values)):
-            #    ps.allowed_collision_matrix.entry_names.append(robot_comps.values[i].params[0])
-            for i in range(0, len(obj_comps.values)):
-                ps.allowed_collision_matrix.entry_names.append(obj_comps.values[i].params[0])
-                ps.allowed_collision_matrix.default_entry_values.append(True)
-                ps.allowed_collision_matrix.default_entry_names.append(obj_comps.values[i].params[0])
+
+            allowed = [val.params[0] for val in obj_comps.values]
+            allowed.append(obj)
+
+            print allowed
+
+            for i in range(0, len(allowed)):
+                ps.allowed_collision_matrix.entry_names.append(allowed[i])
+                #ps.allowed_collision_matrix.default_entry_values.append(True)
+                #ps.allowed_collision_matrix.default_entry_names.append(obj_comps.values[i].params[0])
 
             new_len = len(ps.allowed_collision_matrix.entry_names)
 
