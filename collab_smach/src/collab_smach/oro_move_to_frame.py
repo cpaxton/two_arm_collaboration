@@ -27,6 +27,7 @@ MoveToFrameIK
 Enables IK controllers and disables them
 Broadcasts a command frame
 Is terrible and should be replaced by something more robust
+WARNING: a lot of stuff in this program is hard coded and really should not be
 '''
 class MoveToFrameNodeIK(smach.State):
     def __init__(self, robot, frame, ik_script, stop_script):
@@ -34,7 +35,8 @@ class MoveToFrameNodeIK(smach.State):
         self.robot = robot
         self.frame = frame
         self.deployer_name = "/gazebo/" + robot + "__deployer__"
-        self.cmd_frame = "/" + robot + "/cmd"
+        self.cmd_frame = robot + "/cmd"
+        self.wrist_frame = robot + "/wrist_palm_link"
         self.start = ik_script
         self.stop = stop_script
 
@@ -59,27 +61,46 @@ class MoveToFrameNodeIK(smach.State):
 
         print "Sending frame to " + self.cmd_frame
 
-        rospy.sleep(0.25)
-
-        try:
-            tfl.waitForTransform("world", self.cmd_frame, rospy.Time.now(), rospy.Duration(5.0))
-        except tf.Exception, e:
-            continue
-
         # try to start the controller
         for i in range (0, 10):
+            tfb.sendTransform(trans, rot, rospy.Time.now(), self.cmd_frame, "/world")
+            rospy.sleep(0.1)
+            print "Attempt %d"%(i)
             result = runscript(self.start)
-            if result.success == True:
-                break
             rospy.sleep(0.05)
 
         if result.success == False:
             return 'failure'
 
-        for i in range(0,500):
+        waiting = True
+
+        while waiting:
+
+            tfb.sendTransform(trans, rot, rospy.Time.now(), self.cmd_frame, "/world")
+
+            tf_done = False
+            while not tf_done:
+                try:
+                    (rtrans, rrot) = tfl.lookupTransform("/world", self.wrist_frame, rospy.Time(0))
+                    tf_done = True
+                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                    continue
+
+                frame_coors = trans + rot
+                robot_coors = rtrans + rrot
+                diff = [abs(i[0] - i[1]) for i in zip(frame_coors, robot_coors)]
+
+                waiting = False
+                for i in diff:
+                    if i > 0.01:
+                        waiting = True
+
             tfb.sendTransform(trans, rot, rospy.Time.now(), self.cmd_frame, "/world")
             rospy.sleep(0.1)
 
+        rospy.sleep(0.25)
+        print "Stopping IK script"
         runscript(self.stop)
+        rospy.sleep(0.25)
 
         return 'success'
