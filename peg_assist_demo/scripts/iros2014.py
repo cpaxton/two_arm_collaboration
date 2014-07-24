@@ -22,16 +22,21 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveToRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','ring1/grasp2', objs=['ring1','peg1']),
+        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','ring1/grasp2', objs=None),
                 transitions={
                     'success': 'GrabRing',
                     'moveit_error': 'MoveToRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam'),
+        smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam', attach='ring1'),
+                transitions={
+                    'success': 'LiftRing',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('LiftRing', collab_smach.MoveToFrameNode('wam','location4', objs=['ring1','peg1']),
                 transitions={
                     'success': 'MoveRingToReachable',
+                    'moveit_error': 'LiftRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location1'),
+        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location1', objs=['ring1']),
                 transitions={
                     'success': 'Arm2MoveToRing',
                     'moveit_error': 'MoveRingToReachable',

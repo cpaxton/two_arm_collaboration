@@ -24,10 +24,10 @@ hand_closed.cmd = [2.0, 2.0, 2.0, 0]
 CloseGripperNode
 '''
 class CloseGripperNode(smach.State):
-    def __init__(self,robot,obj=None):
+    def __init__(self,robot,attach=None):
         smach.State.__init__(self, outcomes=['success','failure'])
         self.robot = robot
-        self.obj = obj
+        self.obj = attach
 
         # use predicator to load settings
         ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
@@ -56,10 +56,10 @@ class CloseGripperNode(smach.State):
 OpenGripperNode
 '''
 class OpenGripperNode(smach.State):
-    def __init__(self,robot,obj=None):
+    def __init__(self,robot,detach=None):
         smach.State.__init__(self, outcomes=['success','failure'])
         self.robot = robot
-        self.obj = obj
+        self.obj = detach
 
         # use predicator to load settings
         ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)

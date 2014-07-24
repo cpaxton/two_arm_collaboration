@@ -241,6 +241,8 @@ class MoveToFrameNode(smach.State):
             #    ps.allowed_collision_matrix.entry_names.append(robot_comps.values[i].params[0])
             for i in range(0, len(obj_comps.values)):
                 ps.allowed_collision_matrix.entry_names.append(obj_comps.values[i].params[0])
+                ps.allowed_collision_matrix.default_entry_values.append(True)
+                ps.allowed_collision_matrix.default_entry_names.append(obj_comps.values[i].params[0])
 
             new_len = len(ps.allowed_collision_matrix.entry_names)
 
@@ -251,14 +253,14 @@ class MoveToFrameNode(smach.State):
             # add to old rows
             for i in range(0, old_len):
                 for j in range(old_len, new_len):
-                    ps.allowed_collision_matrix.entry_values[i].enabled.append(False)
+                    ps.allowed_collision_matrix.entry_values[i].enabled.append(True)
                     print "row %d = %d"%(i,len(ps.allowed_collision_matrix.entry_values[i].enabled))
 
             # add new rows
             for i in range(old_len, new_len):
                 entry = moveit_msgs.msg.AllowedCollisionEntry()
                 for j in range(0, new_len):
-                    entry.enabled.append(False)
+                    entry.enabled.append(True)
                 print "row %d = %d"%(i,len(entry.enabled))
                 ps.allowed_collision_matrix.entry_values.append(entry)
                 print "%d rows"%(len(ps.allowed_collision_matrix.entry_values))
