@@ -92,7 +92,7 @@ class MoveToFrameNodeIK(smach.State):
 
                 waiting = False
                 for i in diff:
-                    if i > 0.01:
+                    if i > 0.1:
                         waiting = True
 
             tfb.sendTransform(trans, rot, rospy.Time.now(), self.cmd_frame, "/world")

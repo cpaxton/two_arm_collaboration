@@ -89,8 +89,11 @@ class MoveToFrameNode(smach.State):
         planning_options = PlanningOptions()
         planning_options.plan_only = False
         planning_options.replan = False
-        planning_options.replan_attempts = 5
+        planning_options.replan_attempts = 0
         planning_options.replan_delay = 2.0
+        planning_options.planning_scene_diff.is_diff = True
+        planning_options.planning_scene_diff.is_diff = True
+        planning_options.planning_scene_diff.robot_state.is_diff = True
 
         if not self.objs == None:
             ps_req = PlanningSceneComponents()
@@ -117,7 +120,7 @@ class MoveToFrameNode(smach.State):
         motion_req.group_name = "arm"
         motion_req.num_planning_attempts = 10
         motion_req.allowed_planning_time = 5.0
-        motion_req.planner_id = "RTTstarkConfigDefault"
+        motion_req.planner_id = "RRTstarkConfigDefault"
         
         self.goal = MoveGroupGoal()
         self.goal.planning_options = planning_options
