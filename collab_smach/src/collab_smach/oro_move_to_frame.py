@@ -32,12 +32,31 @@ class MoveToFrameIK(smach.state):
         self.robot = robot
         self.frame = frame
         self.deployer_name = "/gazebo/" + robot + "__deployer__"
+        self.cmd_frame = "/" + robot + "/cmd"
 
         rospy.loginfo("Initializing IK node")
 
     def execute(self, userdata):
 
         tfl = tf.TransformListener()
+        tfb = tf.TransformBroadcaster()
 
+        runscript = rospy.ServiceProxy(self.deployer_name + "/run_script"
+
+        print "Target frame: " + frame + ", getting transform..."
+        tf_done = False
+
+        while not tf_done:
+            try:
+                (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
+                tf_done = True
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+        print "Sending frame to " + self.cmd_frame
+
+        for i = range(0,50):
+            tfb.sendTransform(trans, rot, rospy.Time.now(0), self.cmd_frame, "/world")
+            rospy.sleep(0.1)
 
         return 'success'
