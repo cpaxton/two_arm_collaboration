@@ -98,7 +98,7 @@ class MoveToFrameNode(smach.State):
             ps = ps_proxy(components=ps_req).scene
             ps_new_acm = self.update_collision_matrix(objs=self.objs, cm=copy.deepcopy(ps.allowed_collision_matrix))
 
-            print ps_new_acm
+            #print ps_new_acm
             self.ps_pub.publish(ps_new_acm)
 
         motion_req = MotionPlanRequest()
@@ -262,16 +262,5 @@ class MoveToFrameNode(smach.State):
                 print "row %d = %d"%(i,len(entry.enabled))
                 ps.allowed_collision_matrix.entry_values.append(entry)
                 print "%d rows"%(len(ps.allowed_collision_matrix.entry_values))
-
-            # loop over all names
-            # add the appropriate collision enabling/disabling
-            #for elem in ps.allowed_collision_matrix.entry_names:
-            #    for i in range(0, len(robot_comps.values)):
-            #        entry.enabled.append(False)
-            #    for j in range (0, len(obj_comps.values)):
-            #        entry.enabled.append(enable)
-            #    ps.allowed_collision_matrix.entry_values.append(entry)
-
-            #print ps.allowed_collision_matrix.entry_values
 
         return ps
