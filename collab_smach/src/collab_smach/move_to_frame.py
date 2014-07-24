@@ -30,11 +30,11 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame,obj=None):
+    def __init__(self,robot,frame,objs=None):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
         self.robot = robot
         self.frame = frame
-        self.obj = obj
+        self.objs = objs
 
         rospy.loginfo("Initializing move to frame node")
 
@@ -92,13 +92,14 @@ class MoveToFrameNode(smach.State):
         planning_options.replan_attempts = 5
         planning_options.replan_delay = 2.0
 
-        ps_req = PlanningSceneComponents()
-        ps_req.components = moveit_msgs.msg.PlanningSceneComponents.ALLOWED_COLLISION_MATRIX
-        ps = ps_proxy(components=ps_req).scene
-        ps_new_acm = self.update_collision_matrix(obj=self.obj, cm=copy.deepcopy(ps.allowed_collision_matrix))
+        if not self.objs == None:
+            ps_req = PlanningSceneComponents()
+            ps_req.components = moveit_msgs.msg.PlanningSceneComponents.ALLOWED_COLLISION_MATRIX
+            ps = ps_proxy(components=ps_req).scene
+            ps_new_acm = self.update_collision_matrix(objs=self.objs, cm=copy.deepcopy(ps.allowed_collision_matrix))
 
-        print ps_new_acm
-        self.ps_pub.publish(ps_new_acm)
+            print ps_new_acm
+            self.ps_pub.publish(ps_new_acm)
 
         motion_req = MotionPlanRequest()
 
@@ -131,11 +132,12 @@ class MoveToFrameNode(smach.State):
 
         print "Done: " + str(res.error_code.val)
 
-        print "Reverting planning scene/allowed collision matrix"
-        ps.is_diff = True
+        if not self.objs == None:
+            print "Reverting planning scene/allowed collision matrix"
+            ps.is_diff = True
 
-        #print ps
-        self.ps_pub.publish(ps)
+            #print ps
+            self.ps_pub.publish(ps)
 
         if res.error_code.val == moveit_msgs.msg.MoveItErrorCodes.SUCCESS:
             return 'success'
@@ -208,13 +210,14 @@ class MoveToFrameNode(smach.State):
     update_collision_matrix()
     look at the allowed collision matrix between object and robot
     '''
-    def update_collision_matrix(self, obj, cm):
+    def update_collision_matrix(self, objs, cm):
 
         ps = moveit_msgs.msg.PlanningScene()
         ps.is_diff = True
         ps.allowed_collision_matrix = cm
 
-        if not obj == None:
+        #if not obj == None:
+        for obj in objs:
 
             #comps_robot_req = PredicateStatement()
             #comps_robot_req.predicate = "hand_component"
