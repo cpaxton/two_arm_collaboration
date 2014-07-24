@@ -23,8 +23,8 @@
       robot_description_param: ~$(arg oro_prefix)barrett_manager/robot_description
       i_gains: [5.0, 5.0, 4.0, 3.0, 0.3, 0.2, 0.2]
       i_clamps: [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1]
-      p_gains: [350.0, 350.0, 350.0, 250.0, 20.0, 20.0, 05.0]
-      d_gains: [20.0, 20.0, 20.0, 10.0, 1.5, 1.5, 1.1]
+      p_gains: [350.0, 350.0, 350.0, 250.0, 20.0, 20.0, 10.0]
+      d_gains: [20.0, 20.0, 20.0, 10.0, 1.5, 1.5, 1.5]
       position_tolerance: [3.1, 3.1, 3.1, 3.1, 3.1, 3.1, 3.5]
       velocity_tolerance: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
   </rosparam>
