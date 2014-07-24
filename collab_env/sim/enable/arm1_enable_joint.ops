@@ -1,0 +1,2 @@
+scheme.disableBlock("ik_control");
+scheme.enableBlock("joint_control", true);

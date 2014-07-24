@@ -13,6 +13,15 @@ if __name__ == '__main__':
 
     sm = smach.StateMachine(outcomes=['DONE','ERROR'])
 
+    scripts = rospy.get_param("~script_root")
+    arm1_ik = scripts + "arm1_enable_ik.ops"
+    arm2_ik = scripts + "arm2_enable_ik.ops"
+    arm1_stop = scripts + "arm1_enable_joint.ops"
+    arm2_stop = scripts + "arm2_enable_joint.ops"
+
+    print "IK scripts location:" + scripts
+    print "Example IK script: " + arm1_ik
+
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
                 transitions={
@@ -20,9 +29,14 @@ if __name__ == '__main__':
                     'failure': 'ERROR'})
         smach.StateMachine.add('Open2', collab_smach.OpenGripperNode('wam2'),
                 transitions={
-                    'success': 'MoveToRing',
+                    'success': 'MoveToStandbyPeg1',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','ring1/grasp2', objs=None),
+        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.MoveToFrameNode('wam', 'location4'),
+                transitions={
+                    'success': 'MoveToRing',
+                    'moveit_error': 'MoveToStandbyPeg1',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','ring1/grasp2'),
                 transitions={
                     'success': 'GrabRing',
                     'moveit_error': 'MoveToRing',
@@ -31,10 +45,9 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'LiftRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('LiftRing', collab_smach.MoveToFrameNode('wam','location4', objs=['ring1','peg1']),
+        smach.StateMachine.add('LiftRing', collab_smach.MoveToFrameNodeIK('wam','lift_location', arm1_ik, arm1_stop),
                 transitions={
                     'success': 'MoveRingToReachable',
-                    'moveit_error': 'LiftRing',
                     'failure': 'ERROR'})
         smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location1', objs=['ring1']),
                 transitions={

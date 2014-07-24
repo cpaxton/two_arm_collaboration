@@ -1,2 +1,2 @@
+scheme.disableBlock("w2ik_control");
 scheme.enableBlock("w2joint_control", true);
-scheme.disableBlock("w2ik_control", true);
