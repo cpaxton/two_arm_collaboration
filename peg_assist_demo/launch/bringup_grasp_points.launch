@@ -20,6 +20,7 @@ Or reversed:
 <launch>
   <node name="ring1_grasp1_tf" pkg="tf" type="static_transform_publisher" output="screen"
     args="-0.04040067373878635 -0.21774481173868088 0.13558550646900713 0.9499580162264987 -0.09243589120233672 0.01800001736520515 -0.2978445446864811 /ring1/ring_link /ring1/grasp1 100"/>
+
+  <node name="ring1_grasp2_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.147 -0.020 0.191 0.758, -0.647, 0.031, -0.078 /ring1/ring_link /ring1/grasp2 100"/>
 </launch>
-
-

@@ -135,8 +135,6 @@ class MoveToFrameNode(smach.State):
         if not self.objs == None:
             print "Reverting planning scene/allowed collision matrix"
             ps.is_diff = True
-
-            #print ps
             self.ps_pub.publish(ps)
 
         if res.error_code.val == moveit_msgs.msg.MoveItErrorCodes.SUCCESS:
@@ -186,6 +184,8 @@ class MoveToFrameNode(smach.State):
 
         print "Getting IK position..."
         ik_resp = srv(ik_req)
+
+        print "IK RESULT ERROR CODE = %d"%(ik_resp.error_code.val)
 
         ###############################
         # now create the goal based on inverse kinematics
@@ -245,19 +245,23 @@ class MoveToFrameNode(smach.State):
             new_len = len(ps.allowed_collision_matrix.entry_names)
 
             print ps.allowed_collision_matrix.entry_names
-            print old_len
-            print new_len
+            print "old length = " + str(old_len)
+            print "new length = " + str(new_len)
+
+            # add to old rows
+            for i in range(0, old_len):
+                for j in range(old_len, new_len):
+                    ps.allowed_collision_matrix.entry_values[i].enabled.append(False)
+                    print "row %d = %d"%(i,len(ps.allowed_collision_matrix.entry_values[i].enabled))
 
             # add new rows
             for i in range(old_len, new_len):
                 entry = moveit_msgs.msg.AllowedCollisionEntry()
                 for j in range(0, new_len):
                     entry.enabled.append(False)
-
-            # add to old rows
-            for i in range(0, old_len):
-                for j in range(old_len, new_len):
-                    ps.allowed_collision_matrix.entry_values[i].enabled.append(False)
+                print "row %d = %d"%(i,len(entry.enabled))
+                ps.allowed_collision_matrix.entry_values.append(entry)
+                print "%d rows"%(len(ps.allowed_collision_matrix.entry_values))
 
             # loop over all names
             # add the appropriate collision enabling/disabling
