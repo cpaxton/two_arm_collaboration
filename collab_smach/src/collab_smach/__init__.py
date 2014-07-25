@@ -11,6 +11,7 @@ __all__ += ['ResetPoseNode']
 __all__ += ['CloseGripperNode']
 __all__ += ['OpenGripperNode']
 __all__ += ['MoveToFrameNodeIK']
+__all__ += ['TimedSleepNode']
 
 from move_to_frame import MoveToFrameNode
 #from move_to_frame import MoveToObjectFrameNode
@@ -18,3 +19,4 @@ from reset_pose import ResetPoseNode
 from gripper import CloseGripperNode
 from gripper import OpenGripperNode
 from oro_move_to_frame import MoveToFrameNodeIK
+from sleep import TimedSleepNode
