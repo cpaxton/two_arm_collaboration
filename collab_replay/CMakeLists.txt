@@ -19,7 +19,7 @@ generate_messages(DEPENDENCIES geometry_msgs)
 
 # PACKAGE SETTINGS
 catkin_package(
-  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag collab_barrett collab_env collab_spacenav oro_barrett_msgs dmp
+  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett collab_env collab_spacenav oro_barrett_msgs dmp
   DEPENDS system_lib
 )
 

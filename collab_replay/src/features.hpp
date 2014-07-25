@@ -11,7 +11,7 @@
 
 using geometry_msgs::Transform;
 
-namespace lcsr_replay {
+namespace collab_replay {
 
   class FeaturesLookup {
     private:

@@ -15,8 +15,8 @@
 // message includes
 #include <oro_barrett_msgs/BHandCmd.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <lcsr_replay/Features.h>
-#include <lcsr_replay/Segment.h>
+#include <collab_replay/Features.h>
+#include <collab_replay/Segment.h>
 
 // replay includes
 #include "features.hpp"
@@ -25,7 +25,7 @@
 //opencv includes (for point registration)
 #include <opencv2/opencv.hpp>
 
-namespace lcsr_replay {
+namespace collab_replay {
 
   /* typedef to avoid worrying about templates just yet */
   typedef oro_barrett_msgs::BHandCmd discrete_msg_t;

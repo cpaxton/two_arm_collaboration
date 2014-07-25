@@ -2,7 +2,7 @@
 
 #include "read.hpp"
 
-using namespace lcsr_replay;
+using namespace collab_replay;
 
 int main(int argc, char **argv) {
 

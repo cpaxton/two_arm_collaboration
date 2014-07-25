@@ -6,11 +6,10 @@ import actionlib
 import tf
 import copy
 
-# import predicator to let us see what's going on
-import predicator_core.srv as pcs
 
-# import predicator messages
+# import predicator to let us see what's going on
 from predicator_msgs.msg import *
+import predicator_msgs.srv as pcs
 
 # import joint/position messages
 from sensor_msgs.msg import JointState

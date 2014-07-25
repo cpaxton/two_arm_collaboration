@@ -15,7 +15,7 @@
   <build_depend>message_generation</build_depend>
   <build_depend>collab_env</build_depend>
   <build_depend>collab_spacenav</build_depend>
-  <build_depend>collab_barrett</build_depend>
+  <build_depend>lcsr_barrett</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>rosbag</build_depend>
@@ -27,7 +27,7 @@
   <run_depend>collab_env</run_depend>
   <run_depend>rosbag</run_depend>
   <run_depend>collab_spacenav</run_depend>
-  <run_depend>collab_barrett</run_depend>
+  <run_depend>lcsr_barrett</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>rosbag</run_depend>

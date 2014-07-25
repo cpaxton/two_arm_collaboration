@@ -8,7 +8,7 @@
 // message includes
 #include <geometry_msgs/Transform.h>
 
-namespace lcsr_replay {
+namespace collab_replay {
 
   class DemoTransformFinder {
   private:
