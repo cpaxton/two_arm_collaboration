@@ -19,7 +19,7 @@ generate_messages(DEPENDENCIES geometry_msgs)
 
 # PACKAGE SETTINGS
 catkin_package(
-  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag lcsr_barrett lcsr_collab lcsr_spacenav oro_barrett_msgs dmp
+  CATKIN_DEPENDS geometry_msgs tf roscpp rosbag collab_barrett collab_env collab_spacenav oro_barrett_msgs dmp
   DEPENDS system_lib
 )
 
@@ -27,8 +27,8 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories( ${catkin_INCLUDE_DIRS} )
 link_directories( ${catkin_LIBRARY_DIRS} )
 
-add_executable (lcsr_replay_test src/test.cpp src/read.hpp)
-target_link_libraries(lcsr_replay_test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_executable (collab_replay_test src/test.cpp src/read.hpp)
+target_link_libraries(collab_replay_test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable (rrec src/run_record.cpp src/record.hpp src/transform.hpp)
 target_link_libraries(rrec ${catkin_LIBRARIES})
@@ -39,7 +39,7 @@ target_link_libraries(b2play ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_executable (registered_b2play src/register_play.cpp src/read.hpp src/features.hpp)
 target_link_libraries(registered_b2play ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-set_target_properties(lcsr_replay_test
+set_target_properties(collab_replay_test
                       PROPERTIES OUTPUT_NAME test
                       PREFIX "")
 
