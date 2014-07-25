@@ -6,9 +6,9 @@ project(peg_assist_demo)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   actionlib
-  lcsr_collab
-  lcsr_replay
-  lcsr_spacenav
+  collab_env
+  collab_replay
+  collab_spacenav
   smach
   actionlib_msgs
   genmsg
@@ -67,7 +67,7 @@ generate_messages( DEPENDENCIES
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES peg_assist_demo
-#  CATKIN_DEPENDS actionlib lcsr_collab lcsr_replay lcsr_spacenav smach
+  CATKIN_DEPENDS actionlib collab_env collab_replay collab_spacenav collab_smach smach
 #  DEPENDS system_lib
 )
 
