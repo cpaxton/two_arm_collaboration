@@ -70,6 +70,7 @@ if __name__ == "__main__":
     num = rospy.get_param("~num", 9)
     step = rospy.get_param("~step", 0.314159*2)
     name = rospy.get_param("~name", "ring1/gen_grasp")
+    parent = rospy.get_param("~parent", "ring1")
 
     verbose = rospy.get_param("~verbose", 1) == 1
     publish_predicator = rospy.get_param("~publish_predicates", 1) == 1
@@ -87,8 +88,30 @@ if __name__ == "__main__":
             continue
 
     while not rospy.is_shutdown():
-        get_frames(num, step, trans, rot, frame1, start_idx_offset)
+        gen_frames = get_frames(num, step, trans, rot, frame1, start_idx_offset)
 
         if publish_predicator:
             msg = PredicateList()
             msg.pheader.source = rospy.get_name()
+
+            vp = ValidPredicates()
+            vp.assignments.append(parent)
+            vp.predicates.append("grasp_point")
+
+            for gen in gen_frames:
+
+                ps = PredicateStatement()
+                ps.predicate = "grasp_point"
+                ps.value = PredicateStatement.TRUE
+                ps.confidence = PredicateStatement.TRUE
+                ps.params[0] = gen
+                ps.params[1] = parent
+                ps.param_classes.append("location")
+                ps.param_classes.append("object")
+
+                vp.assignments.append(gen)
+
+                msg.statements.append(ps)
+
+            pub.publish(msg)
+            vpub.publish(vp)

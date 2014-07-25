@@ -84,6 +84,7 @@
         parent: ring1
         members:
           - ring1/grasp1
+          - ring1/grasp2
       - name: component
         parent: wam
         members:
