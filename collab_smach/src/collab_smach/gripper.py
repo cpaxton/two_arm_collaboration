@@ -4,7 +4,7 @@ import smach
 import smach_ros
 
 # import predicator to let us see what's going on
-import predicator_core.srv as pcs
+import predicator_msgs.srv as pcs
 from predicator_msgs.msg import *
 
 from oro_barrett_msgs.msg import BHandCmd
