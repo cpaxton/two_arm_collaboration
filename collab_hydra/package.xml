@@ -40,10 +40,10 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>lcsr_collab</build_depend>
+  <build_depend>collab_env</build_depend>
   <build_depend>razer_hydra</build_depend>
   <build_depend>tf</build_depend>
-  <run_depend>lcsr_collab</run_depend>
+  <run_depend>collab_env</run_depend>
   <run_depend>razer_hydra</run_depend>
   <run_depend>tf</run_depend>
 
