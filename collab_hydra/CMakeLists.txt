@@ -5,7 +5,7 @@ project(collab_hydra)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  lcsr_collab
+  collab_env
   razer_hydra
   tf
 )
@@ -82,7 +82,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES collab_hydra
-#  CATKIN_DEPENDS lcsr_collab razer_hydra tf
+  CATKIN_DEPENDS collab_env razer_hydra tf
 #  DEPENDS system_lib
 )
 
