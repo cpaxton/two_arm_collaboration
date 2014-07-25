@@ -9,6 +9,14 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
+catkin_package(
+  DEPENDS
+    roscpp
+    gazebo_ros
+    sensor_msgs
+    tf
+)
+
 # Depend on system install of Gazebo
 find_package(gazebo REQUIRED)
 
@@ -18,10 +26,3 @@ include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE
 add_library(${PROJECT_NAME} src/plugin.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
-catkin_package(
-  DEPENDS
-    roscpp
-    gazebo_ros
-    sensor_msgs
-    tf
-)
