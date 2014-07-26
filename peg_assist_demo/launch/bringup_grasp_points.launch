@@ -27,11 +27,13 @@ Or reversed:
   <node name="collab_frame1_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
     <param name="frame1" value="ring1/ring_link"/>
     <param name="frame2" value="ring1/grasp1"/>
+    <param name="verbose" value="0"/>
   </node>
 
   <node name="collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
     <param name="frame1" value="ring1/ring_link"/>
     <param name="frame2" value="ring1/grasp2"/>
+    <param name="verbose" value="0"/>
   </node>
 
 </launch>
