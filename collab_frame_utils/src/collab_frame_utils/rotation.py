@@ -108,6 +108,7 @@ if __name__ == "__main__":
                 ps.params[1] = parent
                 ps.param_classes.append("location")
                 ps.param_classes.append("object")
+                ps.num_params = 2
 
                 vp.assignments.append(gen)
 
