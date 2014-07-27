@@ -67,8 +67,8 @@ if __name__ == "__main__":
 
     frame1 = rospy.get_param("~frame1")
     frame2 = rospy.get_param("~frame2")
-    num = rospy.get_param("~num", 9)
-    step = rospy.get_param("~step", 0.314159*2)
+    num = rospy.get_param("~num", 4)
+    step = rospy.get_param("~step", 0.314159*4)
     name = rospy.get_param("~name", "ring1/gen_grasp")
     parent = rospy.get_param("~parent", "ring1")
 

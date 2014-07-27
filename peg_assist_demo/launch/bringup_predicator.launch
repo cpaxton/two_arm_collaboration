@@ -1,5 +1,6 @@
 <launch>
 
+  <arg name="all_predicator" default="false" doc="(bool) should we launch all the predicator nodes or just declare classes?"/>
   <arg name="output" default="screen"/>
 
   <!-- =================================================================================
@@ -37,6 +38,8 @@
           - location3
           - location4
           - location5
+          - standby_location
+          - lift_location
     </rosparam>
 
     <rosparam param="param_class_info">
@@ -149,20 +152,20 @@
   </node>
 
   <!-- touching, etc. -->
-  <include file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch">
+  <include if="$(arg all_predicator)" file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>
   </include>
 
   <!-- left, right, up, down, etc. -->
-  <!--<include file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
-    <arg name="output" value="$(arg output)"/>
-  </include>-->
-
-  <include file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
+  <include if="$(arg all_predicator)" file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>
   </include>
 
-  <include file="$(find predicator_joint_states)/launch/wams.launch">
+  <include if="$(arg all_predicator)" file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
+  </include>
+
+  <include if="$(arg all_predicator)" file="$(find predicator_joint_states)/launch/wams.launch">
     <arg name="output" value="$(arg output)"/>
   </include>
 
