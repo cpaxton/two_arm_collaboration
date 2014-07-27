@@ -7,6 +7,8 @@ import smach_ros
 
 import collab_smach
 
+from predicator_msgs.msg import *
+
 
 if __name__ == '__main__':
     rospy.init_node('smach_peg_task_iros2014')
@@ -22,6 +24,21 @@ if __name__ == '__main__':
     print "IK scripts location:" + scripts
     print "Example IK script: " + arm1_ik
 
+    reachablePredicate = PredicateStatement()
+    reachablePredicate.predicate = "inverse_reachable"
+    reachablePredicate.num_params = 2
+    reachablePredicate.params[0] = '*'
+    reachablePredicate.params[1] = 'wam2'
+
+    grabRingPredicate = PredicateStatement()
+    grabRingPredicate.predicate = 'grasp_point'
+    grabRingPredicate.num_params = 2
+    grabRingPredicate.params[0] = '*'
+    grabRingPredicate.params[1] = 'ring1'
+
+    print reachablePredicate
+    print grabRingPredicate
+
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
                 transitions={
@@ -31,15 +48,17 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveToStandbyPeg1',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.MoveToFrameNode('wam', 'location4'),
+        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.MoveToFrameNode('wam', frame='location4'),
                 transitions={
                     'success': 'MoveToRing',
                     'moveit_error': 'MoveToStandbyPeg1',
+                    'ik_error': 'MoveToStandbyPeg1',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam','ring1/grasp2'),
+        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam',frame='ring1/grasp2'),
                 transitions={
                     'success': 'GrabRing',
                     'moveit_error': 'MoveToRing',
+                    'ik_error': 'MoveToRing',
                     'failure': 'ERROR'})
         smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam', attach='ring1'),
                 transitions={
@@ -49,20 +68,44 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveRingToReachable',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam','location1', objs=['ring1']),
+        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam',frame='location1', objs=['ring1'], predicate=reachablePredicate),
                 transitions={
                     'success': 'Arm2MoveToRing',
                     'moveit_error': 'MoveRingToReachable',
+                    'ik_error': 'MoveRingToReachable',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToRing', collab_smach.MoveToFrameNode('wam2','ring1/grasp1'),
+        smach.StateMachine.add('Arm2MoveToRing', collab_smach.MoveToFrameNode('wam2',frame='ring1/grasp1', predicate=grabRingPredicate),
                 transitions={
                     'success': 'Arm2GrabRing',
                     'moveit_error': 'Arm2MoveToRing',
+                    'ik_error': 'Arm2MoveToRing',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2GrabRing', collab_smach.CloseGripperNode('wam2'),
+        smach.StateMachine.add('Arm2GrabRing', collab_smach.CloseGripperNode('wam2', attach='ring1'),
+                transitions={
+                    'success': 'Arm1ReleaseRing',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm1ReleaseRing', collab_smach.OpenGripperNode('wam', detach='ring1'),
+                transitions={
+                    'success': 'Arm1MoveBack',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm1MoveBack', collab_smach.MoveToFrameNode('wam', frame='location4'),
+                transitions={
+                    'success': 'Arm2MoveToDrop',
+                    'moveit_error': 'Arm1MoveBack',
+                    'ik_error': 'Arm1MoveBack',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='peg1/peg_link', objs=['ring','peg1']),
+                transitions={
+                    'success': 'Arm2Drop',
+                    'moveit_error': 'Arm2MoveToDrop',
+                    'ik_error': 'Arm2MoveToDrop',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm2Drop', collab_smach.OpenGripperNode('wam2', detach='ring1'),
                 transitions={
                     'success': 'DONE',
                     'failure': 'ERROR'})
+
+
 
     # Create SMACH introspection server
     sis = smach_ros.IntrospectionServer('peg_task_introspection_server', sm, '/SM_ROOT')

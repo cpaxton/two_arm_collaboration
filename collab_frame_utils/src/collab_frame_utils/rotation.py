@@ -71,9 +71,12 @@ if __name__ == "__main__":
     step = rospy.get_param("~step", 0.314159*4)
     name = rospy.get_param("~name", "ring1/gen_grasp")
     parent = rospy.get_param("~parent", "ring1")
+    spin_rate = rospy.get_param("~rate", 10)
 
     verbose = rospy.get_param("~verbose", 1) == 1
     publish_predicator = rospy.get_param("~publish_predicates", 1) == 1
+
+    rate = rospy.Rate(spin_rate)
 
     start_idx_offset = 1
 
@@ -116,3 +119,5 @@ if __name__ == "__main__":
 
             pub.publish(msg)
             vpub.publish(vp)
+
+            rate.sleep()

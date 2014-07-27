@@ -29,11 +29,12 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame,objs=None):
-        smach.State.__init__(self, outcomes=['success','failure','moveit_error'])
+    def __init__(self,robot,frame,objs=None,predicate=None):
+        smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error'])
         self.robot = robot
         self.frame = frame
         self.objs = objs
+        self.predicate = predicate
 
         rospy.loginfo("Initializing move to frame node")
 
@@ -121,6 +122,10 @@ class MoveToFrameNode(smach.State):
         motion_req.allowed_planning_time = 5.0
         motion_req.planner_id = "RRTstarkConfigDefault"
         
+
+        if len(motion_req.goal_constraints[0].joint_constraints) == 0:
+            return 'ik_failure'
+
         self.goal = MoveGroupGoal()
         self.goal.planning_options = planning_options
         self.goal.request = motion_req

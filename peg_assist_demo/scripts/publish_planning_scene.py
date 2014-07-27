@@ -18,6 +18,8 @@ if __name__ == '__main__':
     spin_rate = rospy.get_param('~rate', 1)
     service_name = rospy.get_param('~service')
 
+    tries = 0
+
     try:
         service = rospy.ServiceProxy(service_name, std_srvs.srv.Empty)
 
@@ -35,7 +37,10 @@ if __name__ == '__main__':
                 rospy.sleep(wait_time)
                 rospy.loginfo("trying to publish scene information...")
                 service()
-                break
+                tries = tries + 1
+
+                if tries > 5:
+                    break
 
 
             rate.sleep()
