@@ -124,7 +124,7 @@ class MoveToFrameNode(smach.State):
         
 
         if len(motion_req.goal_constraints[0].joint_constraints) == 0:
-            return 'ik_failure'
+            return 'ik_error'
 
         self.goal = MoveGroupGoal()
         self.goal.planning_options = planning_options

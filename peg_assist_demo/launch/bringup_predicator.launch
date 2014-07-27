@@ -38,7 +38,6 @@
           - location3
           - location4
           - location5
-          - standby_location
           - lift_location
     </rosparam>
 
