@@ -16,12 +16,22 @@ ResetPoseNode
 This is a forced reset -- no motion planning, just tell it to go there
 '''
 class ResetPoseNode(smach.State):
-    def __init__(self,pt=home_pt):
+    def __init__(self,topic, pt=home_pt):
         smach.State.__init__(self, outcomes=['success','failure'])
         self.pt = pt
-        self.pub = rospy.Publisher(topic, JointTrajectoryPoint)
+        self.topic = topic
+
+        #statement = PredicateStatement()
+        #statement.predicate = "robot_namespace"
+        #statement.params[1] = robot
+        #statement.params[0] = "*"
+        #resp = self.ga(statement)
+        #self.robot_ns = resp.values[0].params[0]
 
     def execute(self, userdata):
-        self.pub.publish(pt)
+
+        pub = rospy.Publisher(self.topic, JointTrajectoryPoint)
+        pub.publish(self.pt)
+
         return 'success'
 

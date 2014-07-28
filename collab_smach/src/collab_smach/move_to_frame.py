@@ -5,6 +5,7 @@ import smach_ros
 import actionlib
 import tf
 import copy
+import random
 
 
 # import predicator to let us see what's going on
@@ -29,7 +30,7 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame,objs=None,predicate=None):
+    def __init__(self,robot,frame=None,objs=None,predicate=None):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error'])
         self.robot = robot
         self.frame = frame
@@ -92,6 +93,12 @@ class MoveToFrameNode(smach.State):
             resp = self.ga(self.predicate)
 
             print resp
+
+            # choose a random frame
+            idx = random.randrange(len(resp.values))
+            self.frame = resp.values[idx].params[0]
+
+            print "Updating frame via predicate: " + self.frame
 
         planning_options = PlanningOptions()
         planning_options.plan_only = False

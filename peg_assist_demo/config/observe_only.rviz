@@ -7,6 +7,8 @@ Panels:
         - /Global Options1
         - /Status1
         - /TF1
+        - /WAM_11
+        - /WAM_1_PLANNING_SCENE1/Scene Geometry1
       Splitter Ratio: 0.5
     Tree Height: 782
   - Class: rviz/Selection
@@ -68,6 +70,8 @@ Visualization Manager:
           Value: true
         ik/world:
           Value: true
+        lift_location:
+          Value: true
         location1:
           Value: true
         location2:
@@ -90,7 +94,39 @@ Visualization Manager:
           Value: true
         ring1/grasp1:
           Value: true
+        ring1/grasp1_flip2:
+          Value: true
+        ring1/grasp1_flip3:
+          Value: true
+        ring1/grasp1_flip4:
+          Value: true
+        ring1/grasp1_flip5:
+          Value: true
+        ring1/grasp1_gen2:
+          Value: true
+        ring1/grasp1_gen3:
+          Value: true
+        ring1/grasp1_gen4:
+          Value: true
+        ring1/grasp1_gen5:
+          Value: true
         ring1/grasp2:
+          Value: true
+        ring1/grasp2_flip2:
+          Value: true
+        ring1/grasp2_flip3:
+          Value: true
+        ring1/grasp2_flip4:
+          Value: true
+        ring1/grasp2_flip5:
+          Value: true
+        ring1/grasp2_gen2:
+          Value: true
+        ring1/grasp2_gen3:
+          Value: true
+        ring1/grasp2_gen4:
+          Value: true
+        ring1/grasp2_gen5:
           Value: true
         ring1/ring_link:
           Value: true
@@ -190,6 +226,8 @@ Visualization Manager:
               {}
             ik/wam2/base_link:
               {}
+          lift_location:
+            {}
           location1:
             {}
           location2:
@@ -210,7 +248,39 @@ Visualization Manager:
             ring1/ring_link:
               ring1/grasp1:
                 {}
+              ring1/grasp1_flip2:
+                {}
+              ring1/grasp1_flip3:
+                {}
+              ring1/grasp1_flip4:
+                {}
+              ring1/grasp1_flip5:
+                {}
+              ring1/grasp1_gen2:
+                {}
+              ring1/grasp1_gen3:
+                {}
+              ring1/grasp1_gen4:
+                {}
+              ring1/grasp1_gen5:
+                {}
               ring1/grasp2:
+                {}
+              ring1/grasp2_flip2:
+                {}
+              ring1/grasp2_flip3:
+                {}
+              ring1/grasp2_flip4:
+                {}
+              ring1/grasp2_flip5:
+                {}
+              ring1/grasp2_gen2:
+                {}
+              ring1/grasp2_gen3:
+                {}
+              ring1/grasp2_gen4:
+                {}
+              ring1/grasp2_gen5:
                 {}
           stage_link:
             {}
@@ -608,6 +678,132 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Class: moveit_rviz_plugin/PlanningScene
+      Enabled: false
+      Move Group Namespace: ""
+      Name: WAM_1_PLANNING_SCENE
+      Planning Scene Topic: /gazebo/barrett_manager/move_group/monitored_planning_scene
+      Robot Description: gazebo/barrett_manager/robot_description
+      Scene Geometry:
+        Scene Alpha: 0.9
+        Scene Color: 50; 230; 50
+        Scene Display Time: 0.2
+        Show Scene Geometry: false
+        Voxel Coloring: Z-Axis
+        Voxel Rendering: Occupied Voxels
+      Scene Robot:
+        Attached Body Color: 150; 50; 150
+        Links:
+          All Links Enabled: true
+          Expand Joint Details: false
+          Expand Link Details: false
+          Expand Tree: false
+          Link Tree Style: Links in Alphabetic Order
+          wam/base_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/forearm_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/bhand_grasp_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          wam/hand/bhand_palm_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/bhand_palm_surface_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          wam/hand/finger_1/dist_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_1/med_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_1/prox_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_2/dist_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_2/med_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_2/prox_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_3/dist_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/hand/finger_3/med_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/shoulder_pitch_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/shoulder_yaw_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/upper_arm_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/wrist_palm_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/wrist_palm_stump_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          wam/wrist_pitch_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wam/wrist_yaw_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          world:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+        Robot Alpha: 0.5
+        Show Robot Collision: false
+        Show Robot Visual: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -632,7 +828,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.03097
+      Distance: 2.54765
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -644,18 +840,18 @@ Visualization Manager:
         Z: 0.36189
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.401588
+      Pitch: 0.371588
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.757564
+      Yaw: 0.457565
     Saved: ~
 Window Geometry:
   Displays:
-    collapsed: true
+    collapsed: false
   Height: 1031
-  Hide Left Dock: true
+  Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd000000040000000000000189000003a8fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730000000043000003a8000000ed00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002abfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000043000002ab000000ba00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005550000003efc0100000002fb0000000800540069006d00650000000000000005550000028200fffffffb0000000800540069006d0065010000000000000450000000000000000000000780000003a800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000189000003a8fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730100000043000003a8000000ed00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002abfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000043000002ab000000ba00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005550000003efc0100000002fb0000000800540069006d00650000000000000005550000028200fffffffb0000000800540069006d00650100000000000004500000000000000000000005f1000003a800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

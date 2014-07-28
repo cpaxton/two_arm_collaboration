@@ -40,6 +40,17 @@ if __name__ == '__main__':
     #print grabRingPredicate
 
     with sm:
+        smach.StateMachine.add('ResetWam', collab_smach.ResetPoseNode('/gazebo/traj_rml/joint_traj_point_cmd'),
+                transitions={
+                    'success': 'ResetWam2',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('ResetWam2', collab_smach.ResetPoseNode('/gazebo/w2traj_rml/joint_traj_point_cmd'),
+                transitions={
+                    'success': 'WaitForReset',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('WaitForReset', collab_smach.TimedSleepNode(5.0),
+                transitions={
+                    'success': 'Open1'})
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
                 transitions={
                     'success': 'Open2',
@@ -68,7 +79,7 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveRingToReachable',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam',frame='location1', objs=['ring1'], predicate=reachablePredicate),
+        smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam', objs=['ring1'], predicate=reachablePredicate),
                 transitions={
                     'success': 'Arm2MoveToRing',
                     'moveit_error': 'MoveRingToReachable',
