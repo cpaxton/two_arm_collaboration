@@ -48,6 +48,11 @@ Create static transforms to possible points in space that arms might be able to 
   <node name="arm1_lift_tf" pkg="tf" type="static_transform_publisher" output="screen"
     args="0.628 0.884 0.803 -0.573 0.776 -0.188 0.185 /world /lift_location 100"/>
 
+  <node name="drop_points_publisher" pkg="peg_assist_demo" type="inverse_drop_publisher.py">
+    <param name="filename" value="$(find peg_assist_demo)/points/drop.yaml"/>
+    <param name="reference_frame" value="peg2/base_link"/>
+  </node>
+
 </launch>
 
 

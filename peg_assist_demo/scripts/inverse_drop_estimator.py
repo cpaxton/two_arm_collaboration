@@ -2,6 +2,7 @@
 
 import rospy
 import tf
+import yaml
 
 from gazebo_msgs.srv import SetPhysicsProperties
 from geometry_msgs.msg import Vector3
@@ -15,6 +16,9 @@ if __name__ == "__main__":
     frames_to_capture = rospy.get_param("~frames_to_capture",10)
     wait_time = rospy.get_param("~wait", 1.0)
     frame = rospy.get_param("~frame", "ring1/ring_link")
+    reference_frame = rospy.get_param("~reference_frame", "peg2/base_link")
+
+    f = open(filename, 'w')
 
     try:
 
@@ -50,6 +54,8 @@ if __name__ == "__main__":
 
         srv(time_step, max_update_rate, gravity, ode_config)
 
+        all_points = []
+
         # spin and write out a file
         for i in range(0,frames_to_capture):
 
@@ -61,14 +67,19 @@ if __name__ == "__main__":
 
             while not tf_done:
                 try:
-                    (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
+                    (trans, rot) = tfl.lookupTransform(reference_frame, frame, rospy.Time(0))
                     tf_done = True
                 except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                     continue
 
             print (trans, rot)
 
+            all_points.append((trans, rot))
+
             rospy.loginfo("Capturing pose at step %d", i)
             rate.sleep()
+
+        print all_points
+        f.write(yaml.dump(all_points, default_flow_style=True))
 
     except rospy.ROSInterruptException: pass

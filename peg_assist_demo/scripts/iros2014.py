@@ -40,6 +40,14 @@ if __name__ == '__main__':
     #print grabRingPredicate
 
     with sm:
+        smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
+                transitions={
+                    'success': 'Open2',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Open2', collab_smach.OpenGripperNode('wam2'),
+                transitions={
+                    'success': 'ResetWam',
+                    'failure': 'ERROR'})
         smach.StateMachine.add('ResetWam', collab_smach.ResetPoseNode('/gazebo/traj_rml/joint_traj_point_cmd'),
                 transitions={
                     'success': 'ResetWam2',
@@ -50,15 +58,7 @@ if __name__ == '__main__':
                     'failure': 'ERROR'})
         smach.StateMachine.add('WaitForReset', collab_smach.TimedSleepNode(5.0),
                 transitions={
-                    'success': 'Open1'})
-        smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
-                transitions={
-                    'success': 'Open2',
-                    'failure': 'ERROR'})
-        smach.StateMachine.add('Open2', collab_smach.OpenGripperNode('wam2'),
-                transitions={
-                    'success': 'MoveToStandbyPeg1',
-                    'failure': 'ERROR'})
+                    'success': 'MoveToStandbyPeg1'})
         smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.MoveToFrameNode('wam', frame='location4'),
                 transitions={
                     'success': 'MoveToRing',

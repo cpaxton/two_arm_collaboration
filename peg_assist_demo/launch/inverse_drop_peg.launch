@@ -14,6 +14,10 @@
     <remap from="robot_description" to="ring1_description" />
   </node>
 
-  <node name="inverse_drop_estimator" type="inverse_drop_estimator.py" pkg="peg_assist_demo"/>
+  <node name="inverse_drop_estimator" type="inverse_drop_estimator.py" pkg="peg_assist_demo" output="screen">
+    <param name="filename" value="$(find peg_assist_demo)/points/drop.yaml"/>
+    <param name="frame" value="ring1/ring_link"/>
+    <param name="reference_frame" value="peg2/base_link"/>
+  </node>
 
 </launch>
