@@ -72,7 +72,8 @@ if __name__ == "__main__":
                 frame = "drop_point" + str(i)
 
                 broadcaster.sendTransform(trans, rot, rospy.Time.now(), frame, ref)
-
+            pub.publish(msg)
+            vpub.publish(vmsg)
             rate.sleep()
 
 
