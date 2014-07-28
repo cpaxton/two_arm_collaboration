@@ -54,11 +54,11 @@ if __name__ == '__main__':
                     'moveit_error': 'MoveToStandbyPeg1',
                     'ik_error': 'MoveToStandbyPeg1',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNode('wam',frame='ring1/grasp2'),
+        smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNodeIK('wam','ring1/grasp2', arm1_ik, arm1_stop),
                 transitions={
                     'success': 'GrabRing',
-                    'moveit_error': 'MoveToRing',
-                    'ik_error': 'MoveToRing',
+                    #'moveit_error': 'MoveToRing',
+                    #'ik_error': 'MoveToRing',
                     'failure': 'ERROR'})
         smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam', attach='ring1'),
                 transitions={
@@ -91,8 +91,12 @@ if __name__ == '__main__':
         smach.StateMachine.add('Arm1MoveBack', collab_smach.MoveToFrameNode('wam', frame='location4'),
                 transitions={
                     'success': 'Arm2MoveToDrop',
-                    'moveit_error': 'Arm1MoveBack',
-                    'ik_error': 'Arm1MoveBack',
+                    'moveit_error': 'Arm1MoveBackIK',
+                    'ik_error': 'Arm1MoveBackIK',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('Arm1MoveBackIK', collab_smach.MoveToFrameNodeIK('wam', 'location4', arm1_ik, arm1_stop),
+                transitions={
+                    'success': 'Arm2MoveToDrop',
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='peg2/peg_link', objs=['ring','peg2']),
                 transitions={

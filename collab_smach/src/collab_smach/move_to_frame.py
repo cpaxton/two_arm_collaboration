@@ -86,6 +86,13 @@ class MoveToFrameNode(smach.State):
 
         ps_proxy = rospy.ServiceProxy(self.robot_ns + "/get_planning_scene", moveit_msgs.srv.GetPlanningScene)
 
+        if not self.predicate == None:
+            print self.predicate
+
+            resp = self.ga(self.predicate)
+
+            print resp
+
         planning_options = PlanningOptions()
         planning_options.plan_only = False
         planning_options.replan = False
