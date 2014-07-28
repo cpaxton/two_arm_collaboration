@@ -51,4 +51,7 @@
     <origin xyz="$(arg xx) $(arg yy) 0.07"/>
   </joint>
 
+  <gazebo>
+    <static>true</static>
+  </gazebo>
 </robot>
