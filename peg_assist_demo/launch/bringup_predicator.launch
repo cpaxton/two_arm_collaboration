@@ -150,6 +150,10 @@
     </rosparam>
   </node>
 
+  <include file="$(find predicator_reachable)/launch/pegs_reachable_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
+  </include>
+
   <!-- touching, etc. -->
   <include if="$(arg all_predicator)" file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>
