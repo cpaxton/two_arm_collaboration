@@ -31,13 +31,13 @@ if __name__ == '__main__':
     reachablePredicate.params[1] = 'wam2'
 
     grabRingPredicate = PredicateStatement()
-    grabRingPredicate.predicate = 'grasp_point'
+    grabRingPredicate.predicate = 'grasp_point_of'
     grabRingPredicate.num_params = 2
     grabRingPredicate.params[0] = '*'
     grabRingPredicate.params[1] = 'ring1'
 
-    print reachablePredicate
-    print grabRingPredicate
+    #print reachablePredicate
+    #print grabRingPredicate
 
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                     'moveit_error': 'Arm1MoveBack',
                     'ik_error': 'Arm1MoveBack',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='peg1/peg_link', objs=['ring','peg1']),
+        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='peg2/peg_link', objs=['ring','peg2']),
                 transitions={
                     'success': 'Arm2Drop',
                     'moveit_error': 'Arm2MoveToDrop',
@@ -104,7 +104,6 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'DONE',
                     'failure': 'ERROR'})
-
 
 
     # Create SMACH introspection server

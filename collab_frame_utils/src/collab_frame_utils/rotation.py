@@ -104,7 +104,7 @@ if __name__ == "__main__":
             for gen in gen_frames:
 
                 ps = PredicateStatement()
-                ps.predicate = "grasp_point"
+                ps.predicate = "grasp_point_of"
                 ps.value = PredicateStatement.TRUE
                 ps.confidence = PredicateStatement.TRUE
                 ps.params[0] = gen
@@ -112,9 +112,17 @@ if __name__ == "__main__":
                 ps.param_classes.append("location")
                 ps.param_classes.append("object")
                 ps.num_params = 2
+                msg.statements.append(ps)
 
                 vp.assignments.append(gen)
 
+                ps = PredicateStatement()
+                ps.predicate = "grasp_point"
+                ps.value = PredicateStatement.TRUE
+                ps.confidence = PredicateStatement.TRUE
+                ps.params[0] = gen
+                ps.param_classes.append("location")
+                ps.num_params = 1
                 msg.statements.append(ps)
 
             pub.publish(msg)
