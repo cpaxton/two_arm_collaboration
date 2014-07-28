@@ -4,6 +4,7 @@ import rospy
 import tf
 import yaml
 
+from predicator_msgs.msg import *
 
 if __name__ == "__main__":
 
@@ -20,6 +21,46 @@ if __name__ == "__main__":
 
     broadcaster = tf.TransformBroadcaster()
     rate = rospy.Rate(spin_rate)
+
+    pub = rospy.Publisher("/predicator/input", PredicateList)
+    vpub = rospy.Publisher("/predicator/valid_input", ValidPredicates)
+
+    msg = PredicateList()
+    vmsg = ValidPredicates()
+
+    vmsg.pheader.source = rospy.get_name()
+    msg.pheader.source = rospy.get_name()
+
+    vmsg.predicates.append("drop_point")
+    vmsg.predicates.append("drop_point_of")
+
+    vmsg.assignments.append(ref)
+
+    i = 0
+    for (trans, rot) in data:
+        i = i + 1
+        frame = "drop_point" + str(i)
+
+        vmsg.assignments.append(frame)
+
+        ps = PredicateStatement()
+        ps.predicate = "drop_point"
+        ps.num_params = 1
+        ps.params[0] = frame
+        ps.param_classes.append("location")
+        msg.statements.append(ps)
+
+        ps = PredicateStatement()
+        ps.predicate = "drop_point_of"
+        ps.num_params = 2
+        ps.params[0] = frame
+        ps.params[1] = ref
+        ps.param_classes.append("location")
+        ps.param_classes.append("object")
+        msg.statements.append(ps)
+
+    pub.publish(msg)
+    vpub.publish(vmsg)
 
     try:
 
