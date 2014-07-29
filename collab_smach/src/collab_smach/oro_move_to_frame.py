@@ -38,6 +38,7 @@ class MoveToFrameNodeIK(smach.State):
         self.wrist_frame = robot + "/wrist_palm_link"
         self.start = ik_script
         self.stop = stop_script
+        self.predicate = predicate
 
         rospy.loginfo("Initializing IK node")
 
