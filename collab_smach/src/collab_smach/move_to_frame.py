@@ -7,7 +7,6 @@ import tf
 import copy
 import random
 
-
 # import predicator to let us see what's going on
 from predicator_msgs.msg import *
 import predicator_msgs.srv as pcs
@@ -20,7 +19,6 @@ from geometry_msgs.msg import Pose
 from moveit_msgs.msg import *
 from moveit_msgs.srv import *
 
-
 '''
 MoveToFrameNode
 
@@ -30,7 +28,7 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame=None,objs=None,predicate=None, with_offset=None):
+    def __init__(self,robot,frame=None,objs=None, predicate=None, with_offset=None):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error'])
         self.robot = robot
         self.frame = frame
@@ -76,6 +74,20 @@ class MoveToFrameNode(smach.State):
         rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
 
     '''
+    get_frame_offset()
+    '''
+    def get_frame_offset(self, oframe1, oframe2):
+        tf_done = False
+        tfl = tf.TransformListener()
+
+        while not tf_done:
+            try:
+                (trans, rot) = tfl.lookupTransform(oframe1, oframe2, rospy.Time(0))
+                tf_done = True
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+    '''
     joint_state_cb()
     keep up to date data on joints
     '''
@@ -100,6 +112,10 @@ class MoveToFrameNode(smach.State):
             self.frame = resp.values[idx].params[0]
 
             print "Updating frame via predicate: " + self.frame
+
+        if not self.offset_frames == None:
+            (oframe1, oframe2) = self.offset_frames
+            self.get_frame_offset(oframe1, oframe2)
 
         planning_options = PlanningOptions()
         planning_options.plan_only = False
