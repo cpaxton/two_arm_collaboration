@@ -36,8 +36,11 @@ if __name__ == '__main__':
     grabRingPredicate.params[0] = '*'
     grabRingPredicate.params[1] = 'ring1'
 
-    #print reachablePredicate
-    #print grabRingPredicate
+    dropPointPredicate = PredicateStatement()
+    dropPointPredicate.predicate = 'drop_point_of'
+    dropPointPredicate.num_params = 2
+    dropPointPredicate.params[0] = '*'
+    dropPointPredicate.params[1] = 'peg2'
 
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
@@ -68,8 +71,6 @@ if __name__ == '__main__':
         smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNodeIK('wam','ring1/grasp2', arm1_ik, arm1_stop),
                 transitions={
                     'success': 'GrabRing',
-                    #'moveit_error': 'MoveToRing',
-                    #'ik_error': 'MoveToRing',
                     'failure': 'ERROR'})
         smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam', attach='ring1'),
                 transitions={
@@ -109,7 +110,7 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'Arm2MoveToDrop',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='peg2/peg_link', objs=['ring','peg2']),
+        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', objs=['ring','peg2'], predicate=dropPointPredicate),
                 transitions={
                     'success': 'Arm2Drop',
                     'moveit_error': 'Arm2MoveToDrop',
