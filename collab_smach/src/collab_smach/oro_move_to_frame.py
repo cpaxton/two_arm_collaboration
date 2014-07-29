@@ -29,7 +29,7 @@ Is terrible and should be replaced by something more robust
 WARNING: a lot of stuff in this program is hard coded and really should not be
 '''
 class MoveToFrameNodeIK(smach.State):
-    def __init__(self, robot, frame, ik_script, stop_script):
+    def __init__(self, robot, frame, ik_script, stop_script, predicate=None):
         smach.State.__init__(self, outcomes=['success','failure'])
         self.robot = robot
         self.frame = frame
@@ -45,6 +45,19 @@ class MoveToFrameNodeIK(smach.State):
 
         tfl = tf.TransformListener()
         tfb = tf.TransformBroadcaster()
+
+        if not self.predicate == None:
+            print self.predicate
+
+            resp = self.ga(self.predicate)
+
+            print resp
+
+            # choose a random frame
+            idx = random.randrange(len(resp.values))
+            self.frame = resp.values[idx].params[0]
+
+            print "Updating frame via predicate: " + self.frame
 
         runscript = rospy.ServiceProxy(self.deployer_name + "/run_script", RunScript)
 
