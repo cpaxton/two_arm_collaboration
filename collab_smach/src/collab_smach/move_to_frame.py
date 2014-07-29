@@ -30,12 +30,13 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame=None,objs=None,predicate=None):
+    def __init__(self,robot,frame=None,objs=None,predicate=None, with_offset=None):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error'])
         self.robot = robot
         self.frame = frame
         self.objs = objs
         self.predicate = predicate
+        self.offset_frames = with_offset
 
         rospy.loginfo("Initializing move to frame node")
 

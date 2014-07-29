@@ -56,7 +56,7 @@ if __name__ == "__main__":
         ps.params[0] = frame
         ps.params[1] = ref
         ps.param_classes.append("location")
-        ps.param_classes.append("object")
+        ps.param_classes.append("base")
         msg.statements.append(ps)
 
     pub.publish(msg)
