@@ -13,6 +13,8 @@ publish_predicator = False
 pub = rospy.Publisher("predicator/input", predicator_msgs.msg.PredicateList)
 vpub = rospy.Publisher("predicator/valid_input", predicator_msgs.msg.ValidPredicates)
 
+flipped_frames_allowed = False
+
 def get_frames(num, step, trans, rot, frame=None, off=0):
 
     f = tfc.fromTf((trans, rot))
@@ -49,14 +51,16 @@ def get_frames(num, step, trans, rot, frame=None, off=0):
 
         if verbose:
             print (trans2, rot2)
-            print (trans3, rot3)
+            if flipped_frames_allowed:
+                print (trans3, rot3)
 
         if not frame == None:
             bc.sendTransform(trans2, rot2, rospy.Time.now(), frame2 + "_gen" + str(off+i), frame)
-            bc.sendTransform(trans3, rot3, rospy.Time.now(), frame2 + "_flip" + str(off+i), frame)
-
             names.append(frame2 + "_gen" + str(off+i))
-            names.append(frame2 + "_flip" + str(off+i))
+
+            if flipped_frames_allowed:
+                bc.sendTransform(trans3, rot3, rospy.Time.now(), frame2 + "_flip" + str(off+i), frame)
+                names.append(frame2 + "_flip" + str(off+i))
 
         if verbose:
             print "---" + str(i) + "---"
@@ -74,6 +78,7 @@ if __name__ == "__main__":
     name = rospy.get_param("~name", "ring1/gen_grasp")
     parent = rospy.get_param("~parent", "ring1")
     spin_rate = rospy.get_param("~rate", 10)
+    flipped_frames_allowed = rospy.get_param("~flipped_frames", 0) == 1
 
     verbose = rospy.get_param("~verbose", 1) == 1
     publish_predicator = rospy.get_param("~publish_predicates", 1) == 1
