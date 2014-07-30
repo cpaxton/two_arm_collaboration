@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="all_predicator" default="false" doc="(bool) should we launch all the predicator nodes or just declare classes?"/>
+  <arg name="all_predicator" default="true" doc="(bool) should we launch all the predicator nodes or just declare classes?"/>
   <arg name="output" default="screen"/>
 
   <!-- =================================================================================

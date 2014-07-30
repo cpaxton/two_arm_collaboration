@@ -6,6 +6,7 @@ import actionlib
 import tf
 import copy
 import random
+import tf_conversions as tfc
 
 # import predicator to let us see what's going on
 from predicator_msgs.msg import *
@@ -35,6 +36,7 @@ class MoveToFrameNode(smach.State):
         self.objs = objs
         self.predicate = predicate
         self.offset_frames = with_offset
+        self.transform = None
 
         rospy.loginfo("Initializing move to frame node")
 
@@ -82,10 +84,35 @@ class MoveToFrameNode(smach.State):
 
         while not tf_done:
             try:
-                (trans, rot) = tfl.lookupTransform(oframe1, oframe2, rospy.Time(0))
+                (trans1, rot1) = tfl.lookupTransform(oframe1, oframe2, rospy.Time(0))
                 tf_done = True
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
+
+        
+        tf_done = False
+
+        while not tf_done:
+            try:
+                (trans2, rot2) = tfl.lookupTransform("/world", self.frame, rospy.Time(0))
+                tf_done = True
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+        print (trans1, rot1)
+        print (trans2, rot2)
+
+        f1 = tfc.fromTf((trans1, rot1))
+        f2 = tfc.fromTf((trans2, rot2))
+
+        frame = f2 * f1
+
+        self.transform = tfc.toTf(frame)
+
+        tfb = tf.TransformBroadcaster()
+        (t, r) = self.transform
+        tfb.sendTransform(t, r, rospy.Time.now(), "EX", "/world")
+
 
     '''
     joint_state_cb()
@@ -192,15 +219,19 @@ class MoveToFrameNode(smach.State):
         # compute ik for this position
         srv = rospy.ServiceProxy(self.robot_ns + "/compute_ik", moveit_msgs.srv.GetPositionIK)
 
-        print "Target frame: " + frame + ", getting transform..."
-        tf_done = False
 
-        while not tf_done:
-            try:
-                (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
-                tf_done = True
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
+        if self.transform == None:
+            print "Target frame: " + frame + ", getting transform..."
+            tf_done = False
+
+            while not tf_done:
+                try:
+                    (trans, rot) = tfl.lookupTransform("/world", frame, rospy.Time(0))
+                    tf_done = True
+                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                    continue
+        else:
+            (trans, rot) = self.transform
 
         p = geometry_msgs.msg.PoseStamped()
         p.pose.position.x = trans[0]

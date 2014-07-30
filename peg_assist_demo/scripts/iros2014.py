@@ -62,7 +62,7 @@ if __name__ == '__main__':
         #smach.StateMachine.add('WaitForReset', collab_smach.TimedSleepNode(5.0),
         #        transitions={
         #            'success': 'MoveToStandbyPeg1'})
-        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.MoveToFrameNode('wam', frame='location4', with_offset=('ring1/ring_link','wam2/wrist_palm_link')),
+        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.MoveToFrameNode('wam', frame='location4'),
                 transitions={
                     'success': 'MoveToRing',
                     'moveit_error': 'MoveToStandbyPeg1',
