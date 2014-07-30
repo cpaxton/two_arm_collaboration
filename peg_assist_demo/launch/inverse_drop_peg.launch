@@ -9,7 +9,7 @@
   <param name="ring1_description_semantic"
     command="$(find xacro)/xacro.py '$(find collab_env)/objects/ring.srdf.xacro' name:=ring1"/>
    <node name="$(anon urdf_spawner)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args=" -urdf -model ring1 -param ring1_description -x 0.75 -y -0.75 -z 0.25"/>
+    args=" -urdf -model ring1 -param ring1_description -x 0.75 -y -0.75 -z 0.25 -Y 3.14159"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="ring1_st_pub" >
     <remap from="robot_description" to="ring1_description" />
   </node>

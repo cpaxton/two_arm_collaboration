@@ -67,6 +67,7 @@ if __name__ == '__main__':
                     'success': 'MoveToRing',
                     'moveit_error': 'MoveToStandbyPeg1',
                     'ik_error': 'MoveToStandbyPeg1',
+                    'no_predicates':'ERROR',
                     'failure': 'ERROR'})
         smach.StateMachine.add('MoveToRing', collab_smach.MoveToFrameNodeIK('wam','ring1/grasp2', arm1_ik, arm1_stop),
                 transitions={
@@ -85,13 +86,19 @@ if __name__ == '__main__':
                     'success': 'Arm2MoveToRing',
                     'moveit_error': 'MoveRingToReachable',
                     'ik_error': 'MoveRingToReachable',
+                    'no_predicates': 'ReachableWait',
                     'failure': 'ERROR'})
+        smach.StateMachine.add('ReachableWait', collab_smach.TimedSleepNode(5.0),
+                transitions={'success': 'MoveRingToReachable'})
         smach.StateMachine.add('Arm2MoveToRing', collab_smach.MoveToFrameNode('wam2',frame='ring1/grasp1', predicate=grabRingPredicate),
                 transitions={
                     'success': 'Arm2GrabRing',
                     'moveit_error': 'Arm2MoveToRing',
                     'ik_error': 'Arm2MoveToRing',
+                    'no_predicates': 'Arm2MoveToRingWait',
                     'failure': 'ERROR'})
+        smach.StateMachine.add('Arm2MoveToRingWait', collab_smach.TimedSleepNode(5.0),
+                transitions={'success': 'Arm2MoveToRing'})
         smach.StateMachine.add('Arm2GrabRing', collab_smach.CloseGripperNode('wam2', attach='ring1'),
                 transitions={
                     'success': 'Arm1ReleaseRing',
@@ -105,6 +112,7 @@ if __name__ == '__main__':
                     'success': 'Arm2MoveToDrop',
                     'moveit_error': 'Arm1MoveBackIK',
                     'ik_error': 'Arm1MoveBackIK',
+                    'no_predicates':'ERROR',
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm1MoveBackIK', collab_smach.MoveToFrameNodeIK('wam', 'location4', arm1_ik, arm1_stop),
                 transitions={
@@ -115,6 +123,7 @@ if __name__ == '__main__':
                     'success': 'Arm2Drop',
                     'moveit_error': 'Arm2MoveToDrop',
                     'ik_error': 'Arm2MoveToDrop',
+                    'no_predicates': 'Arm2MoveToDrop',
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm2Drop', collab_smach.OpenGripperNode('wam2', detach='ring1'),
                 transitions={

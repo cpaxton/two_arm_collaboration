@@ -30,7 +30,7 @@ disabiling collisions with whatever object we might run into because we want to 
 '''
 class MoveToFrameNode(smach.State):
     def __init__(self,robot,frame=None,objs=None, predicate=None, with_offset=None):
-        smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error'])
+        smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error','no_predicates'])
         self.robot = robot
         self.frame = frame
         self.objs = objs
@@ -133,6 +133,9 @@ class MoveToFrameNode(smach.State):
             resp = self.ga(self.predicate)
 
             print resp
+
+            if len(resp.values) == 0:
+                return 'no_predicates'
 
             # choose a random frame
             idx = random.randrange(len(resp.values))
