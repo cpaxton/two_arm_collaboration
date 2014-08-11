@@ -5,7 +5,7 @@ import smach_ros
 import actionlib
 import tf
 import copy
-
+import tf_conversions as tfc
 
 # import predicator to let us see what's going on
 from predicator_msgs.msg import *
@@ -29,7 +29,7 @@ Is terrible and should be replaced by something more robust
 WARNING: a lot of stuff in this program is hard coded and really should not be
 '''
 class MoveToFrameNodeIK(smach.State):
-    def __init__(self, robot, frame, ik_script, stop_script, predicate=None):
+    def __init__(self, robot, frame, ik_script, stop_script, predicate=None, with_offset=None):
         smach.State.__init__(self, outcomes=['success','failure'])
         self.robot = robot
         self.frame = frame
@@ -39,8 +39,52 @@ class MoveToFrameNodeIK(smach.State):
         self.start = ik_script
         self.stop = stop_script
         self.predicate = predicate
+        self.offset_frames = with_offset
+        self.transform = None
+
+        # use predicator to load settings
+        self.ga = rospy.ServiceProxy("/predicator/get_assignment", pcs.GetAssignment)
 
         rospy.loginfo("Initializing IK node")
+
+    '''
+    get_frame_offset()
+    '''
+    def get_frame_offset(self, oframe1, oframe2):
+        tf_done = False
+        tfl = tf.TransformListener()
+
+        while not tf_done:
+            try:
+                (trans1, rot1) = tfl.lookupTransform(oframe1, oframe2, rospy.Time(0))
+                tf_done = True
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+        
+        tf_done = False
+
+        while not tf_done:
+            try:
+                (trans2, rot2) = tfl.lookupTransform("/world", self.frame, rospy.Time(0))
+                tf_done = True
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                continue
+
+        print (trans1, rot1)
+        print (trans2, rot2)
+
+        f1 = tfc.fromTf((trans1, rot1))
+        f2 = tfc.fromTf((trans2, rot2))
+
+        frame = f2 * f1
+
+        self.transform = tfc.toTf(frame)
+
+        tfb = tf.TransformBroadcaster()
+        (t, r) = self.transform
+        tfb.sendTransform(t, r, rospy.Time.now(), "EX", "/world")
+        self.frame = "EX"
 
     def execute(self, userdata):
 
@@ -59,6 +103,10 @@ class MoveToFrameNodeIK(smach.State):
             self.frame = resp.values[idx].params[0]
 
             print "Updating frame via predicate: " + self.frame
+
+        if not self.offset_frames == None:
+            (oframe1, oframe2) = self.offset_frames
+            self.get_frame_offset(oframe1, oframe2)
 
         runscript = rospy.ServiceProxy(self.deployer_name + "/run_script", RunScript)
 
