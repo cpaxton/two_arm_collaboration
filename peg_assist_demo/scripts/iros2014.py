@@ -47,7 +47,7 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'Open2',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Open2', collab_smach.OpenGripperNode('wam2'),
+        smach.StateMachine.add('Close2', collab_smach.OpenGripperNode('wam2'),
                 transitions={
                     'success': 'MoveToStandbyPeg1',
                     'failure': 'ERROR'})

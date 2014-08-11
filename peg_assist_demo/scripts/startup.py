@@ -3,6 +3,7 @@
 import rospy
 import rostopic
 from trajectory_msgs.msg import JointTrajectoryPoint
+from oro_barrett_msgs.msg import BHandCmd
 
 '''
 TODO:
@@ -14,8 +15,14 @@ rospy.init_node('startup_node_peg_demo')
 
 arm2_up = False
 
-topic1 = "/gazebo/traj_rml/joint_traj_point_cmd"
 topic2 = "/gazebo/w2traj_rml/joint_traj_point_cmd"
+gripper_topic2 = "/gazebo/w2barrett_manager/hand/cmd"
+
+hand_closed = BHandCmd()
+
+# set up the hand closed position
+hand_closed.mode = [3, 3, 3, 3]
+hand_closed.cmd = [2.0, 2.0, 2.0, 0]
 
 try:
 
@@ -26,6 +33,9 @@ try:
 
     #pub1 = rospy.Publisher(topic1)
     pub2 = rospy.Publisher(topic2, JointTrajectoryPoint)
+    gpub2 = rospy.Publisher(gripper_topic2, BHandCmd)
+
+    gpub2.publish(hand_closed)
 
     while not arm2_up:
         try:
@@ -42,6 +52,7 @@ try:
     for i in range(1,20):
         rospy.loginfo("trying to publish point for arm2")
         pub2.publish(pt)
+        gpub2.publish(hand_closed)
         rospy.sleep(0.5)
 
 except rospy.ROSInterruptException, e: pass
