@@ -270,8 +270,8 @@ class MoveToFrameNode(smach.State):
             joint = JointConstraint()
             joint.joint_name = ik_resp.solution.joint_state.name[i]
             joint.position = ik_resp.solution.joint_state.position[i] 
-            joint.tolerance_below = 0.001
-            joint.tolerance_above = 0.001
+            joint.tolerance_below = 0.005
+            joint.tolerance_above = 0.005
             joint.weight = 1.0
             goal.joint_constraints.append(joint)
 

@@ -80,6 +80,27 @@
       velocity_tolerance: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
   </rosparam>
 
+  <group ns="$(arg oro_prefix)cart_servo">
+    <rosparam subst_value="true">
+      root_link: $(arg tf_prefix)/base_link
+      target_frame: $(arg tf_prefix)/cmd
+      robot_description_param: ~$(arg oro_prefix)barrett_manager/robot_description
+      max_linear_rate: 40.0
+      max_angular_rate: 200.0
+    </rosparam>
+
+    <rosparam if="$(arg ee_empty)" subst_value="true">
+      tip_link: $(arg tf_prefix)/wrist_palm_link
+    </rosparam>
+    <rosparam if="$(arg ee_hand)" subst_value="true">
+      tip_link: $(arg tf_prefix)/hand/bhand_grasp_link
+    </rosparam>
+    <rosparam if="$(arg ee_ball)" subst_value="true">
+      tip_link: $(arg tf_prefix)/ball/bball_base_link
+    </rosparam>
+  </group>
+
+
   <group ns="$(arg oro_prefix)ik">
     <rosparam subst_value="true">
       root_link: $(arg tf_prefix)/base_link
@@ -98,7 +119,7 @@
       <remap from="joint_states" to="joint_state_desired"/>
       <param name="publish_frequency" value="50"/>
       <param name="tf_prefix" value="ik"/>
-      <remap from="robot_description" to="/gazebo/$(arg oro_prefix)barrett_manager/ik_robot_description"/>
+      <remap to="/robot_description" from="/gazebo/$(arg oro_prefix)barrett_manager/ik_robot_description"/>
     </node>
   </group>
 
