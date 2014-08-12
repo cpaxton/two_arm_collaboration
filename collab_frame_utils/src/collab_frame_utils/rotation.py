@@ -27,23 +27,17 @@ def get_frames(num, step, trans, rot, frame=None, off=0, suffix=""):
         r = tfc.Rotation(f.M)
 
         (roll, pitch, yaw) = r.GetRPY()
-        #r.DoRotZ(step)
         r = tfc.Rotation.RPY(roll, pitch, yaw + step)
 
         rf = tfc.Frame(tfc.Rotation.RotZ(step))
-        #rfz = tfc.Frame(tfc.Rotation.RotY(3.14159))
         rfz = tfc.Frame(tfc.Rotation.RPY(0,3.14159,0))
 
         p = rf * tfc.Vector(f.p)
         p2 = tfc.Vector(-1*p.x(), -1*p.y(), -1*p.z())
 
-        #r2 = tfc.Rotation(f.M)
-        #r2 = tfc.Rotation.RPY(roll(3.14159/2), -1*pitch, -1*(yaw + step))
-        r2 = tfc.Rotation.RPY(roll + 3.14159, pitch, (yaw + step)) #-1*roll, -1*pitch, -1*(yaw + step)
-        #r = r.DoRotZ(3.14159)
+        r2 = tfc.Rotation.RPY(roll + 3.14159, pitch, (yaw + step))
 
         f = tfc.Frame(r, p)
-        #f2 = tfc.Frame(r2, p2)
         f2 = tfc.Frame(r2, p2)
 
         (trans2, rot2) = tfc.toTf(f)
