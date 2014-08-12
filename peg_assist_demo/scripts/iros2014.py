@@ -122,38 +122,26 @@ if __name__ == '__main__':
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm1MoveBack', collab_smach.MoveToFrameNode('wam', frame='location4'),
                 transitions={
-                    'success': 'TestArm2Below',
+                    'success': 'Arm2MoveToPreDrop',
                     'moveit_error': 'Arm1MoveBackIK',
                     'ik_error': 'Arm1MoveBackIK',
                     'no_predicates':'ERROR',
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm1MoveBackIK', collab_smach.MoveToFrameNodeIK('wam', 'location4', arm1_ik, arm1_stop),
                 transitions={
-                    'success': 'TestArm2Below',
+                    'success': 'Arm2MoveToPreDrop',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('TestArm2Below', collab_smach.TestPredicateNode(invertDropPredicate),
-                transitions={
-                    'true': 'Arm2MoveToPreDrop',
-                    'false': 'Arm2MoveToPreDrop',
-                    'unknown': 'ERROR'})
-        smach.StateMachine.add('InvArm2MoveToPreDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point6', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link'), flip=True),
-                transitions={
-                    'success': 'Arm2MoveToDrop',
-                    'moveit_error': 'InvArm2MoveToPreDrop',
-                    'ik_error': 'Arm2MoveToDrop',
-                    'no_predicates': 'InvArm2MoveToPreDrop',
-                    'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToPreDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point6', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+        smach.StateMachine.add('Arm2MoveToPreDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point6', objs=['ring1'], flip=True),
                 transitions={
                     'success': 'Arm2MoveToDrop',
                     'moveit_error': 'Arm2MoveToPreDrop',
                     'ik_error': 'Arm2MoveToDrop',
-                    'no_predicates': 'Arm2MoveToPreDrop',
+                    'no_predicates': 'ERROR',
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', objs=['ring1'], predicate=releasePointPredicate), #, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
                 transitions={
                     'success': 'Arm2Drop',
-                    'moveit_error': 'Arm2MoveToDrop',
+                    'moveit_error': 'Arm2MoveToPreDrop',
                     'ik_error': 'Arm2MoveToDrop',
                     'no_predicates': 'Arm2MoveToDrop',
                     'failure': 'ERROR'})

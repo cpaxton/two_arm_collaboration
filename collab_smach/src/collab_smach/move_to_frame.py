@@ -20,6 +20,8 @@ from geometry_msgs.msg import Pose
 from moveit_msgs.msg import *
 from moveit_msgs.srv import *
 
+import collab_frame_utils as cfutils
+
 '''
 MoveToFrameNode
 
@@ -72,9 +74,9 @@ class MoveToFrameNode(smach.State):
 
         self.ps_pub = rospy.Publisher(resp.values[0].params[0], moveit_msgs.msg.PlanningScene)
 
-        #rospy.loginfo("Planning scene topic: %s", resp.values[0].params[0])
-        #rospy.loginfo("Move group location: %s", self.ns)
-        #rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
+        rospy.loginfo("Planning scene topic: %s", resp.values[0].params[0])
+        rospy.loginfo("Move group location: %s", self.ns)
+        rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
 
     '''
     get_frame_offset()
@@ -90,20 +92,9 @@ class MoveToFrameNode(smach.State):
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
 
-        
-        #tf_done = False
-        #while not tf_done:
-        #    try:
-        #        (trans2, rot2) = tfl.lookupTransform("/world", self.frame, rospy.Time(0))
-        #        tf_done = True
-        #    except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-        #        continue
-
         print (trans1, rot1)
-        #print (trans2, rot2)
 
         #f1 = tfc.fromTf((trans1, rot1))
-        #f2 = tfc.fromTf((trans2, rot2))
         #frame = f2 * f1
         #self.transform = tfc.toTf(frame)
 
@@ -162,7 +153,6 @@ class MoveToFrameNode(smach.State):
             ps = ps_proxy(components=ps_req).scene
             ps_new_acm = self.update_collision_matrix(objs=self.objs, cm=copy.deepcopy(ps.allowed_collision_matrix))
 
-            #print ps_new_acm
             self.ps_pub.publish(ps_new_acm)
 
         motion_req = MotionPlanRequest()
@@ -191,7 +181,6 @@ class MoveToFrameNode(smach.State):
         self.goal.planning_options = planning_options
         self.goal.request = motion_req
 
-        #print self.goal
         print "Sending request..."
 
         self.client.send_goal(self.goal)
@@ -235,6 +224,10 @@ class MoveToFrameNode(smach.State):
                     continue
         else:
             (trans, rot) = self.transform
+
+
+        if self.flip:
+            (trans, rot) = cfutils.flip_rotation_frame(trans, rot)
 
         p = geometry_msgs.msg.PoseStamped()
         p.pose.position.x = trans[0]
@@ -301,8 +294,6 @@ class MoveToFrameNode(smach.State):
             allowed = [val.params[0] for val in obj_comps.values]
             allowed.append(obj)
 
-            print allowed
-
             for i in range(0, len(allowed)):
                 ps.allowed_collision_matrix.entry_names.append(allowed[i])
                 #ps.allowed_collision_matrix.default_entry_values.append(True)
@@ -318,15 +309,12 @@ class MoveToFrameNode(smach.State):
             for i in range(0, old_len):
                 for j in range(old_len, new_len):
                     ps.allowed_collision_matrix.entry_values[i].enabled.append(True)
-                    print "row %d = %d"%(i,len(ps.allowed_collision_matrix.entry_values[i].enabled))
 
             # add new rows
             for i in range(old_len, new_len):
                 entry = moveit_msgs.msg.AllowedCollisionEntry()
                 for j in range(0, new_len):
                     entry.enabled.append(True)
-                print "row %d = %d"%(i,len(entry.enabled))
                 ps.allowed_collision_matrix.entry_values.append(entry)
-                print "%d rows"%(len(ps.allowed_collision_matrix.entry_values))
 
         return ps
