@@ -29,7 +29,7 @@ The difference between this node and the above is that this node will alter the 
 disabiling collisions with whatever object we might run into because we want to grab it.
 '''
 class MoveToFrameNode(smach.State):
-    def __init__(self,robot,frame=None,objs=None, predicate=None, with_offset=None):
+    def __init__(self,robot,frame=None,objs=None, predicate=None, with_offset=None, flip=False):
         smach.State.__init__(self, outcomes=['success','failure','moveit_error','ik_error','no_predicates'])
         self.robot = robot
         self.frame = frame
@@ -37,6 +37,7 @@ class MoveToFrameNode(smach.State):
         self.predicate = predicate
         self.offset_frames = with_offset
         self.transform = None
+        self.flip = flip
 
         rospy.loginfo("Initializing move to frame node")
 
@@ -84,35 +85,34 @@ class MoveToFrameNode(smach.State):
 
         while not tf_done:
             try:
-                (trans1, rot1) = tfl.lookupTransform(oframe1, oframe2, rospy.Time(0))
+                (trans1, rot1) = tfl.lookupTransform(oframe2, oframe1, rospy.Time(0))
                 tf_done = True
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
 
         
-        tf_done = False
-
-        while not tf_done:
-            try:
-                (trans2, rot2) = tfl.lookupTransform("/world", self.frame, rospy.Time(0))
-                tf_done = True
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
+        #tf_done = False
+        #while not tf_done:
+        #    try:
+        #        (trans2, rot2) = tfl.lookupTransform("/world", self.frame, rospy.Time(0))
+        #        tf_done = True
+        #    except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+        #        continue
 
         print (trans1, rot1)
-        print (trans2, rot2)
+        #print (trans2, rot2)
 
-        f1 = tfc.fromTf((trans1, rot1))
-        f2 = tfc.fromTf((trans2, rot2))
+        #f1 = tfc.fromTf((trans1, rot1))
+        #f2 = tfc.fromTf((trans2, rot2))
+        #frame = f2 * f1
+        #self.transform = tfc.toTf(frame)
 
-        frame = f2 * f1
-
-        self.transform = tfc.toTf(frame)
-
+        self.transform = (trans1, rot1)
         tfb = tf.TransformBroadcaster()
-        (t, r) = self.transform
-        tfb.sendTransform(t, r, rospy.Time.now(), "EX", "/world")
-
+        #(t, r) = self.transform
+        tfb.sendTransform(trans1, rot1, rospy.Time.now(), "EX", self.frame)
+        #tfb.sendTransform(t, r, rospy.Time.now(), "EX_composed", "/world")
+        #tfb.sendTransform(trans2, rot2, rospy.Time.now(), "debug", "/world")
 
     '''
     joint_state_cb()

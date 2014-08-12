@@ -81,7 +81,7 @@ if __name__ == "__main__":
     parent = rospy.get_param("~parent", "ring1")
     spin_rate = rospy.get_param("~rate", 10)
     flipped_frames_allowed = rospy.get_param("~flipped_frames", 0) == 1
-    predicate_name = rospy.get_param("predicate_name", "grasp_point")
+    predicate_name = rospy.get_param("~predicate_name", "grasp_point")
 
     verbose = rospy.get_param("~verbose", 1) == 1
     publish_predicator = rospy.get_param("~publish_predicates", 1) == 1

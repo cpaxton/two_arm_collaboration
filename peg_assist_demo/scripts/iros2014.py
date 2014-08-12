@@ -48,6 +48,13 @@ if __name__ == '__main__':
     releasePointPredicate.params[0] = '*'
     releasePointPredicate.params[1] = 'ring1'
 
+    invertDropPredicate = PredicateStatement()
+    invertDropPredicate.predicate = "up_from"
+    invertDropPredicate.num_params = 3
+    invertDropPredicate.params[0] = "wam2/wrist_palm_link"
+    invertDropPredicate.params[1] = "ring1/ring_link"
+    invertDropPredicate.params[2] = "ring1/ring_link"
+
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
                 transitions={
@@ -115,20 +122,39 @@ if __name__ == '__main__':
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm1MoveBack', collab_smach.MoveToFrameNode('wam', frame='location4'),
                 transitions={
-                    'success': 'Arm2MoveToDrop',
+                    'success': 'TestArm2Below',
                     'moveit_error': 'Arm1MoveBackIK',
                     'ik_error': 'Arm1MoveBackIK',
                     'no_predicates':'ERROR',
                     'failure': 'ERROR'})
         smach.StateMachine.add('Arm1MoveBackIK', collab_smach.MoveToFrameNodeIK('wam', 'location4', arm1_ik, arm1_stop),
                 transitions={
-                    'success': 'Arm2MoveToPreDrop',
+                    'success': 'TestArm2Below',
                     'failure': 'ERROR'})
+        smach.StateMachine.add('TestArm2Below', collab_smach.TestPredicateNode(invertDropPredicate),
+                transitions={
+                    'true': 'InvArm2MoveToPreDrop',
+                    'false': 'Arm2MoveToPreDrop',
+                    'unknown': 'ERROR'})
         #smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNodeIK('wam2', 'drop_point5', arm1_ik, arm1_stop, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
         #        transitions={
         #            'success': 'Arm2Drop',
         #            'failure': 'ERROR'})
         #smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', objs=['ring1'], predicate=dropPointPredicate, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+        smach.StateMachine.add('InvArm2MoveToPreDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point6', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link'), flip=True),
+                transitions={
+                    'success': 'Arm2MoveToDrop',
+                    'moveit_error': 'InvArm2MoveToPreDrop',
+                    'ik_error': 'Arm2MoveToDrop',
+                    'no_predicates': 'InvArm2MoveToPreDrop',
+                    'failure': 'ERROR'})
+        #smach.StateMachine.add('InvArm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point5', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link'), flip=True),
+        #        transitions={
+        #            'success': 'Arm2Drop',
+        #            'moveit_error': 'InvArm2MoveToDrop',
+        #            'ik_error': 'InvArm2MoveToDrop',
+        #            'no_predicates': 'InvArm2MoveToDrop',
+        #            'failure': 'ERROR'})
         smach.StateMachine.add('Arm2MoveToPreDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point6', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
                 transitions={
                     'success': 'Arm2MoveToDrop',
@@ -136,7 +162,8 @@ if __name__ == '__main__':
                     'ik_error': 'Arm2MoveToDrop',
                     'no_predicates': 'Arm2MoveToPreDrop',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point5', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', objs=['ring1'], predicate=releasePointPredicate), #, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+        #smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point5', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
                 transitions={
                     'success': 'Arm2Drop',
                     'moveit_error': 'Arm2MoveToDrop',

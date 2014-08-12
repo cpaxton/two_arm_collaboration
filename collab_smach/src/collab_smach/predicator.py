@@ -14,7 +14,14 @@ class TestPredicateNode(smach.State):
     def __init__(self,predicate):
         smach.State.__init__(self, outcomes=['true', 'false', 'unknown'])
 
+        self.predicate = predicate
+        self.call = rospy.ServiceProxy("/predicator/test_predicate", ps.TestPredicate)
 
     def execute(self, userdata):
 
-        pass
+        resp = self.call(self.predicate)
+            
+        if resp.found:
+            return 'true'
+        else:
+            return 'false'
