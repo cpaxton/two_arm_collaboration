@@ -118,17 +118,18 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'Arm2MoveToDrop',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNodeIK('wam2', 'drop_point5', arm1_ik, arm1_stop, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
-                transitions={
-                    'success': 'Arm2Drop',
-                    'failure': 'ERROR'})
-        #smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', objs=['ring','peg2'], predicate=dropPointPredicate, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+        #smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNodeIK('wam2', 'drop_point5', arm1_ik, arm1_stop, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
         #        transitions={
         #            'success': 'Arm2Drop',
-        #            'moveit_error': 'Arm2MoveToDrop',
-        #            'ik_error': 'Arm2MoveToDrop',
-        #            'no_predicates': 'Arm2MoveToDrop',
         #            'failure': 'ERROR'})
+        #smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', objs=['ring'], predicate=dropPointPredicate, with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+        smach.StateMachine.add('Arm2MoveToDrop', collab_smach.MoveToFrameNode('wam2', frame='drop_point5', objs=['ring1'], with_offset=('wam2/wrist_palm_link','ring1/ring_link')),
+                transitions={
+                    'success': 'Arm2Drop',
+                    'moveit_error': 'Arm2MoveToDrop',
+                    'ik_error': 'Arm2MoveToDrop',
+                    'no_predicates': 'Arm2MoveToDrop',
+                    'failure': 'ERROR'})
         smach.StateMachine.add('Arm2Drop', collab_smach.OpenGripperNode('wam2', detach='ring1'),
                 transitions={
                     'success': 'DONE',
