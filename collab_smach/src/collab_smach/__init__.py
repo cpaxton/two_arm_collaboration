@@ -20,3 +20,4 @@ from gripper import CloseGripperNode
 from gripper import OpenGripperNode
 from oro_move_to_frame import MoveToFrameNodeIK
 from sleep import TimedSleepNode
+from predicator import TestPredicateNode
