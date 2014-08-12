@@ -71,9 +71,9 @@ class MoveToFrameNode(smach.State):
 
         self.ps_pub = rospy.Publisher(resp.values[0].params[0], moveit_msgs.msg.PlanningScene)
 
-        rospy.loginfo("Planning scene topic: %s", resp.values[0].params[0])
-        rospy.loginfo("Move group location: %s", self.ns)
-        rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
+        #rospy.loginfo("Planning scene topic: %s", resp.values[0].params[0])
+        #rospy.loginfo("Move group location: %s", self.ns)
+        #rospy.loginfo("Joints topic: %s", self.robot_ns + "/wam/joint_states")
 
     '''
     get_frame_offset()
