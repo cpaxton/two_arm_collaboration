@@ -1,5 +1,16 @@
 <?xml version="1.0"?>
 <robot name="$(arg name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  
+  <link name="$(arg name)/peg_top_link">
+  </link>
+  <joint name="$(arg name)/peg_to_top" type="fixed">
+    <parent link="$(arg name)/peg_link"/>
+    <child link="$(arg name)/peg_top_link"/>
+    <origin xyz="0.0 0.0 0.2"/>
+  </joint>
+
+
   <link name="$(arg name)/peg_link">
     <visual>
       <geometry>
