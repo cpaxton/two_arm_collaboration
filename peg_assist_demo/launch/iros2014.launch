@@ -11,6 +11,7 @@
   <arg name="console" default="false" doc="(bool) bring up the rqt console"/>
   <arg name="smach_viewer" default="false" doc="(bool) bring up the smach viewer"/>
   <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
+  <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
 
   <include file="$(find peg_assist_demo)/launch/pegs1_auto.launch">
     <arg name="gui" value="$(arg gui)"/>
@@ -24,6 +25,7 @@
     <arg name="console" value="$(arg console)"/>
     <arg name="smach_viewer" value="$(arg smach_viewer)"/>
     <arg name="rviz_moveit_namespace" value="$(arg rviz_moveit_namespace)"/>
+    <arg name="alternate_pegs" value="$(arg alternate_pegs)"/>
   </include>
 
   <!-- TASK MODEL STUFF -->

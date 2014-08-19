@@ -13,9 +13,11 @@
   <arg name="run_script_arm2" default="true"/>
   <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="planning_arm2" default="false" doc="(bool) Launch the motion planing pipeline"/>
+  <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
 
   <!-- include the pegs launch file -->
-  <include file="$(find collab_env)/launch/create_pegs.launch"/>
+  <include unless="$(arg alternate_pegs)" file="$(find collab_env)/launch/create_pegs.launch"/>
+  <include if="$(arg alternate_pegs)" file="$(find collab_env)/launch/create_alternate_pegs.launch"/>
 
   <!-- spawn ring 1 -->
   <param name="ring1_description"

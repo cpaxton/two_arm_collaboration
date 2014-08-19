@@ -11,6 +11,7 @@
   <arg name="console" default="false" doc="(bool) bring up the rqt console"/>
   <arg name="smach_viewer" default="false" doc="(bool) bring up the smach viewer"/>
   <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
+  <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
 
   <node if="$(arg console)"
     name="rqt_console" type="rqt_console" pkg="rqt_console">
@@ -31,6 +32,7 @@
     <arg name="planning_arm2" value="true" /> <!-- start MoveIt for the second arm -->
     <arg name="run_script_arm1" value="false" />
     <arg name="run_script_arm2" value="false" />
+    <arg name="alternate_pegs" value="$(arg alternate_pegs)"/>
   </include>
 
   <!--
