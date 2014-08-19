@@ -52,25 +52,4 @@
     type="startup_arm1.py"
     output="screen"/>
 
-  <!-- TASK MODEL STUFF -->
-  <include file="$(find peg_assist_demo)/launch/bringup_auto_task.launch">
-    <arg name="smach_viewer" value="$(arg smach_viewer)"/>
-    <arg name="bringup_arm1" value="true"/>
-  </include>
-
-  <!-- WORLD STUFF -->
-  <include file="$(find peg_assist_demo)/launch/bringup_grasp_points.launch"/>
-  <include file="$(find peg_assist_demo)/launch/bringup_move_points.launch"/>
-
-  <!-- PREDICATOR STUFF HERE -->
-  <include file="$(find peg_assist_demo)/launch/bringup_predicator.launch">
-    <arg name="output" value="log"/>
-  </include>
-
-  <include file="$(find peg_assist_demo)/launch/bringup_rviz.launch">
-    <arg name="debug" value="$(arg debug)"/>
-    <arg name="rviz_config" value="$(arg rviz_config)"/>
-    <arg name="rviz_moveit_namespace" value="$(arg rviz_moveit_namespace)"/>
-  </include>
-
 </launch>

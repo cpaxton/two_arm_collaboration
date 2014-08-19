@@ -1,0 +1,88 @@
+<launch>
+
+  <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
+  <arg name="rviz" default="true" doc="(bool) run rviz"/>
+  <arg name="rviz_config" default="$(find peg_assist_demo)/config/observe_only.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rqt_barrett_arm1" default="false" doc="(bool) show rqt barrett UI for user-controlled arm" />
+  <arg name="rqt_barrett_arm2" default="false" doc="(bool) show rqt barrett UI for algorithm-controlled arm" />
+  <arg name="console" default="false" doc="(bool) bring up the rqt console"/>
+  <arg name="smach_viewer" default="false" doc="(bool) bring up the smach viewer"/>
+  <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
+
+  <include file="$(find peg_assist_demo)/launch/pegs1_auto.launch">
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="hand" value="$(arg hand)"/>
+    <arg name="log_level" value="$(arg log_level)"/>
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz" value="$(arg rviz)"/>
+    <arg name="rviz_config" value="$(arg rviz_config)"/>
+    <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)"/>
+    <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)"/>
+    <arg name="console" value="$(arg console)"/>
+    <arg name="smach_viewer" value="$(arg smach_viewer)"/>
+    <arg name="rviz_moveit_namespace" value="$(arg rviz_moveit_namespace)"/>
+  </include>
+
+  <!--
+        Create static transforms to grasp points.
+        Rotate grasp points around some pose to create even more.
+        Create drop points too.
+  -->
+
+  <node name="ring1_grasp1_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.04040067373878635 -0.21774481173868088 0.13558550646900713 0.9499580162264987 -0.09243589120233672 0.01800001736520515 -0.2978445446864811 /ring1/ring_link /ring1/grasp1 100"/>
+
+  <node name="ring1_grasp2_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.147 -0.020 0.191 0.758, -0.647, 0.031, -0.078 /ring1/ring_link /ring1/grasp2 100"/>
+
+  <node name="collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
+    <param name="frame1" value="ring1/ring_link"/>
+    <param name="frame2" value="ring1/grasp2"/>
+    <param name="from_frame" value="ring1/ring_link"/>
+    <param name="verbose" value="0"/>
+    <param name="flipped_frames" value="1"/>
+    <param name="predicate_name" value="grasp_point"/>
+  </node>
+
+  <node name="release_collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
+    <param name="frame1" value="ring1/ring_link"/>
+    <param name="frame2" value="ring1/grasp2"/>
+    <param name="from_frame" value="peg2/peg_top_link"/>
+    <param name="verbose" value="0"/>
+    <param name="flipped_frames" value="0"/>
+    <param name="predicate_name" value="release_point"/>
+    <param name="suffix" value="_release"/>
+  </node>
+
+  <!--
+       Create movement waypoints for the arm.
+       These are specific, high-level movement waypoints; software really has no knowledge of what they mean.
+  -->
+
+  <node name="arm1_place1_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 100"/>
+
+  <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.758 0.475 0.416 0.783 -0.394 0.385 0.290 /world /location2 100"/>
+
+  <node name="arm1_place3_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.851 0.380 1.085 0.770 -0.418 0.375 0.301 /world /location3 100"/>
+
+  <node name="arm1_place4_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.561 0.822 0.860 0.680 -0.599 0.323 -0.272 /world /location4 100"/>
+
+  <node name="arm1_place5_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location5 100"/>
+
+  <node name="arm1_lift_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.628 0.884 0.803 -0.573 0.776 -0.188 0.185 /world /lift_location 100"/>
+
+  <node name="drop_points_publisher" pkg="peg_assist_demo" type="inverse_drop_publisher.py">
+    <param name="filename" value="$(find peg_assist_demo)/points/drop.yaml"/>
+    <param name="reference_frame" value="peg2/base_link"/>
+  </node>
+
+</launch>
