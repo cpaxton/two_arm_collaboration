@@ -12,6 +12,7 @@
   <arg name="smach_viewer" default="false" doc="(bool) bring up the smach viewer"/>
   <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
   <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
+  <arg name="output" default="log" doc="(string) screen, log, etc."/>
 
   <include file="$(find peg_assist_demo)/launch/pegs1_auto.launch">
     <arg name="gui" value="$(arg gui)"/>
@@ -68,24 +69,167 @@
     args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 100"/>
 
   <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.758 0.475 0.416 0.783 -0.394 0.385 0.290 /world /location2 100"/>
+    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location2 100"/>
 
-  <node name="arm1_place3_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.851 0.380 1.085 0.770 -0.418 0.375 0.301 /world /location3 100"/>
+  <node name="arm1_peg2_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 100"/>
 
-  <node name="arm1_place4_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.561 0.822 0.860 0.680 -0.599 0.323 -0.272 /world /location4 100"/>
-
-  <node name="arm1_place5_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location5 100"/>
+  <node name="arm1_peg1_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.189 0.072 0.790 0.680 -0.599 0.323 -0.272 /peg1/base_link /peg1_standby_location 100"/>
 
   <node name="arm1_lift_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.628 0.884 0.803 -0.573 0.776 -0.188 0.185 /world /lift_location 100"/>
+    args="-0.122 0.134 0.733 -0.573 0.776 -0.188 0.185 /peg1/base_link /peg1_lift_location 100"/>
 
   <!-- PREDICATOR STUFF HERE -->
-  <include file="$(find peg_assist_demo)/launch/bringup_predicator.launch">
-    <arg name="output" value="log"/>
+  <node name="predicator_fake_class_node"
+    type="fake_classes.py"
+    pkg="predicator_fake_classification"
+    output="$(arg output)">
+
+    <rosparam param="class_info">
+      - name: robot
+        members:
+          - wam
+          - wam2
+      - name: object
+        members:
+          - peg1
+          - peg2
+          - ring1
+          - wam
+          - wam2
+          - stage
+      - name: peg
+        members:
+          - peg1
+          - peg2
+      - name: ring
+        members:
+          - ring1
+      - name: location
+        members:
+          - location1
+          - location2
+          - peg2_standby_location
+          - peg1_standby_location
+          - peg1_lift_location
+    </rosparam>
+
+    <rosparam param="param_class_info">
+      - name: gripper_topic
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/hand/cmd
+      - name: gripper_topic
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/hand/cmd
+      - name: robot_namespace
+        parent: wam
+        members:
+          - /gazebo/barrett_manager
+      - name: robot_namespace
+        parent: wam2
+        members:
+        - /gazebo/w2barrett_manager
+      - name: move_group_namespace
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/move_group
+      - name: move_group_namespace
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/move_group
+      - name: joint_states_topic
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/wam/joint_states
+      - name: joint_states_topic
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/wam/joint_states
+      - name: planning_scene_topic
+        parent: wam
+        members:
+          - /gazebo/wam/wam/planning_scene
+      - name: planning_scene_topic
+        parent: wam2
+        members:
+          - /gazebo/wam2/wam2/planning_scene
+      - name: grasp_point
+        parent: ring1
+        members:
+          - ring1/grasp1
+          - ring1/grasp2
+      - name: component
+        parent: wam
+        members:
+          - wam/shoulder_yaw_link
+          - wam/shoulder_pitch_link
+          - wam/upper_arm_link
+          - wam/forearm_link
+          - wam/wrist_yaw_link
+          - wam/wrist_pitch_link
+          - wam/wrist_palm_link
+      - name: component
+        parent: wam2
+        members:
+          - wam2/shoulder_yaw_link
+          - wam2/shoulder_pitch_link
+          - wam2/upper_arm_link
+          - wam2/forearm_link
+          - wam2/wrist_yaw_link
+          - wam2/wrist_pitch_link
+          - wam2/wrist_palm_link
+      - name: hand_component
+        parent: wam
+        members:
+          - wam/hand/finger_1/prox_joint
+          - wam/hand/finger_2/prox_joint
+          - wam/hand/finger_1/med_joint
+          - wam/hand/finger_2/med_joint
+          - wam/hand/finger_3/med_joint
+          - wam/hand/finger_1/dist_joint
+          - wam/hand/finger_2/dist_joint
+          - wam/hand/finger_3/dist_joint
+      - name: hand_component
+        parent: wam2
+        members:
+          - wam2/hand/finger_1/prox_joint
+          - wam2/hand/finger_2/prox_joint
+          - wam2/hand/finger_1/med_joint
+          - wam2/hand/finger_2/med_joint
+          - wam2/hand/finger_3/med_joint
+          - wam2/hand/finger_1/dist_joint
+          - wam2/hand/finger_2/dist_joint
+          - wam2/hand/finger_3/dist_joint
+      - name: component
+        parent: peg1
+        members:
+          - peg1/peg_link
+          - peg1/base_link
+      - name: component
+        parent: peg2
+        members:
+          - peg2/peg_link
+          - peg2/base_link
+      - name: component
+        parent: ring1
+        members:
+          - ring1/ring_link
+      - name: component
+        parent: stage
+        members:
+          - stage_link
+    </rosparam>
+  </node>
+
+  <include file="$(find predicator_reachable)/launch/pegs_reachable_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
   </include>
+
+  <!-- predicator core: test to determine if something has happened -->
+  <node name="predicator_core" pkg="predicator_core" type="core.py"/>
 
   <include file="$(find peg_assist_demo)/launch/bringup_rviz.launch">
     <arg name="debug" value="$(arg debug)"/>
