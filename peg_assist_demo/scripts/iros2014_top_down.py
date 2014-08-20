@@ -120,7 +120,7 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'Arm1MoveBack',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('Arm1MoveBack', collab_smach.MoveToFrameNode('wam', frame='location4'),
+        smach.StateMachine.add('Arm1MoveBack', collab_smach.MoveToFrameNode('wam', frame='peg1_standby_location'),
                 transitions={
                     'success': 'Arm2MoveToPreDrop',
                     'moveit_error': 'Arm1MoveBackIK',
