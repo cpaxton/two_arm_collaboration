@@ -69,6 +69,23 @@ There's another file as well, which does not bring up the RViz motion planning i
 roslaunch peg_assist_demo iros2014.launch
 ```
 
+The default version of the IROS demo shows top-down/implied grounding, meaning that we are just giving the planner specific locations and telling it whether or not they meet enough of our criteria. You can also run an alternate version in which drop points are based off of the top of the second peg instead of off of the arbitrarily chosen drop points.
+You can use it with this line:
+
+```
+roslaunch peg_assist_demo iros2014_top_down.launch
+```
+
+Either of these can be launched with an alternate peg, bent at an angle.
+
+```
+roslaunch peg_assist_demo iros2014.launch alternate_pegs:=true
+```
+
+```
+roslaunch peg_assist_demo iros2014_top_down.launch alternate_pegs:=true
+```
+
 #### Options
 
 *Console*: You can bring up the RQT console to debug by setting `console:=true` from roslaunch.
