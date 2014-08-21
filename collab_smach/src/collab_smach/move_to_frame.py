@@ -144,7 +144,6 @@ class MoveToFrameNode(smach.State):
         planning_options.replan_attempts = 0
         planning_options.replan_delay = 2.0
         planning_options.planning_scene_diff.is_diff = True
-        planning_options.planning_scene_diff.is_diff = True
         planning_options.planning_scene_diff.robot_state.is_diff = True
 
         if not self.objs == None:
