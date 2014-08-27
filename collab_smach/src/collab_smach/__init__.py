@@ -12,6 +12,7 @@ __all__ += ['CloseGripperNode']
 __all__ += ['OpenGripperNode']
 __all__ += ['MoveToFrameNodeIK']
 __all__ += ['TimedSleepNode']
+__all__ += ['PredicateMoveNode']
 
 from move_to_frame import MoveToFrameNode
 #from move_to_frame import MoveToObjectFrameNode
@@ -21,3 +22,4 @@ from gripper import OpenGripperNode
 from oro_move_to_frame import MoveToFrameNodeIK
 from sleep import TimedSleepNode
 from predicator import TestPredicateNode
+from predicator_plans import PredicateMoveNode
