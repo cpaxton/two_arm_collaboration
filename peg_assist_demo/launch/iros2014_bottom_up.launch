@@ -1,0 +1,246 @@
+<launch>
+
+  <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
+  <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
+  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="debug" default="false" doc="(bool) in debug mode"/>
+  <arg name="rviz" default="true" doc="(bool) run rviz"/>
+  <arg name="rviz_config" default="$(find peg_assist_demo)/config/observe_only.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="rqt_barrett_arm1" default="false" doc="(bool) show rqt barrett UI for user-controlled arm" />
+  <arg name="rqt_barrett_arm2" default="false" doc="(bool) show rqt barrett UI for algorithm-controlled arm" />
+  <arg name="console" default="false" doc="(bool) bring up the rqt console"/>
+  <arg name="smach_viewer" default="false" doc="(bool) bring up the smach viewer"/>
+  <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
+  <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
+  <arg name="output" default="log" doc="(string) screen, log, etc."/>
+
+  <include file="$(find peg_assist_demo)/launch/pegs1_auto.launch">
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="hand" value="$(arg hand)"/>
+    <arg name="log_level" value="$(arg log_level)"/>
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz" value="$(arg rviz)"/>
+    <arg name="rviz_config" value="$(arg rviz_config)"/>
+    <arg name="rqt_barrett_arm1" value="$(arg rqt_barrett_arm1)"/>
+    <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)"/>
+    <arg name="console" value="$(arg console)"/>
+    <arg name="smach_viewer" value="$(arg smach_viewer)"/>
+    <arg name="rviz_moveit_namespace" value="$(arg rviz_moveit_namespace)"/>
+    <arg name="alternate_pegs" value="$(arg alternate_pegs)"/>
+  </include>
+
+  <!--
+        Create static transforms to grasp points.
+        Rotate grasp points around some pose to create even more.
+        Create drop points too.
+  -->
+
+  <node name="ring1_grasp1_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.04040067373878635 -0.21774481173868088 0.13558550646900713 0.9499580162264987 -0.09243589120233672 0.01800001736520515 -0.2978445446864811 /ring1/ring_link /ring1/grasp1 100"/>
+
+  <node name="ring1_grasp2_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.147 -0.020 0.191 0.758, -0.647, 0.031, -0.078 /ring1/ring_link /ring1/grasp2 100"/>
+
+  <node name="collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
+    <param name="frame1" value="ring1/ring_link"/>
+    <param name="frame2" value="ring1/grasp2"/>
+    <param name="from_frame" value="ring1/ring_link"/>
+    <param name="verbose" value="0"/>
+    <param name="flipped_frames" value="1"/>
+    <param name="predicate_name" value="grasp_point"/>
+  </node>
+
+  <node name="release_collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
+    <param name="frame1" value="ring1/ring_link"/>
+    <param name="frame2" value="ring1/grasp2"/>
+    <param name="from_frame" value="peg2/peg_top_link"/>
+    <param name="verbose" value="0"/>
+    <param name="flipped_frames" value="0"/>
+    <param name="predicate_name" value="release_point"/>
+    <param name="suffix" value="_release"/>
+  </node>
+
+  <!--
+       Create movement waypoints for the arm.
+       These are specific, high-level movement waypoints; software really has no knowledge of what they mean.
+  -->
+
+  <node name="arm1_place1_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 100"/>
+
+  <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location2 100"/>
+
+  <node name="arm1_peg2_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 100"/>
+
+  <node name="arm1_peg1_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.189 0.072 0.790 0.680 -0.599 0.323 -0.272 /peg1/base_link /peg1_standby_location 100"/>
+
+  <node name="arm1_lift_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.122 0.134 0.733 -0.573 0.776 -0.188 0.185 /peg1/base_link /peg1_lift_location 100"/>
+
+  <!-- PREDICATOR STUFF HERE -->
+  <node name="predicator_fake_class_node"
+    type="fake_classes.py"
+    pkg="predicator_fake_classification"
+    output="$(arg output)">
+
+    <rosparam param="class_info">
+      - name: robot
+        members:
+          - wam
+          - wam2
+      - name: object
+        members:
+          - peg1
+          - peg2
+          - ring1
+          - wam
+          - wam2
+          - stage
+      - name: peg
+        members:
+          - peg1
+          - peg2
+      - name: ring
+        members:
+          - ring1
+      - name: location
+        members:
+          - location1
+          - location2
+          - peg2_standby_location
+          - peg1_standby_location
+          - peg1_lift_location
+    </rosparam>
+
+    <rosparam param="param_class_info">
+      - name: gripper_topic
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/hand/cmd
+      - name: gripper_topic
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/hand/cmd
+      - name: robot_namespace
+        parent: wam
+        members:
+          - /gazebo/barrett_manager
+      - name: robot_namespace
+        parent: wam2
+        members:
+        - /gazebo/w2barrett_manager
+      - name: move_group_namespace
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/move_group
+      - name: move_group_namespace
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/move_group
+      - name: joint_states_topic
+        parent: wam
+        members:
+          - /gazebo/barrett_manager/wam/joint_states
+      - name: joint_states_topic
+        parent: wam2
+        members:
+          - /gazebo/w2barrett_manager/wam/joint_states
+      - name: planning_scene_topic
+        parent: wam
+        members:
+          - /gazebo/wam/wam/planning_scene
+      - name: planning_scene_topic
+        parent: wam2
+        members:
+          - /gazebo/wam2/wam2/planning_scene
+      - name: grasp_point
+        parent: ring1
+        members:
+          - ring1/grasp1
+          - ring1/grasp2
+      - name: component
+        parent: wam
+        members:
+          - wam/shoulder_yaw_link
+          - wam/shoulder_pitch_link
+          - wam/upper_arm_link
+          - wam/forearm_link
+          - wam/wrist_yaw_link
+          - wam/wrist_pitch_link
+          - wam/wrist_palm_link
+      - name: component
+        parent: wam2
+        members:
+          - wam2/shoulder_yaw_link
+          - wam2/shoulder_pitch_link
+          - wam2/upper_arm_link
+          - wam2/forearm_link
+          - wam2/wrist_yaw_link
+          - wam2/wrist_pitch_link
+          - wam2/wrist_palm_link
+      - name: hand_component
+        parent: wam
+        members:
+          - wam/hand/finger_1/prox_joint
+          - wam/hand/finger_2/prox_joint
+          - wam/hand/finger_1/med_joint
+          - wam/hand/finger_2/med_joint
+          - wam/hand/finger_3/med_joint
+          - wam/hand/finger_1/dist_joint
+          - wam/hand/finger_2/dist_joint
+          - wam/hand/finger_3/dist_joint
+      - name: hand_component
+        parent: wam2
+        members:
+          - wam2/hand/finger_1/prox_joint
+          - wam2/hand/finger_2/prox_joint
+          - wam2/hand/finger_1/med_joint
+          - wam2/hand/finger_2/med_joint
+          - wam2/hand/finger_3/med_joint
+          - wam2/hand/finger_1/dist_joint
+          - wam2/hand/finger_2/dist_joint
+          - wam2/hand/finger_3/dist_joint
+      - name: component
+        parent: peg1
+        members:
+          - peg1/peg_link
+          - peg1/base_link
+      - name: component
+        parent: peg2
+        members:
+          - peg2/peg_link
+          - peg2/base_link
+      - name: component
+        parent: ring1
+        members:
+          - ring1/ring_link
+      - name: component
+        parent: stage
+        members:
+          - stage_link
+    </rosparam>
+  </node>
+
+  <include file="$(find predicator_reachable)/launch/pegs_reachable_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
+  </include>
+
+  <!-- predicator core: test to determine if something has happened -->
+  <node name="predicator_core" pkg="predicator_core" type="core.py"/>
+
+  <include file="$(find peg_assist_demo)/launch/bringup_rviz.launch">
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="rviz_config" value="$(arg rviz_config)"/>
+    <arg name="rviz_moveit_namespace" value="$(arg rviz_moveit_namespace)"/>
+  </include>
+
+  <!-- TASK MODEL STUFF -->
+  <include file="$(find peg_assist_demo)/launch/bringup_auto_task.launch">
+    <arg name="smach_viewer" value="$(arg smach_viewer)"/>
+    <arg name="bringup_arm1" value="true"/>
+  </include>
+
+</launch>
