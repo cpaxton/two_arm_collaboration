@@ -50,36 +50,6 @@
     <param name="predicate_name" value="grasp_point"/>
   </node>
 
-  <node name="release_collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
-    <param name="frame1" value="ring1/ring_link"/>
-    <param name="frame2" value="ring1/grasp2"/>
-    <param name="from_frame" value="peg2/peg_top_link"/>
-    <param name="verbose" value="0"/>
-    <param name="flipped_frames" value="0"/>
-    <param name="predicate_name" value="release_point"/>
-    <param name="suffix" value="_release"/>
-  </node>
-
-  <!--
-       Create movement waypoints for the arm.
-       These are specific, high-level movement waypoints; software really has no knowledge of what they mean.
-  -->
-
-  <node name="arm1_place1_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 100"/>
-
-  <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location2 100"/>
-
-  <node name="arm1_peg2_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 100"/>
-
-  <node name="arm1_peg1_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="-0.189 0.072 0.790 0.680 -0.599 0.323 -0.272 /peg1/base_link /peg1_standby_location 100"/>
-
-  <node name="arm1_lift_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="-0.122 0.134 0.733 -0.573 0.776 -0.188 0.185 /peg1/base_link /peg1_lift_location 100"/>
-
   <!-- PREDICATOR STUFF HERE -->
   <node name="predicator_fake_class_node"
     type="fake_classes.py"
@@ -224,7 +194,7 @@
     </rosparam>
   </node>
 
-  <include file="$(find predicator_reachable)/launch/pegs_reachable_predicates_test.launch">
+  <include file="$(find predicator_planning)/launch/pegs_interaction_predicates.launch">
     <arg name="output" value="$(arg output)"/>
   </include>
 
