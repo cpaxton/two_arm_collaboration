@@ -17,22 +17,27 @@ class PredicateMoveNode(smach.State):
         smach.State.__init__(self, outcomes=['success', 'failure', 'incomplete'])
 
         self.req = PredicatePlanRequest()
-        req.robot = robot
-        req.required_true = req_true
-        req.required_false = req_false
-        req.goal_true = goal_true
-        req.goal_false = goal_false
-        req.group = group
+        self.robot = robot
+        self.required_true = req_true
+        self.required_false = req_false
+        self.goal_true = goal_true
+        self.goal_false = goal_false
+        self.group = group
 
-        self.predicate = predicate
-        self.call = rospy.ServiceProxy("/predicator/plan", PredicatePlan)
+        self.call = rospy.ServiceProxy("predicator/plan", PredicatePlan)
 
     def execute(self, userdata):
 
-        resp = self.call(self.req)
+        try:
+            resp = self.call(self.req)
+            if resp.found == True:
+                return 'success'
+            else:
+                return 'incomplete'
 
-        if resp.found == True:
-            return 'success'
-        else:
-            return 'incomplete'
-            
+            # send to appropriate topic
+
+        except Exception as e:
+            print e
+            return 'failure'
+
