@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 transitions={
                     'success': 'MoveToStandbyPeg1',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.PredicateMoveNode('wam', [], arm1_collisions, arm1_standby_goals, arm1_collisions),
+        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.PredicateMoveNode('wam', [], arm1_collisions, arm1_standby_goals, arm1_collisions, 'gazebo/traj_rml/action'),
                 transitions={
                     'success': 'MoveToRing',
                     'incomplete': 'MoveToStandbyPeg1',
