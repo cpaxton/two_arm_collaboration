@@ -2,7 +2,7 @@
 
   <arg name="gui" default="false" doc="(bool) Launch the gazebo GUI"/>
   <arg name="hand" default="true" doc="(bool) Launch the robot with a hand"/>
-  <arg name="log_level" default="1" doc="(int) orocos log level"/>
+  <arg name="log_level" doc="(int) orocos log level"/>
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find peg_assist_demo)/config/peg1_auto.rviz" doc="(string) rviz config file for user interface"/>

@@ -9,7 +9,7 @@
    - rostopic pub -r 1 /gazebo/traj_rml/joint_traj_point_cmd trajectory_msgs/JointTrajectoryPoint "{ positions: [0.0,0,0,0.0,0,0,0.0] }"
    -->
 
-  <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
+  <arg name="log_level" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
   <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
   <arg name="planning_arm1" default="false" doc="(bool) Launch the motion planing pipeline"/>
@@ -24,7 +24,7 @@
 
   <!-- Gazebo -->
   <include file="$(find collab_env)/sim/wam7x1_sim_ik.launch">
-    <env name="log_level" value="$(arg log_level)"/>
+    <arg name="log_level" value="$(arg log_level)"/>
     <arg name="gui" value="$(arg gui)" />
     <arg name="debug" value="$(arg debug)"/>
     <arg name="planning" value="$(arg planning_arm1)" />

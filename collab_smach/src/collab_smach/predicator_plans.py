@@ -36,10 +36,19 @@ class PredicateMoveNode(smach.State):
         try:
             resp = self.call(self.req)
 
+            rospy.loginfo("Adding timestamps to trajectory; hack to get around issues with traj_rml.")
+            next_t = 0
+            for point in resp.path.points:
+                point.time_from_start.secs = next_t
+                next_t = next_t + 2
+
+            print resp
+
             # send to appropriate topic
             client = actionlib.SimpleActionClient(self.action, control_msgs.msg.FollowJointTrajectoryAction)
 
             goal = FollowJointTrajectoryGoal()
+
             goal.trajectory = resp.path
             
             rospy.loginfo("Sending trajectory to trajectory action...")
