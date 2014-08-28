@@ -37,13 +37,14 @@ class PredicateMoveNode(smach.State):
             resp = self.call(self.req)
 
             # send to appropriate topic
-            client = actionlib.SimpleActionClient(self.action, control_msgs.msg.JointTrajectoryAction)
+            client = actionlib.SimpleActionClient(self.action, control_msgs.msg.FollowJointTrajectoryAction)
 
-            goal = JointTrajectoryGoal()
+            goal = FollowJointTrajectoryGoal()
             goal.trajectory = resp.path
             
             rospy.loginfo("Sending trajectory to trajectory action...")
 
+            client.wait_for_server()
             client.send_goal(goal)
             res = client.wait_for_result()
 
