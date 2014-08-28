@@ -57,17 +57,30 @@ if __name__ == '__main__':
 
 
     arm1_others = ['wam2', 'peg1', 'peg2', 'ring1', 'stage']
+    arm1_others_ring = ['wam2', 'peg1', 'peg2', 'stage']
     arm1_collisions = []
+    arm1_collisions_ring = []
     arm1_standby_goals = []
     arm1_approach_goals = []
+    arm1_lift_req = []
+    arm1_lift_goals = []
 
     for obj in arm1_others:
         arm1_collisions.append(PredicateStatement(predicate="touching",params=['wam',obj,''],num_params=3))
+
+    for obj in arm1_others_ring:
+        arm1_collisions_ring.append(PredicateStatement(predicate="touching",params=['wam',obj,''],num_params=3))
+
     arm1_standby_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','ring1/ring_link','']))
     arm1_standby_goals.append(PredicateStatement(predicate="behind",params=['wam/wrist_palm_link','ring1/ring_link','world']))
     arm1_standby_goals.append(PredicateStatement(predicate="above",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
+
     arm1_approach_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
     arm1_approach_goals.append(PredicateStatement(predicate="left_of",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
+
+    arm1_lift_req.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
+    arm1_lift_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
+    arm1_lift_goals.append(PredicateStatement(predicate="above",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
 
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
@@ -94,13 +107,14 @@ if __name__ == '__main__':
                     'failure': 'ERROR'})
         smach.StateMachine.add('GrabRing', collab_smach.CloseGripperNode('wam', attach='ring1'),
                 transitions={
+                    'success': 'LiftRing',
+                    'failure': 'ERROR'})
+        smach.StateMachine.add('LiftRing', collab_smach.PredicateMoveNode('wam', arm1_lift_req, arm1_collisions_ring, arm1_lift_goals, arm1_collisions_ring, 'gazebo/traj_rml/action'),
+                transitions={
                     'success': 'DONE',
+                    'incomplete': 'LiftRing',
                     'failure': 'ERROR'})
         '''
-        smach.StateMachine.add('LiftRing', collab_smach.MoveToFrameNodeIK('wam','peg1_lift_location', arm1_ik, arm1_stop),
-                transitions={
-                    'success': 'MoveRingToReachable',
-                    'failure': 'ERROR'})
         smach.StateMachine.add('MoveRingToReachable', collab_smach.MoveToFrameNode('wam', objs=['ring1'], predicate=reachablePredicate),
                 transitions={
                     'success': 'Arm2MoveToRing',
