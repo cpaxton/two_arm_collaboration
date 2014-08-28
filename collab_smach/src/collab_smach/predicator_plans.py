@@ -29,8 +29,6 @@ class PredicateMoveNode(smach.State):
 
         self.call = rospy.ServiceProxy("predicator/plan", PredicatePlan)
 
-
-
     def execute(self, userdata):
 
         try:
