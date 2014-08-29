@@ -57,7 +57,27 @@ class PredicateMoveNode(smach.State):
 
             print res
 
-            if resp.found == True:
+            checker = rospy.ServiceProxy("predicator/get_assignment", ps.GetAssignment);
+
+            # make sure that we give predicator time to catch up
+            rospy.sleep(0.50)
+
+            # use predicator to check goals
+            for goal in self.req.goal_true:
+                check_result = checker(goal)
+                if check_result.found == False:
+                    rospy.loginfo("Predicator true goal still unmet!")
+                    print goal
+                    return 'incomplete'
+
+            for goal in self.req.goal_false:
+                check_result = checker(goal)
+                if check_result.found == True:
+                    rospy.loginfo("Predicator galse goal still unmet!")
+                    print goal
+                    return 'incomplete'
+
+            if resp.found == True: #and res.error_code == FollowJointTrajectoryResult.SUCCESSFUL:
                 return 'success'
             else:
                 return 'incomplete'

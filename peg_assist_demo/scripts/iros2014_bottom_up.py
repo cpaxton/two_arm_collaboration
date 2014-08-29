@@ -72,8 +72,9 @@ if __name__ == '__main__':
         arm1_collisions_ring.append(PredicateStatement(predicate="touching",params=['wam',obj,''],num_params=3))
 
     arm1_standby_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','ring1/ring_link','']))
+    #arm1_standby_goals.append(PredicateStatement(predicate="left_of",params=['wam/wrist_palm_link','ring1/ring_link','world']))
     arm1_standby_goals.append(PredicateStatement(predicate="behind",params=['wam/wrist_palm_link','ring1/ring_link','world']))
-    arm1_standby_goals.append(PredicateStatement(predicate="above",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
+    arm1_standby_goals.append(PredicateStatement(predicate="below",params=['wam/wrist_palm_link','wam/base_link','world']))
 
     arm1_approach_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
     arm1_approach_goals.append(PredicateStatement(predicate="left_of",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
