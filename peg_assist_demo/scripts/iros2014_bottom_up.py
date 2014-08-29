@@ -64,6 +64,7 @@ if __name__ == '__main__':
     arm1_approach_goals = []
     arm1_lift_req = []
     arm1_lift_goals = []
+    arm1_illegal = []
 
     for obj in arm1_others:
         arm1_collisions.append(PredicateStatement(predicate="touching",params=['wam',obj,''],num_params=3))
@@ -71,12 +72,14 @@ if __name__ == '__main__':
     for obj in arm1_others_ring:
         arm1_collisions_ring.append(PredicateStatement(predicate="touching",params=['wam',obj,''],num_params=3))
 
-    arm1_standby_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','ring1/ring_link','']))
-    #arm1_standby_goals.append(PredicateStatement(predicate="left_of",params=['wam/wrist_palm_link','ring1/ring_link','world']))
-    arm1_standby_goals.append(PredicateStatement(predicate="behind",params=['wam/wrist_palm_link','ring1/ring_link','world']))
-    arm1_standby_goals.append(PredicateStatement(predicate="below",params=['wam/wrist_palm_link','wam/base_link','world']))
+    arm1_illegal.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
+    #arm1_standby_goals.append(PredicateStatement(predicate="behind",params=['wam/wrist_palm_link','ring1/ring_link','world']))
+    arm1_standby_goals.append(PredicateStatement(predicate="behind",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
+    arm1_approach_goals.append(PredicateStatement(predicate="left_of",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
+    #arm1_standby_goals.append(PredicateStatement(predicate="below",params=['wam/wrist_palm_link','wam/base_link','world']))
 
-    arm1_approach_goals.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
+    arm1_approach_goals.append(PredicateStatement(predicate="above",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
+    arm1_approach_goals.append(PredicateStatement(predicate="behind",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
     arm1_approach_goals.append(PredicateStatement(predicate="left_of",params=['wam/wrist_palm_link','peg1/peg_top_link','world']))
 
     arm1_lift_req.append(PredicateStatement(predicate="near_xy",params=['wam/wrist_palm_link','peg1/peg_top_link','']))
@@ -97,7 +100,7 @@ if __name__ == '__main__':
                     'success': 'MoveToStandbyPeg1',
                     'incomplete': 'ApproachPeg1',
                     'failure': 'ERROR'})
-        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.PredicateMoveNode('wam', [], arm1_collisions, arm1_standby_goals, arm1_collisions, 'gazebo/traj_rml/action'),
+        smach.StateMachine.add('MoveToStandbyPeg1', collab_smach.PredicateMoveNode('wam', [], arm1_collisions, arm1_standby_goals, arm1_collisions + arm1_illegal, 'gazebo/traj_rml/action'),
                 transitions={
                     'success': 'MoveToRing',
                     'incomplete': 'MoveToStandbyPeg1',
