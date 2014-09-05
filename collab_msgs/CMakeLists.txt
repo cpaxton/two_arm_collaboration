@@ -50,6 +50,7 @@ add_message_files(
   FILES
   Info.msg
   Step.msg
+  SegmentLabel.msg
 )
 
 # Generate services in the 'srv' folder
