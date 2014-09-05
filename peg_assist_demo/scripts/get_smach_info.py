@@ -15,9 +15,21 @@ tell us when a segment started or stopped
 NOTE: this was designed and tested with a particular version of SMACH, using the introspection server.
 '''
 
+name_counts = {}
+
 # 
 def parse_labels(msg) :
-    pass
+    label = SegmentLabel()
+    label.segment_name = msg.active_states[0]
+
+    if not label.segment_name in name_counts:
+        name_counts[label.segment_name] = 1
+    elif type(msg) == str and msg.info == 'HEARTBEAT':
+        name_counts[label.segment_name] = name_counts[label.segment_name] + 1
+
+    label.segment_id = name_counts[label.segment_name]
+
+    pub.publish(label)
 
 
 if __name__ == '__main__':
