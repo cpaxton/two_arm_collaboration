@@ -14,6 +14,7 @@
   <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
   <arg name="output" default="log" doc="(string) screen, log, etc."/>
   <arg name="all_predicator" default="false" doc="(bool) Launch with all predicates for world information."/>
+  <arg name="publish_values" default="0" doc="(int) Set to publish value predicate messages; 0 == false, 1 == true."/>
 
   <include file="$(find peg_assist_demo)/launch/pegs1_auto.launch">
     <arg name="gui" value="$(arg gui)"/>
@@ -253,10 +254,12 @@
   <!-- left, right, up, down, etc. -->
   <include if="$(arg all_predicator)" file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>
+    <arg name="publish_values" value="$(arg publish_values)"/>
   </include>
 
   <include if="$(arg all_predicator)" file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
     <arg name="output" value="$(arg output)"/>
+    <arg name="publish_values" value="$(arg publish_values)"/>
   </include>
 
   <include if="$(arg all_predicator)" file="$(find predicator_joint_states)/launch/wams.launch">
