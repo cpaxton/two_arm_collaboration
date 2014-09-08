@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-
 import rospy
-import rosbag
 
 from smach_msgs.msg import SmachContainerStatus
 from collab_msgs.msg import SegmentLabel

@@ -1,0 +1,13 @@
+<launch>
+  <arg name="output" default="screen"/>
+
+
+  <node name="get_dense_binary_features_node"
+    type="get_dense_binary_features.py"
+    pkg="peg_assist_demo">
+
+
+
+  </node>
+
+</launch>
