@@ -13,6 +13,7 @@
   <arg name="rviz_moveit_namespace" default="true" doc="(bool) are we using a version of moveit with an rviz plugin letting you namespace move_group"/>
   <arg name="alternate_pegs" default="false" doc="(bool) Launch with alternate set of pegs"/>
   <arg name="output" default="log" doc="(string) screen, log, etc."/>
+  <arg name="all_predicator" default="false" doc="(bool) Launch with all predicates for world information."/>
 
   <include file="$(find peg_assist_demo)/launch/pegs1_auto.launch">
     <arg name="gui" value="$(arg gui)"/>
@@ -241,6 +242,25 @@
   <include file="$(find peg_assist_demo)/launch/bringup_auto_task.launch">
     <arg name="smach_viewer" value="$(arg smach_viewer)"/>
     <arg name="bringup_arm1" value="true"/>
+  </include>
+
+  <!-- EXTRA PREDICATOR STUFF -->
+  <!-- touching, etc. -->
+  <include if="$(arg all_predicator)" file="$(find predicator_collision)/launch/pegs_interaction_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
+  </include>
+
+  <!-- left, right, up, down, etc. -->
+  <include if="$(arg all_predicator)" file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
+  </include>
+
+  <include if="$(arg all_predicator)" file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
+    <arg name="output" value="$(arg output)"/>
+  </include>
+
+  <include if="$(arg all_predicator)" file="$(find predicator_joint_states)/launch/wams.launch">
+    <arg name="output" value="$(arg output)"/>
   </include>
 
 </launch>
