@@ -7,6 +7,9 @@ from collab_msgs.msg import SegmentLabel
 from predictor_msgs.msg import PredicateList
 
 
+X = [] # predicate features
+Y = [] # segment labels
+
 '''
 update_last_segment()
 Gets the last segment information and stores it
