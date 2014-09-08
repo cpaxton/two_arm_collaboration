@@ -54,4 +54,13 @@
     type="startup_arm1.py"
     output="screen"/>
 
+  <node name="smach_segment_info_publisher"
+    pkg="peg_assist_demo"
+    type="get_smach_info.py">
+
+    <param name="topic" value="/peg_task_introspection_server/smach/container_status"/>
+    <param name="output_segment" value="/segment_labels"/>
+
+  </node>
+
 </launch>

@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     rospy.init_node('get_smach_info_node')
     topic = rospy.get_param('~topic', '/peg_task_introspection_server/smach/container_status')
-    publish_topic=  rospy.get_param('~output_segment', '/segment_labels')
+    publish_topic = rospy.get_param('~output_segment', '/segment_labels')
 
     sub = rospy.Subscriber(topic, SmachContainerStatus, parse_labels)
     pub = rospy.Publisher(publish_topic, SegmentLabel)
