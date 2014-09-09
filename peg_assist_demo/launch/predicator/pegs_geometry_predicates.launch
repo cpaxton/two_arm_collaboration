@@ -1,0 +1,37 @@
+<launch>
+  <arg name="output" default="screen"/>
+  <arg name="publish_values" default="0"/>
+
+  <node name="predicator_geometry_node"
+    type="predicator_geometry_node.py"
+    pkg="predicator_geometry"
+    output="$(arg output)">
+
+    <param name="height_threshold" value="0.1"/>
+    <param name="rel_x_threshold" value="0.1"/>
+    <param name="rel_y_threshold" value="0.1"/>
+    <param name="rel_z_threshold" value="0.1"/>
+    <param name="near_2D_threshold" value="0.2"/>
+    <param name="near_3D_threshold" value="0.25"/>
+    <param name="publish_values" value="$(arg publish_values)"/>
+
+    <rosparam param="frames">
+      - ring1/ring_link
+      - peg1/base_link
+      - peg1/peg_top_link
+      - peg2/base_link
+      - peg2/peg_top_link
+      - wam/wrist_palm_link
+      - wam2/wrist_palm_link
+      - stage_link
+    </rosparam>
+
+    <rosparam param="reference_frames">
+      - ring1/ring_link
+      - peg1/peg_top_link
+      - peg2/peg_top_link
+    </rosparam>
+
+  </node>
+
+</launch>
