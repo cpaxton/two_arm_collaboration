@@ -51,6 +51,7 @@ add_message_files(
   Info.msg
   Step.msg
   SegmentLabel.msg
+  BinaryFeatures.msg
 )
 
 # Generate services in the 'srv' folder
