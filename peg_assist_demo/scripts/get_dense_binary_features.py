@@ -29,6 +29,8 @@ def list_cb(msg):
 
     for frame1 in geo_frames:
         for frame2 in geo_frames:
+            if frame1 == frame2:
+                continue
             for ref in geo_ref_frames:
                 for pred in predicates['geometry3']:
                     key = predicator_core.get_key(pred, [frame1, frame2, ref])
@@ -36,15 +38,24 @@ def list_cb(msg):
 
     for frame1 in geo_frames:
         for frame2 in geo_frames:
+            if frame1 == frame2:
+                continue
             for pred in predicates['geometry2']:
                 key = predicator_core.get_key(pred, [frame1, frame2, ''])
                 values[key] = 0
 
     for frame1 in mv_frames:
         for frame2 in mv_frames:
-            for pred in predicates['movement']:
+            if frame1 == frame2:
+                continue
+            for pred in predicates['movement2']:
                 key = predicator_core.get_key(pred, [frame1, frame2, ''])
                 values[key] = 0
+
+    for frame1 in mv_frames:
+        for pred in predicates['movement1']:
+            key = predicator_core.get_key(pred, [frame1, '', ''])
+            values[key] = 0
 
     for item in msg.statements:
         key = predicator_core.get_key(item.predicate, item.params)
@@ -53,6 +64,7 @@ def list_cb(msg):
         elif verbose:
             print "WARNING: %s not in list!"%(key)
 
+    print len(values)
 
 
 if __name__ == '__main__':
@@ -67,6 +79,8 @@ if __name__ == '__main__':
     geo_frames = rospy.get_param("~geometry_frames")
     geo_ref_frames = rospy.get_param("~geometry_reference_frames")
     mv_frames = rospy.get_param("~movement_frames")
+    collision_from = rospy.get_param("~collision_from")
+    collision_to = rospy.get_param("~collision_to")
     predicates = rospy.get_param("~predicates")
 
     rospy.spin()

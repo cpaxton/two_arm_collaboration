@@ -42,7 +42,8 @@
     </rosparam>
 
     <rosparam param="predicates">
-      movement: ['approaching', 'moving', 'rotating', 'moving_relative_to', 'rotating_relative_to']
+      movement2: ['approaching', 'moving_relative_to', 'rotating_relative_to']
+      movement1: ['moving', 'rotating']
       geometry3: ['left_of', 'right_of', 'up_from', 'down_from', 'in_front_of', 'in_back_of']
       geometry2: ['near_xy', 'near_xyz']
       collision: ['touching']
