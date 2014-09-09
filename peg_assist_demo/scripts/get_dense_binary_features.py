@@ -118,9 +118,23 @@ if __name__ == '__main__':
     collision_to = rospy.get_param("~collision_to")
     predicates = rospy.get_param("~predicates")
 
+    bagfile = rospy.get_param("~bagfile", "")
+    print bagfile
+
+    save = True
+    if bagfile == "":
+        print "Not saving to a bag."
+        save = False
+    else:
+        print "Saving to file."
+
     rate = rospy.Rate(5)
 
     try:
+
+        if save:
+            bag = rosbag.Bag(bagfile, 'w')
+            print "File opened."
 
         while not rospy.is_shutdown():
             lock.acquire()
@@ -139,9 +153,16 @@ if __name__ == '__main__':
 
                 pub.publish(msg)
 
+                if save:
+                    bag.write(output_topic, msg)
+
             lock.release()
             rate.sleep()
 
 
+
     except rospy.ROSInterruptException, e:
-        pass
+        if save:
+            bag.close()
+        else:
+            pass
