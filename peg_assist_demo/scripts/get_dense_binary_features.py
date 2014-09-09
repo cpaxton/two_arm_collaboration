@@ -8,6 +8,8 @@ from predicator_msgs.msg import PredicateList
 
 import predicator_core
 
+import threading
+
 X = [] # predicate features
 Y = [] # segment labels
 
@@ -19,6 +21,8 @@ verbose = False
 #instance = 0
 #ids = {}
 
+lock = threading.Lock()
+
 seg = None
 
 '''
@@ -26,10 +30,11 @@ update_last_segment()
 Gets the last segment information and stores it
 '''
 def update_last_segment(msg):
+    lock.acquire()
     seg = msg
     segment["name"] = msg.segment_name
     segment["instance"] = msg.segment_id
-    print seg
+    lock.release()
     #instance = msg.segment_id
     #if msg.segment_name in ids:
     #    current_id = ids[msg.segment_name]
@@ -43,6 +48,7 @@ If they exist, add a 1; else add a 0
 '''
 def list_cb(msg):
 
+    lock.acquire()
     for frame1 in geo_frames:
         for frame2 in geo_frames:
             if frame1 == frame2:
@@ -90,6 +96,7 @@ def list_cb(msg):
         print len(values)
         for k, v in values.iteritems():
             print k, v
+    lock.release()
 
 if __name__ == '__main__':
 
@@ -112,10 +119,12 @@ if __name__ == '__main__':
     try:
 
         while not rospy.is_shutdown():
+            lock.acquire()
             if "name" in segment:
                 name = segment["name"]
                 instance = segment["instance"]
                 print name, instance, len(values)
+            lock.release()
 
             rate.sleep()
 
