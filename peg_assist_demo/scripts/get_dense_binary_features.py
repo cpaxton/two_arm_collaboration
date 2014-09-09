@@ -57,6 +57,12 @@ def list_cb(msg):
             key = predicator_core.get_key(pred, [frame1, '', ''])
             values[key] = 0
 
+    for frame1 in collision_from:
+        for frame2 in collision_to:
+            for pred in predicates['collision']:
+                key = predicator_core.get_key(pred, [frame1, frame2, ''])
+                values[key] = 0
+
     for item in msg.statements:
         key = predicator_core.get_key(item.predicate, item.params)
         if key in values:
@@ -64,8 +70,10 @@ def list_cb(msg):
         elif verbose:
             print "WARNING: %s not in list!"%(key)
 
-    print len(values)
-
+    if verbose:
+        print len(values)
+        for k, v in values.iteritems():
+            print k, v
 
 if __name__ == '__main__':
 
