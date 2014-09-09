@@ -105,8 +105,11 @@ if __name__ == '__main__':
     segment_topic = rospy.get_param('~segment_topic', '/segment_labels')
     predicate_topic = rospy.get_param('~predicate_topic', '/predicator/list')
 
+    output_topic = rospy.get_param('~output_topic', '/binary_features')
+
     segment_sub = rospy.Subscriber(segment_topic, SegmentLabel, update_last_segment)
     list_sub = rospy.Subscriber(predicate_topic, PredicateList, list_cb)
+    pub = rospy.Publisher(output_topic, BinaryFeatures)
     
     geo_frames = rospy.get_param("~geometry_frames")
     geo_ref_frames = rospy.get_param("~geometry_reference_frames")
@@ -131,7 +134,10 @@ if __name__ == '__main__':
                 msg.name = [k for k in values.iterkeys()]
                 msg.value = [v for v in values.itervalues()]
 
-                print msg
+                if(verbose):
+                    print msg
+
+                pub.publish(msg)
 
             lock.release()
             rate.sleep()
