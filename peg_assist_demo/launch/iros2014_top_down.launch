@@ -163,66 +163,6 @@
         members:
           - ring1/grasp1
           - ring1/grasp2
-      - name: component
-        parent: wam
-        members:
-          - wam/shoulder_yaw_link
-          - wam/shoulder_pitch_link
-          - wam/upper_arm_link
-          - wam/forearm_link
-          - wam/wrist_yaw_link
-          - wam/wrist_pitch_link
-          - wam/wrist_palm_link
-      - name: component
-        parent: wam2
-        members:
-          - wam2/shoulder_yaw_link
-          - wam2/shoulder_pitch_link
-          - wam2/upper_arm_link
-          - wam2/forearm_link
-          - wam2/wrist_yaw_link
-          - wam2/wrist_pitch_link
-          - wam2/wrist_palm_link
-      - name: hand_component
-        parent: wam
-        members:
-          - wam/hand/finger_1/prox_joint
-          - wam/hand/finger_2/prox_joint
-          - wam/hand/finger_1/med_joint
-          - wam/hand/finger_2/med_joint
-          - wam/hand/finger_3/med_joint
-          - wam/hand/finger_1/dist_joint
-          - wam/hand/finger_2/dist_joint
-          - wam/hand/finger_3/dist_joint
-      - name: hand_component
-        parent: wam2
-        members:
-          - wam2/hand/finger_1/prox_joint
-          - wam2/hand/finger_2/prox_joint
-          - wam2/hand/finger_1/med_joint
-          - wam2/hand/finger_2/med_joint
-          - wam2/hand/finger_3/med_joint
-          - wam2/hand/finger_1/dist_joint
-          - wam2/hand/finger_2/dist_joint
-          - wam2/hand/finger_3/dist_joint
-      - name: component
-        parent: peg1
-        members:
-          - peg1/peg_link
-          - peg1/base_link
-      - name: component
-        parent: peg2
-        members:
-          - peg2/peg_link
-          - peg2/base_link
-      - name: component
-        parent: ring1
-        members:
-          - ring1/ring_link
-      - name: component
-        parent: stage
-        members:
-          - stage_link
     </rosparam>
   </node>
 
@@ -252,12 +192,12 @@
   </include>
 
   <!-- left, right, up, down, etc. -->
-  <include if="$(arg all_predicator)" file="$(find predicator_geometry)/launch/pegs_geometry_predicates_test.launch">
+  <include if="$(arg all_predicator)" file="$(find peg_assist_demo)/launch/predicator/pegs_geometry_predicates.launch">
     <arg name="output" value="$(arg output)"/>
     <arg name="publish_values" value="$(arg publish_values)"/>
   </include>
 
-  <include if="$(arg all_predicator)" file="$(find predicator_movement)/launch/pegs_movement_predicates_test.launch">
+  <include if="$(arg all_predicator)" file="$(find peg_assist_demo)/launch/predicator/pegs_movement_predicates.launch">
     <arg name="output" value="$(arg output)"/>
     <arg name="publish_values" value="$(arg publish_values)"/>
   </include>
