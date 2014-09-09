@@ -4,7 +4,8 @@
 
   <node name="get_dense_binary_features_node"
     type="get_dense_binary_features.py"
-    pkg="peg_assist_demo">
+    pkg="peg_assist_demo"
+    output="$(arg output)">
 
     <rosparam param="geometry_frames">
       - ring1/ring_link
@@ -31,6 +32,12 @@
       - wam/base_link
       - wam2/base_link
       - stage_link
+    </rosparam>
+
+    <rosparam param="predicates">
+      movement: ['approaching', 'departing', 'moving', 'rotating', 'moving_relative_to', 'rotating_relative_to']
+      geometry3: ['left_of', 'right_of', 'up_from', 'down_from', 'in_front_of', 'in_back_of', 'near_xy', 'near_xyz', 'higher_than', 'lower_than']
+      geometry2: ['near_xy', 'near_xyz', 'higher_than', 'lower_than']
     </rosparam>
 
   </node>
