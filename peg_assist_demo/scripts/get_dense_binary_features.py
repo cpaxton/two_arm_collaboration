@@ -12,6 +12,7 @@ X = [] # predicate features
 Y = [] # segment labels
 
 values = {}
+verbose = False
 
 '''
 update_last_segment()
@@ -25,8 +26,33 @@ Go through the list and check for predicates we are interested in
 If they exist, add a 1; else add a 0
 '''
 def list_cb(msg):
+
+    for frame1 in geo_frames:
+        for frame2 in geo_frames:
+            for ref in geo_ref_frames:
+                for pred in predicates['geometry3']:
+                    key = predicator_core.get_key(pred, [frame1, frame2, ref])
+                    values[key] = 0
+
+    for frame1 in geo_frames:
+        for frame2 in geo_frames:
+            for pred in predicates['geometry2']:
+                key = predicator_core.get_key(pred, [frame1, frame2, ''])
+                values[key] = 0
+
+    for frame1 in mv_frames:
+        for frame2 in mv_frames:
+            for pred in predicates['movement']:
+                key = predicator_core.get_key(pred, [frame1, frame2, ''])
+                values[key] = 0
+
     for item in msg.statements:
-        values[predicator_core.get_key(item.predicate, item.params)] = 0
+        key = predicator_core.get_key(item.predicate, item.params)
+        if key in values:
+            values[key] = 1
+        elif verbose:
+            print "WARNING: %s not in list!"%(key)
+
 
 
 if __name__ == '__main__':
@@ -42,7 +68,5 @@ if __name__ == '__main__':
     geo_ref_frames = rospy.get_param("~geometry_reference_frames")
     mv_frames = rospy.get_param("~movement_frames")
     predicates = rospy.get_param("~predicates")
-
-    print predicates['geometry3']
 
     rospy.spin()

@@ -15,13 +15,10 @@
       - peg2/peg_top_link
       - wam/wrist_palm_link
       - wam2/wrist_palm_link
-      - stage_link
     </rosparam>
 
     <rosparam param="geometry_reference_frames">
-      - ring1/ring_link
-      - peg1/peg_top_link
-      - peg2/peg_top_link
+      - stage_link
     </rosparam>
 
     <rosparam param="movement_frames">
@@ -31,14 +28,31 @@
       - wam/wrist_palm_link
       - wam/base_link
       - wam2/base_link
-      - stage_link
+    </rosparam>
+
+    <rosparam param="collision_from">
+      ring1/ring_link
+    </rosparam>
+
+    <rosparam param="collision_to">
+      ring1/base_link
+      ring2/base_link
+      ring1/peg_link
+      ring2/peg_link
     </rosparam>
 
     <rosparam param="predicates">
-      movement: ['approaching', 'departing', 'moving', 'rotating', 'moving_relative_to', 'rotating_relative_to']
-      geometry3: ['left_of', 'right_of', 'up_from', 'down_from', 'in_front_of', 'in_back_of', 'near_xy', 'near_xyz', 'higher_than', 'lower_than']
-      geometry2: ['near_xy', 'near_xyz', 'higher_than', 'lower_than']
+      movement: ['approaching', 'moving', 'rotating', 'moving_relative_to', 'rotating_relative_to']
+      geometry3: ['left_of', 'right_of', 'up_from', 'down_from', 'in_front_of', 'in_back_of']
+      geometry2: ['near_xy', 'near_xyz']
+      collision: ['touching']
     </rosparam>
+    <!--
+      movement: ['approaching', 'departing', 'moving', 'rotating', 'moving_relative_to', 'rotating_relative_to']
+    -->
+    <!--
+      geometry2: ['near_xy', 'near_xyz', 'higher_than', 'lower_than']
+    -->
 
   </node>
 
