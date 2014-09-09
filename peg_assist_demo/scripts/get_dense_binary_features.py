@@ -11,6 +11,7 @@ import predicator_core
 X = [] # predicate features
 Y = [] # segment labels
 
+segment = {}
 values = {}
 verbose = False
 #next_id = 1
@@ -19,8 +20,6 @@ verbose = False
 #ids = {}
 
 seg = None
-name = "None"
-instance = 0
 
 '''
 update_last_segment()
@@ -28,8 +27,9 @@ Gets the last segment information and stores it
 '''
 def update_last_segment(msg):
     seg = msg
-    name = msg.segment_name
-    instance = msg.segment_id
+    segment["name"] = msg.segment_name
+    segment["instance"] = msg.segment_id
+    print seg
     #instance = msg.segment_id
     #if msg.segment_name in ids:
     #    current_id = ids[msg.segment_name]
@@ -107,11 +107,18 @@ if __name__ == '__main__':
     collision_to = rospy.get_param("~collision_to")
     predicates = rospy.get_param("~predicates")
 
+    rate = rospy.Rate(5)
+
     try:
 
         while not rospy.is_shutdown():
-            print seg
-            print len(values)
+            if "name" in segment:
+                name = segment["name"]
+                instance = segment["instance"]
+                print name, instance, len(values)
 
-    except ROSInterruptException, e:
+            rate.sleep()
+
+
+    except rospy.ROSInterruptException, e:
         pass
