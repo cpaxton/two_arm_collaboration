@@ -4,6 +4,7 @@ import rospy
 import rosbag
 
 from collab_msgs.msg import SegmentLabel
+from collab_msgs.msg import BinaryFeatures
 from predicator_msgs.msg import PredicateList
 
 import predicator_core
@@ -124,8 +125,15 @@ if __name__ == '__main__':
                 name = segment["name"]
                 instance = segment["instance"]
                 print name, instance, len(values)
-            lock.release()
 
+                msg = BinaryFeatures()
+                msg.segment = SegmentLabel(name, instance)
+                msg.name = [k for k in values.iterkeys()]
+                msg.value = [v for v in values.itervalues()]
+
+                print msg
+
+            lock.release()
             rate.sleep()
 
 
