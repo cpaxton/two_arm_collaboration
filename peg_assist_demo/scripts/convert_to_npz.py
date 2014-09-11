@@ -32,8 +32,8 @@ if __name__ == '__main__':
             if topic == '/binary_features':
                 name = msg.segment.segment_name
                 inst = msg.segment.segment_id
-                if inst == max_inst[name]:
-                    name = 'last_' + name
+                if not inst == max_inst[name]:
+                    name = 'failed_' + name
                 
                 arr = np.array(msg.value)
                 X.append(arr)
