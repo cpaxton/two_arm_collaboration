@@ -55,7 +55,7 @@
   <node name="release_collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
     <param name="frame1" value="ring1/ring_link"/>
     <param name="frame2" value="ring1/grasp2"/>
-    <param name="from_frame" value="peg2/peg_top_link"/>
+    <param name="from_frame" value="drop_ring_location"/>
     <param name="verbose" value="0"/>
     <param name="flipped_frames" value="0"/>
     <param name="predicate_name" value="release_point"/>
@@ -68,19 +68,22 @@
   -->
 
   <node name="arm1_place1_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 100"/>
+    args="0.831 0.018 0.793 0.511 -0.387 0.635 0.432 /world /location1 1000"/>
 
   <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location2 100"/>
+    args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location2 1000"/>
 
   <node name="arm1_peg2_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 100"/>
+    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 1000"/>
 
   <node name="arm1_peg1_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="-0.189 0.072 0.790 0.680 -0.599 0.323 -0.272 /peg1/base_link /peg1_standby_location 100"/>
+    args="-0.189 0.072 0.790 0.680 -0.599 0.323 -0.272 /peg1/base_link /peg1_standby_location 1000"/>
 
   <node name="arm1_lift_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="-0.122 0.134 0.733 -0.573 0.776 -0.188 0.185 /peg1/base_link /peg1_lift_location 100"/>
+    args="-0.122 0.134 0.733 -0.573 0.776 -0.188 0.185 /peg1/base_link /peg1_lift_location 1000"/>
+
+  <node name="drop_ring_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-0.001, 0.001, 0.065 -0.009, 0.028, 1.000, 0.001 /peg2/peg_top_link /drop_ring_location 1000"/>
 
   <!-- PREDICATOR STUFF HERE -->
   <node name="predicator_fake_class_node"
