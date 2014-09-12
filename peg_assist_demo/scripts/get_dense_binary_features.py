@@ -86,6 +86,11 @@ def list_cb(msg):
                 key = predicator_core.get_key(pred, [frame1, frame2, ''])
                 values[key] = 0
 
+    for param in joints:
+        for pred in predicates['joints']:
+            key = predicator_core.get_key(pred, [param, '', ''])
+            values[key] = 0
+
     for item in msg.statements:
         key = predicator_core.get_key(item.predicate, item.params)
         if key in values:
@@ -117,6 +122,8 @@ if __name__ == '__main__':
     collision_from = rospy.get_param("~collision_from")
     collision_to = rospy.get_param("~collision_to")
     predicates = rospy.get_param("~predicates")
+    joints = rospy.get_param("~joints_params")
+    save_param_names = rospy.get_param("~save_param_names","true") == "true"
 
     bagfile = rospy.get_param("~bagfile", "")
     print bagfile
@@ -145,7 +152,8 @@ if __name__ == '__main__':
 
                 msg = BinaryFeatures()
                 msg.segment = SegmentLabel(name, instance)
-                msg.name = [k for k in values.iterkeys()]
+                if save_param_names:
+                    msg.name = [k for k in values.iterkeys()]
                 msg.value = [v for v in values.itervalues()]
 
                 if(verbose):

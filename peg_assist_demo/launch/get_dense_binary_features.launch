@@ -9,6 +9,7 @@
     output="$(arg output)">
 
     <param name="bagfile" value="$(find peg_assist_demo)/trials/trial$(arg id).bag"/>
+    <param name="save_param_names" value="false"/>
 
     <rosparam param="geometry_frames">
       - ring1/ring_link
