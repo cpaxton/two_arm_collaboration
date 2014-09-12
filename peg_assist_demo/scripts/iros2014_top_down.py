@@ -55,6 +55,8 @@ if __name__ == '__main__':
     invertDropPredicate.params[1] = "ring1/ring_link"
     invertDropPredicate.params[2] = "ring1/ring_link"
 
+    pub = rospy.Publisher('/stop_aggregating_data', std_msgs.msg.Empty)
+
     with sm:
         smach.StateMachine.add('Open1', collab_smach.OpenGripperNode('wam'),
                 transitions={
@@ -168,5 +170,7 @@ if __name__ == '__main__':
 
     rospy.loginfo("TASK >>> Done state machine?")
     rospy.loginfo("Outcome = %s", outcome)
+
+    pub.publish()
 
     sis.stop()
