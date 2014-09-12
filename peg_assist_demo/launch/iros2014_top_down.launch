@@ -73,8 +73,11 @@
   <node name="arm1_place2_tf" pkg="tf" type="static_transform_publisher" output="screen"
     args="0.571 0.106 0.640 0.251 -0.626 0.712 -0.194 /world /location2 1000"/>
 
+  <!--
   <node name="arm1_peg2_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
-    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 1000"/>
+    args="0 0 0.391 0 0 0 1 /peg2/peg_top_link /peg2_standby_location 1000"/>-->
+  <node name="arm1_peg2_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0 0 0.841 0 0 0 1 /peg2/base_link /peg2_standby_location 1000"/>
 
   <node name="arm1_peg1_standby_tf" pkg="tf" type="static_transform_publisher" output="screen"
     args="-0.189 0.072 0.790 0.680 -0.599 0.323 -0.272 /peg1/base_link /peg1_standby_location 1000"/>
