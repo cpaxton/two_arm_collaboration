@@ -118,7 +118,7 @@ if __name__ == '__main__':
     predicate_topic = rospy.get_param('~predicate_topic', '/predicator/list')
     stop_topic = rospy.get_param('~stop_topic', '/stop_aggregating_data')
 
-    output_topic = rospy.get_param('~output_topic', '/binary_features'
+    output_topic = rospy.get_param('~output_topic', '/binary_features')
 
     segment_sub = rospy.Subscriber(segment_topic, SegmentLabel, update_last_segment)
     list_sub = rospy.Subscriber(predicate_topic, PredicateList, list_cb)
