@@ -8,12 +8,14 @@ from collab_msgs.msg import BinaryFeatures
 from predicator_msgs.msg import PredicateList
 
 import predicator_core
+import std_msgs
 
 import threading
 
 X = [] # predicate features
 Y = [] # segment labels
 
+stop = False
 segment = {}
 values = {}
 verbose = False
@@ -104,17 +106,24 @@ def list_cb(msg):
             print k, v
     lock.release()
 
+def stop_cb(msg):
+    global stop
+    print "Stopping bagging!"
+    stop = True
+
 if __name__ == '__main__':
 
     rospy.init_node('get_dense_binary_features_node')
     segment_topic = rospy.get_param('~segment_topic', '/segment_labels')
     predicate_topic = rospy.get_param('~predicate_topic', '/predicator/list')
+    stop_topic = rospy.get_param('~stop_topic', '/stop_aggregating_data')
 
-    output_topic = rospy.get_param('~output_topic', '/binary_features')
+    output_topic = rospy.get_param('~output_topic', '/binary_features'
 
     segment_sub = rospy.Subscriber(segment_topic, SegmentLabel, update_last_segment)
     list_sub = rospy.Subscriber(predicate_topic, PredicateList, list_cb)
     pub = rospy.Publisher(output_topic, BinaryFeatures)
+    stop_sub = rospy.Subscriber(stop_topic, std_msgs.msg.Empty, stop_cb)
     
     geo_frames = rospy.get_param("~geometry_frames")
     geo_ref_frames = rospy.get_param("~geometry_reference_frames")
@@ -143,7 +152,7 @@ if __name__ == '__main__':
             bag = rosbag.Bag(bagfile, 'w')
             print "File opened."
 
-        while not rospy.is_shutdown():
+        while not rospy.is_shutdown() and not stop:
             lock.acquire()
             if "name" in segment:
                 name = segment["name"]
