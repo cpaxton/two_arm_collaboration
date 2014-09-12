@@ -55,7 +55,7 @@
   <node name="release_collab_frame2_creator" pkg="collab_frame_utils" type="rotation.py" output="screen">
     <param name="frame1" value="ring1/ring_link"/>
     <param name="frame2" value="ring1/grasp2"/>
-    <param name="from_frame" value="drop_ring_location"/>
+    <param name="from_frame" value="peg2/peg_top_link"/>
     <param name="verbose" value="0"/>
     <param name="flipped_frames" value="0"/>
     <param name="predicate_name" value="release_point"/>
@@ -175,6 +175,7 @@
 
   <!-- predicator core: test to determine if something has happened -->
   <node name="predicator_core" pkg="predicator_core" type="core.py"/>
+
 
   <include file="$(find peg_assist_demo)/launch/bringup_rviz.launch">
     <arg name="debug" value="$(arg debug)"/>

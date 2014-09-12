@@ -47,12 +47,18 @@
       - peg2/base_link
     </rosparam>
 
+    <rosparam param="joints_params">
+      - wam
+      - wam2
+    </rosparam>
+
     <rosparam param="predicates">
       movement2: ['approaching', 'moving_relative_to', 'rotating_relative_to']
       movement1: ['moving', 'rotating']
       geometry3: ['left_of', 'right_of', 'up_from', 'down_from', 'in_front_of', 'in_back_of']
       geometry2: ['near_xy', 'near_xyz']
       collision: ['touching']
+      joints: ['is_closed']
     </rosparam>
     <!--
       movement: ['approaching', 'departing', 'moving', 'rotating', 'moving_relative_to', 'rotating_relative_to']
