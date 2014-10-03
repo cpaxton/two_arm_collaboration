@@ -55,18 +55,20 @@
       root_link: $(arg tf_prefix)/base_link
       tip_link: $(arg tf_prefix)/wrist_palm_link
       target_frame: $(arg tf_prefix)/cmd
-      singularity_avoidance_gain: 1.0
+      singularity_avoidance_gain: 0.0
+      joint_center_gain: 0.0
       linear_p_gain: 1000.0
-      linear_d_gain: 100.0
-      angular_p_gain: 20.0
-      angular_d_gain:  0.1
-      linear_effort_threshold: 100.0
-      linear_position_threshold: 0.075
-      angular_effort_threshold: 100.0
+      linear_d_gain:  50.0
+      angular_p_gain: 10.0
+      angular_d_gain:  0.005
+      linear_effort_threshold: 50.0
+      linear_position_threshold: 0.1
+      angular_effort_threshold: 5.0
       angular_position_threshold: 1.5
-      nullspace_damping: 0.8
-      joint_d_gains: [0.5, 0.5, 0.5, 0.5, 0.1, 0.1, 0.5]
-      projector_type: 3
+      nullspace_damping: 1.2
+      jointspace_damping: 1.2
+      joint_d_gains: [0.8, 0.8, 0.8, 0.8, 0.1, 0.1, 0.5]
+      projector_type: 2
   </rosparam>
 
   <rosparam subst_value="true">
@@ -85,8 +87,12 @@
       root_link: $(arg tf_prefix)/base_link
       target_frame: $(arg tf_prefix)/cmd
       robot_description_param: ~$(arg oro_prefix)barrett_manager/robot_description
-      max_linear_rate: 40.0
-      max_angular_rate: 200.0
+      max_linear_rate: 0.10
+      max_linear_error: 0.05
+      max_angular_rate: 0.5
+      max_angular_error: 0.5
+      linear_p_gain: 100.0
+      angular_p_gain: 10.0
     </rosparam>
 
     <rosparam if="$(arg ee_empty)" subst_value="true">
@@ -111,6 +117,27 @@
       hint_positions: [0.0, 0.0, 0.0, 1.5707, 0.0, 0.0, 0.0]
       damping: 0.5
     </rosparam>
+
+  <group ns="$(arg oro_prefix)coulomb">
+    <rosparam subst_value="true">
+      root_link: $(arg tf_prefix)/base_link
+      target_frame: $(arg tf_prefix)/cmd
+      friction_coefficients_neg: [0.1, 0.1, 0.1, 0.05, 0.01, 0.01, 0.001]
+      friction_coefficients_pos: [0.1, 0.1, 0.1, 0.05, 0.01, 0.01, 0.001]
+      zero_slope: 0.05
+      cutoff: 0.99
+    </rosparam>
+
+    <rosparam if="$(arg ee_empty)" subst_value="true">
+      tip_link: $(arg tf_prefix)/wrist_palm_link
+    </rosparam>
+    <rosparam if="$(arg ee_hand)" subst_value="true">
+      tip_link: $(arg tf_prefix)/hand/bhand_grasp_link
+    </rosparam>
+    <rosparam if="$(arg ee_ball)" subst_value="true">
+      tip_link: $(arg tf_prefix)/ball/bball_center_link
+    </rosparam>
+  </group>
 
     <node pkg="tf" type="static_transform_publisher" name="$(anon stp)"
       args="0 0 0 0 0 0 /world /ik/world 50"/>
