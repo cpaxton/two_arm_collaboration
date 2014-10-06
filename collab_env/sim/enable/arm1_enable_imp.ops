@@ -1,1 +1,2 @@
+scheme.enableBlock("inverse_dynamics", true);
 scheme.enableBlock("cart_imp_control", true);

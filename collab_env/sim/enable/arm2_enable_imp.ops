@@ -1,1 +1,2 @@
+scheme.enableBlock("w2inverse_dynamics", true);
 scheme.enableBlock("w2cart_imp_control", true);
