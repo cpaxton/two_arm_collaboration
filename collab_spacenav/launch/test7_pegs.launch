@@ -7,6 +7,8 @@
   <arg name="debug" default="false" doc="(bool) in debug mode"/>
   <arg name="rviz" default="true" doc="(bool) run rviz"/>
   <arg name="rviz_config" default="$(find collab_env)/config/tf_peg1.rviz" doc="(string) rviz config file for user interface"/>
+  <arg name="ik" default="true"/>
+  <arg name="imp" default="false"/>
 
   <!-- load the WAM arm settings, space nav controller, and user interface -->
   <include file="$(find collab_spacenav)/launch/spacenav_rostopics.launch"/>
@@ -18,5 +20,9 @@
     <arg name="rviz" value="$(arg rviz)" />
     <arg name="rviz_config" value="$(arg rviz_config)" />
     <arg name="usetwo" value="$(arg usetwo)" />
+    <arg name="run_script_arm1" value="$(arg ik)"/>
+    <arg name="run_script_arm2" value="$(arg ik)"/>
+    <arg name="run_jtns_script_arm1" value="$(arg imp)"/>
+    <arg name="run_jtns_script_arm2" value="$(arg imp)"/>
   </include>
 </launch>

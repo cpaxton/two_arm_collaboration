@@ -61,9 +61,9 @@
       linear_d_gain:  200.0
       angular_p_gain: 10.0
       angular_d_gain:  0.01
-      linear_effort_threshold: 50.0
-      linear_position_threshold: 0.25
-      angular_effort_threshold: 5.0
+      linear_effort_threshold: 1200.0
+      linear_position_threshold: 1.50
+      angular_effort_threshold: 20.0
       angular_position_threshold: 1.5
       nullspace_damping: 0.8
       jointspace_damping: 1.2

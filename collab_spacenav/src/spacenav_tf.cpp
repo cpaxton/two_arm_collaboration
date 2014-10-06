@@ -194,7 +194,7 @@ int main(int argc, char** argv){
 
   ox = 0.8;
   oy = 0.46;
-  oz = 1;
+  oz = 0.4;
 
   double roll = M_PI;
   double pitch = -1.*M_PI/2.;
