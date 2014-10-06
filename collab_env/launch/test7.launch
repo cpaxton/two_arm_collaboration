@@ -11,6 +11,8 @@
   <arg name="rqt_barrett_arm2"/>
   <arg name="run_script_arm1"/>
   <arg name="run_script_arm2"/>
+  <arg name="run_jtns_script_arm1"/>
+  <arg name="run_jtns_script_arm2"/>
   <arg name="planning_arm1" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="planning_arm2" doc="(bool) Launch the motion planing pipeline"/>
 
@@ -35,6 +37,8 @@
     <arg name="rqt_barrett_arm2" value="$(arg rqt_barrett_arm2)" />
     <arg name="run_script_arm1" value="$(arg run_script_arm1)" />
     <arg name="run_script_arm2" value="$(arg run_script_arm2)" />
+    <arg name="run_jtns_script_arm1" value="$(arg run_jtns_script_arm1)" />
+    <arg name="run_jtns_script_arm2" value="$(arg run_jtns_script_arm2)" />
     <arg name="planning_arm1" value="$(arg planning_arm1)"/>
     <arg name="planning_arm2" value="$(arg planning_arm2)"/>
   </include>

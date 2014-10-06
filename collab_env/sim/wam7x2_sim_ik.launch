@@ -19,6 +19,8 @@
   <arg name="rqt_barrett_arm2"/>
   <arg name="run_script_arm1"/>
   <arg name="run_script_arm2"/>
+  <arg name="run_jtns_script_arm1"/>
+  <arg name="run_jtns_script_arm2"/>
 
   <!--<rosparam>use_sim_time: true</rosparam>-->
 
@@ -31,6 +33,7 @@
     <arg name="hand" value="$(arg hand)" />
     <arg name="rqt_barrett" value="$(arg rqt_barrett_arm1)" />
     <arg name="run_script" value="$(arg run_script_arm1)" />
+    <arg name="run_jtns_script" value="$(arg run_jtns_script_arm1)" />
   </include>
 
   <!-- Load WAM URDF -->
@@ -89,6 +92,12 @@
     type="run_controllers.py"
     args="/gazebo/wam2__deployer__ $(find collab_env)/sim/enable/arm2_enable_ik.ops world wam2/cmd"
     if="$(arg run_script_arm2)"
+    output="screen"/>
+  <node name="arm2_imp_script_runner"
+    pkg="collab_env"
+    type="run_controllers.py"
+    args="/gazebo/wam2__deployer__ $(find collab_env)/sim/enable/arm2_enable_imp.ops world wam2/cmd"
+    if="$(arg run_jtns_script_arm2)"
     output="screen"/>
 
 </launch>

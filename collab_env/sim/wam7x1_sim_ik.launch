@@ -9,13 +9,14 @@
    - rostopic pub -r 1 /gazebo/traj_rml/joint_traj_point_cmd trajectory_msgs/JointTrajectoryPoint "{ positions: [0.0,0,0,0.0,0,0,0.0] }"
    -->
 
-  <arg name="log_level" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
+  <arg name="log_level" default="4" doc="(int) Set the Orocos log level (0:none) (4:warn) (5:info) (6:debug)"/>
   <arg name="debug" default="false" doc="(bool) Launch in debug mode"/>
   <arg name="gui" default="true" doc="(bool) Launch the gazebo GUI"/>
   <arg name="planning" default="false" doc="(bool) Launch the motion planing pipeline"/>
   <arg name="hand" default="false" doc="(bool) Launch the robot with a hand"/>
   <arg name="rqt_barrett" default="true" doc="(bool) Launch the rqt_barrett joint manager"/>
   <arg name="run_script" default="true" doc="(bool) Run script to start IK controller"/>
+  <arg name="run_jtns_script" default="false" doc="(bool) Run script to start JTNS controller"/>
 
   <rosparam>use_sim_time: true</rosparam>
 
@@ -86,6 +87,11 @@
     pkg="collab_env"
     type="run_controllers.py"
     args="/gazebo/wam__deployer__ $(find collab_env)/sim/enable/arm1_enable_ik.ops world wam/cmd"
+    output="screen"/>
+  <node if="$(arg run_jtns_script)" name="arm1_imp_script_runner"
+    pkg="collab_env"
+    type="run_controllers.py"
+    args="/gazebo/wam__deployer__ $(find collab_env)/sim/enable/arm1_enable_imp.ops world wam/cmd"
     output="screen"/>
 
   <node name="arm1_rqt_barrett" pkg="rqt_barrett" type="rqt_barrett" if="$(arg rqt_barrett)">
