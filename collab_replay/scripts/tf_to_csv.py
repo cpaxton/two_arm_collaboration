@@ -4,6 +4,10 @@ import tf
 import rospy
 import sys
 
+'''
+Quick script designed to create CSV files of TF information for however long you want to run it
+The point is to let me include this information in MATLAB and play around with it
+'''
 if __name__ == "__main__":
     rospy.init_node("collab_tf_to_csv")
 
