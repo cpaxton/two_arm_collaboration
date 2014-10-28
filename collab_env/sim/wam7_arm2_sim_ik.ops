@@ -39,7 +39,7 @@ addPeer("scheme",esprefix+"effort_sum");
 scheme.addToGroup(esprefix+"effort_sum","devices");
 
 /* Load controllers */
-runScript(ros.find("lcsr_barrett")+"/ops/controllers.ops");
+runScript(ros.find("collab_env")+"/sim/ops/controllers.ops");
 load_controllers("w2");
 
 /* Start the Scheme */

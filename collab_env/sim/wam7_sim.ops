@@ -16,12 +16,12 @@ loadService("scheme","conman_ros");
 scheme.configure();
 
 /* Load barrett manager, 7-dof wam */
-runScript(ros.find("lcsr_barrett")+"/ops/barrett_sim_manager.ops");
-runScript(ros.find("lcsr_barrett")+"/ops/wam7.ops");
+runScript(ros.find("collab_env")+"/sim/ops/barrett_sim_manager.ops");
+runScript(ros.find("collab_env")+"/sim/ops/wam7.ops");
 load_effort_sum("");
 
 /* Load controllers */
-runScript(ros.find("lcsr_barrett")+"/ops/controllers.ops");
+runScript(ros.find("collab_env")+"/sim/ops/controllers.ops");
 load_controllers("");
 
 /* Start the Scheme */
@@ -29,12 +29,9 @@ scheme.start();
 
 /* Set of initially running blocks */
 scheme.enableBlock("devices",true);
-//scheme.enableBlock("traj_rml",true);
 scheme.enableBlock("inverse_dynamics",true);
 scheme.enableBlock("pid",true);
-//scheme.enableBlock("joint_control",true);
-//scheme.enableBlock("ik_control",true);
-//scheme.enableBlock("cart_imp_control",true);
+scheme.enableBlock("ik_control",true);
 
 /* Start the WAM */
 barrett_manager.wam.initialize()
