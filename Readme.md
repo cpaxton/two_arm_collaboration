@@ -2,6 +2,8 @@
 
 This is a package for creating and analyzing simulations of tasks performed by two of the Barrett WAM arms.
 
+**This package is at end-of-life; expect updates to stop turning up some time soon.**
+
 ## About
 
 ## Requirements
