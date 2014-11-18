@@ -102,6 +102,7 @@ if __name__ == "__main__":
             msg.pheader.source = rospy.get_name()
 
             vp = ValidPredicates()
+            vp.pheader.source = rospy.get_name()
             vp.assignments.append(parent)
             vp.predicates.append(predicate_name)
             vp.predicates.append(predicate_name + "_of")
