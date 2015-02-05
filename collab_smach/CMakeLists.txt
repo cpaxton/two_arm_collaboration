@@ -8,7 +8,6 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
   collab_env
-  lcsr_barrett
   message_generation
   smach
   smach_msgs
