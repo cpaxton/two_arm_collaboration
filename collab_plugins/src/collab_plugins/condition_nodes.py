@@ -14,7 +14,7 @@ from instructor_core.instructor_qt import NamedComboBox
 # Thread for service calls
 from threading import Thread
 
-from predicator_core.srv import *
+from predicator_msgs.srv import *
 
 entity_types = ['robot','location','object']
 

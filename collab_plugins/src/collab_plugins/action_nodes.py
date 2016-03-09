@@ -15,7 +15,7 @@ from instructor_core.instructor_qt import NamedComboBox
 from instructor_plugins.srv import *
 
 from predicator_msgs.msg import *
-from predicator_core.srv import *
+from predicator_msgs.srv import *
 
 # Sample Node Wrappers -----------------------------------------------------------
 '''
